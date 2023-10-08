@@ -22,5 +22,13 @@ namespace CampusCore.API.Models
 
             // Add other configurations for your ApplicationUser model here
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CampusCoreDB;Trusted_Connection=True;MultipleActiveResultSets=true");
+            }
+        }
     }
 }
