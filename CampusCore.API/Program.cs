@@ -1,6 +1,10 @@
 using CampusCore.API;
 using CampusCore.API.Models;
+using CampusCore.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +23,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication( auth =>
+{
+    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = "http://localhost", //temporary for development only
+        ValidIssuer = "http://localhost", //temporary for development only
+        RequireExpirationTime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is the key that we will use in the encryption")),
+        ValidateIssuerSigningKey = true
+    };
+});
 builder.Services.ConfigureIdentity();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
