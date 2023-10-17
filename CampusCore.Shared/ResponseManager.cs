@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CampusCore.Shared
 {
-    public class UserManagerResponse
+    public class ResponseManager
     {
         public string Message { get; set; }
         public bool IsSuccess { get; set; }

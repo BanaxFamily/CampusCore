@@ -7,7 +7,7 @@ namespace CampusCore.API.Services
 {
     public interface IUserService
     {
-        Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model);
+        Task<ResponseManager> RegisterUserAsync(RegisterViewModel model);
     }
 }
 
@@ -19,13 +19,13 @@ public class UserService : IUserService
         _userManager = userManager;
     }
 
-    public async Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
+    public async Task<ResponseManager> RegisterUserAsync(RegisterViewModel model)
     {
         if( model == null)
             throw new NullReferenceException("Register Model is null");
 
         if (model.Password != model.RePassword)
-            return new UserManagerResponse
+            return new ResponseManager
             {
                 Message = "Confirm password does not match the password",
                 IsSuccess = false
@@ -45,14 +45,14 @@ public class UserService : IUserService
 
         if(result.Succeeded)
         {
-            return new UserManagerResponse
+            return new ResponseManager
             {
                 Message = "User created successfully!",
                 IsSuccess = true
             };
 
         }
-        return new UserManagerResponse
+        return new ResponseManager
         {
             Message = "User is not created",
             IsSuccess = false,

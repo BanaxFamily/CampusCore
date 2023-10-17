@@ -42,6 +42,7 @@ builder.Services.AddAuthentication( auth =>
 });
 builder.Services.ConfigureIdentity();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 
 var app = builder.Build();
 
