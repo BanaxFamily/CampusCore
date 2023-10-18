@@ -17,7 +17,7 @@ namespace CampusCore.API.Controllers
 
         // /api/auth/register
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
+        public async Task<IActionResult> RegisterAsync(UserAddViewModel model)
         {
             if (ModelState.IsValid)
             {
