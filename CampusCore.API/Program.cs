@@ -36,7 +36,7 @@ builder.Services.AddAuthentication( auth =>
         ValidAudience = builder.Configuration["AuthSettings:Audience"],
         ValidIssuer = builder.Configuration["AuthSettings:Issuer"], 
         RequireExpirationTime = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is the key that we will use in the encryption")),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
         ValidateIssuerSigningKey = true
     };
 });

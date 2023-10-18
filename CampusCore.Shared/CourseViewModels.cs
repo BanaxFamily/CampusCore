@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CampusCore.Shared
 {
-    public class AddCourseViewModel
+    public class CourseAddViewModel
     {
         public string Name { get; set; }
         public string Status { get; set; }
