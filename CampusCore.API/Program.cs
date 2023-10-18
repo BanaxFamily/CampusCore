@@ -33,8 +33,8 @@ builder.Services.AddAuthentication( auth =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = "http://localhost", //temporary for development only
-        ValidIssuer = "http://localhost", //temporary for development only
+        ValidAudience = builder.Configuration["AuthSettings:Audience"],
+        ValidIssuer = builder.Configuration["AuthSettings:Issuer"], 
         RequireExpirationTime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is the key that we will use in the encryption")),
         ValidateIssuerSigningKey = true
