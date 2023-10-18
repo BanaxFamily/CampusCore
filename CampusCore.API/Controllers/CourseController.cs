@@ -18,7 +18,7 @@ namespace CampusCore.API.Controllers
 
             // /api/course/create
             [HttpPost("create")]
-            public async Task<IActionResult> CreateAsync(AddCourseViewModel model)
+            public async Task<IActionResult> CreateAsync(CourseAddViewModel model)
             {
                 if (ModelState.IsValid)
                 {

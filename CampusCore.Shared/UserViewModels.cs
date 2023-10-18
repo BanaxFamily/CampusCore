@@ -1,8 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CampusCore.Shared
 {
-    public class RegisterViewModel
+    public class UserLoginViewModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class UserAddViewModel
     {
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address")]
@@ -33,11 +44,13 @@ namespace CampusCore.Shared
         public string Status { get; set; } = UserStatus.Inactive.ToString();
 
         //to add digital signature later. Will research first if it's part of Identity already
+
+        public enum UserStatus
+        {
+            Active,
+            Inactive,
+        }
     }
 
-    public enum UserStatus
-    {
-        Active,
-        Inactive,
-    }
+    
 }

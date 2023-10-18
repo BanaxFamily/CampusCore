@@ -7,7 +7,8 @@ namespace CampusCore.API.Services
 {
     public interface IUserService
     {
-        Task<ResponseManager> RegisterUserAsync(RegisterViewModel model);
+        Task<ResponseManager> RegisterUserAsync(UserAddViewModel model);
+        Task<ResponseManager> LoginAsync(UserAddViewModel model);
     }
 }
 
@@ -19,7 +20,15 @@ public class UserService : IUserService
         _userManager = userManager;
     }
 
-    public async Task<ResponseManager> RegisterUserAsync(RegisterViewModel model)
+    public Task<ResponseManager> LoginAsync(UserLoginViewModel model)
+    {
+        if (model == null)
+            throw new NullReferenceException("Register Model is null");
+        
+
+    }
+
+    public async Task<ResponseManager> RegisterUserAsync(UserAddViewModel model)
     {
         if( model == null)
             throw new NullReferenceException("Register Model is null");

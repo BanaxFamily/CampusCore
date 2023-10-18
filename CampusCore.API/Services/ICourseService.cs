@@ -7,7 +7,7 @@ namespace CampusCore.API.Services
 {
     public interface ICourseService
     {
-        Task<ResponseManager> CreateCourseAsync(AddCourseViewModel model);
+        Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model);
 
     }
 
@@ -18,7 +18,7 @@ namespace CampusCore.API.Services
         {
             _context = context;
         }
-        public async Task<ResponseManager> CreateCourseAsync(AddCourseViewModel model)
+        public async Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model)
         {
             if (model == null)
                 throw new NullReferenceException("Register Model is null");
