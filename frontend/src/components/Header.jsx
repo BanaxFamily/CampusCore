@@ -6,6 +6,14 @@ import { Link } from 'react-router-dom';
 
 export const Header = () => {
     const [mobileMenu, setMobileMenu] = useState(false);
+    const [isProfileOpen, setProfileOpen] = useState(false);
+    const [userName, setUserName] = useState('Maria Ty');
+
+    // Function to handle the logout action
+    const handleLogout = () => {
+        setProfileOpen(false); // Close the profile dropdown
+        // Add logout logic here
+    };
 
     function openMobileMenu() {
         setMobileMenu(!mobileMenu);
@@ -56,7 +64,7 @@ export const Header = () => {
                         {/* </div> */}
                     </div>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                        <button type="button" className="relative rounded-full bg-white p-1 text-gray-400 hover:bg-mainBlueColor hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                        <button onClick={handleLogout} type="button" className="relative rounded-full bg-white p-1 text-gray-400 hover:bg-mainBlueColor hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="absolute -inset-1.5"></span>
                             <span className="sr-only">View notifications</span>
                             <AiOutlineCaretDown />
@@ -64,13 +72,13 @@ export const Header = () => {
 
                         {/* <!-- Profile dropdown --> */}
                         <div className="relative ml-3">
-                            <div>
-                                <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                                    <span className="absolute -inset-1.5"></span>
-                                    <span className="sr-only">Open user menu</span>
-                                    <img className="h-8 w-8 rounded-full" src={logoImg} alt="" />
-                                </button>
-                            </div>
+                        <div>
+                            <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onClick={() => setProfileOpen(!isProfileOpen)}>
+                                <span className="absolute -inset-1.5"></span>
+                                <span className="sr-only">Open user menu</span>
+                                <img className="h-8 w-8 rounded-full" src={logoImg} alt={userName} />
+                            </button>
+                        </div>
 
                             {/* <!--
                             Dropdown menu, show/hide based on menu state.
@@ -96,9 +104,9 @@ export const Header = () => {
             {/* <!-- Mobile menu, show/hide based on menu state. --> */}
             {
                 mobileMenu &&
-                <div className={` relative transform transition-transform duration-300 ${mobileMenu ? 'scale-y-100':'scale-y-0'} origin-top-right z-50`} id="mobile-menu">
+                <div className={` relative transform transition-transform duration-300 ${mobileMenu ? 'scale-y-100' : 'scale-y-0'} origin-top-right z-50`} id="mobile-menu">
                     <div className=" absolute  w-full shadow-md space-y-1 px-2 pb-3 pt-2 bg-slate-700 ">
-                        {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
+                        {/*  Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
                         <Link to="/" onClick={openMobileMenu} className="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</Link>
                         <Link to="/courses" onClick={openMobileMenu} className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Courses</Link>
                         <Link to="/files" onClick={openMobileMenu} className="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Files</Link>
@@ -106,6 +114,20 @@ export const Header = () => {
                     </div>
                 </div>
             }
+
+                {isProfileOpen && (
+                    <div className="absolute top-0 right-0 border mr-20 bg-slate-700 w-48 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none inset-50" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex="-1" id="profile-dropdown">
+                        <div className="py-1" role="none">
+                            <div className="block px-4 py-2 text-sm text-white">
+                                <span className="mr-2">{userName}</span>
+                                <img className="h-6 w-6 rounded-full inline-block" src={logoImg} alt={userName} />
+                            </div>
+                            <button className="block px-4 py-2 text-sm text-white" onClick={handleLogout}>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                )}
         </nav>
 
 
