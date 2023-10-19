@@ -12,7 +12,7 @@ function App() {
     <Router>
       <Header/>
 
-      <div className=" p-12 w-full flex justify-between">
+      <div className=" mx-auto pt-4 md:p-12 w-full h-screen shadow-xl flex justify-between">
         <SideNav/>
         <Main/>
         <Status/>

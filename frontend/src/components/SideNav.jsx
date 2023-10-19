@@ -5,7 +5,7 @@ import { RiGitRepositoryCommitsLine } from "react-icons/ri"
 
 export const SideNav = () => {
     return (
-        <div className="w-[16%] h-fit p-2 border rounded-lg shadow-lg sticky top-0">
+        <nav className="w-[16%] hidden md:block h-fit p-2 border rounded-lg shadow-lg sticky top-0">
             <div className="w-full flex flex-col justify-start items-start gap-6 text-[12px]  
                  
             ">
@@ -99,6 +99,6 @@ export const SideNav = () => {
                     </div>
                 </Link>
             </div>
-        </div>
+        </nav>
     )
 }
