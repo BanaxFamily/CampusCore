@@ -7,11 +7,12 @@ import { Link } from 'react-router-dom';
 export const Header = () => {
     const [mobileMenu, setMobileMenu] = useState(false);
     const [isProfileOpen, setProfileOpen] = useState(false);
+    // eslint-disable-next-line no-unused-vars
     const [userName, setUserName] = useState('Maria Ty');
 
     // Function to handle the logout action
     const handleLogout = () => {
-        setProfileOpen(false); // Close the profile dropdown
+        setProfileOpen(!isProfileOpen); // Close the profile dropdown
         // Add logout logic here
     };
 
@@ -23,7 +24,7 @@ export const Header = () => {
         <nav className="bg-white">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
-                    <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <div className="absolute inset-y-0 left-0 flex items-center ">
                         {/* <!-- Mobile menu button--> */}
                         <button onClick={openMobileMenu} type="button" className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
                             <span className="absolute -inset-0.5"></span>
@@ -64,21 +65,21 @@ export const Header = () => {
                         {/* </div> */}
                     </div>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                        <span className='text-[12px] tracking-wide mr-2'>Hi, User</span>
                         <button onClick={handleLogout} type="button" className="relative rounded-full bg-white p-1 text-gray-400 hover:bg-mainBlueColor hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="absolute -inset-1.5"></span>
-                            <span className="sr-only">View notifications</span>
                             <AiOutlineCaretDown />
                         </button>
 
                         {/* <!-- Profile dropdown --> */}
                         <div className="relative ml-3">
-                        <div>
-                            <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onClick={() => setProfileOpen(!isProfileOpen)}>
-                                <span className="absolute -inset-1.5"></span>
-                                <span className="sr-only">Open user menu</span>
-                                <img className="h-8 w-8 rounded-full" src={logoImg} alt={userName} />
-                            </button>
-                        </div>
+                            <div>
+                                <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onClick={() => setProfileOpen(!isProfileOpen)}>
+                                    <span className="absolute -inset-1.5"></span>
+                                    <span className="sr-only">Open user menu</span>
+                                    <img className="h-8 w-8 rounded-full" src={logoImg} alt={userName} />
+                                </button>
+                            </div>
 
                             {/* <!--
                             Dropdown menu, show/hide based on menu state.
@@ -115,19 +116,19 @@ export const Header = () => {
                 </div>
             }
 
-                {isProfileOpen && (
-                    <div className="absolute top-0 right-0 border mr-20 bg-slate-700 w-48 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none inset-50" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex="-1" id="profile-dropdown">
-                        <div className="py-1" role="none">
-                            <div className="block px-4 py-2 text-sm text-white">
+            {isProfileOpen && (
+                <div onClick={handleLogout} className=" absolute top-0 right-0 border mr-20 bg-slate-700 w-48 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none inset-50" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex="-1" id="profile-dropdown">
+                    <div className="py-1" role="none">
+                        {/* <div className="block px-4 py-2 text-sm text-white">
                                 <span className="mr-2">{userName}</span>
                                 <img className="h-6 w-6 rounded-full inline-block" src={logoImg} alt={userName} />
-                            </div>
-                            <button className="block px-4 py-2 text-sm text-white" onClick={handleLogout}>
-                                Logout
-                            </button>
-                        </div>
+                            </div> */}
+                        <button className="block px-4 py-2 text-sm text-white" onClick={handleLogout}>
+                            Logout
+                        </button>
                     </div>
-                )}
+                </div>
+            )}
         </nav>
 
 

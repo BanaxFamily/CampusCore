@@ -10,15 +10,17 @@ function App() {
 
   return (
     <Router>
-      <Header/>
+      <Header />
 
-      <div className=" mx-auto pt-4 md:p-12 w-full h-screen shadow-xl flex justify-between">
-        <SideNav/>
-        <Main/>
-        <Status/>
+      <div className=" pt-4 md:p-12 w-full h-screen shadow ">
+        <div className=' mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 flex justify-between'>
+          <SideNav />
+          <Main />
+          <Status />
+        </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </Router>
   )
 }
