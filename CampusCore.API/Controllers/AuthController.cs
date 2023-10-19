@@ -1,6 +1,7 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CampusCore.API.Controllers
 {
@@ -15,13 +16,13 @@ namespace CampusCore.API.Controllers
             _userService = userService;
         }
 
-        // /api/auth/register
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(UserAddViewModel model)
+        // /api/auth/add
+        [HttpPost("add")]
+        public async Task<IActionResult> UserAddAsync(UserAddViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _userService.RegisterUserAsync(model);
+                var result = await _userService.UserAddAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -30,5 +31,22 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+
+        // /api/auth/login
+        [HttpPost ("login")]
+        public async Task<IActionResult> LoginAsync(UserLoginViewModel model)
+        {
+            if (ModelState.IsValid) 
+            {
+                var result = await _userService.LoginAsync(model);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+
+        
     }
 }
