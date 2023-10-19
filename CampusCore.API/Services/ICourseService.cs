@@ -9,6 +9,7 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model);
         Task<ResponseManager> ViewCourseListAsync(); // new method to get course
+        Task<ResponseManager> DeleteCourseAsync(int Id); // New method to delete a course
 
     }
 
@@ -86,6 +87,54 @@ namespace CampusCore.API.Services
                 };
             }
             
+        }
+
+        public async Task<ResponseManager> DeleteCourseAsync(int Id)
+        {
+            try
+            {
+                var course = await _context.Courses.FindAsync(Id);
+
+                if (course == null)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Course not found",
+                        Errors = new List<string> { "Course with the specified ID does not exist" }
+                    };
+                }
+
+                _context.Courses.Remove(course);
+                var result = await _context.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Course deleted successfully"
+                    };
+                }
+                else
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Course deletion failed",
+                        Errors = new List<string> { "Error occurred while deleting the course" }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while deleting the course",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
 
 
