@@ -2,33 +2,82 @@
 using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CampusCore.API.Services
 {
     public interface IUserService
     {
-        Task<ResponseManager> RegisterUserAsync(UserAddViewModel model);
-        //Task<ResponseManager> LoginAsync(UserAddViewModel model);
+        Task<ResponseManager> UserAddAsync(UserAddViewModel model);
+        Task<ResponseManager> LoginAsync(UserLoginViewModel model);
     }
 }
 
 public class UserService : IUserService
 {
     private UserManager<User> _userManager;
-    public UserService(UserManager<User> userManager)
+    private IConfiguration _configuration;
+    public UserService(UserManager<User> userManager, IConfiguration configuration)
     {
         _userManager = userManager;
+        _configuration = configuration;
     }
 
-    //public Task<ResponseManager> LoginAsync(UserLoginViewModel model)
-    //{
-    //    if (model == null)
-    //        throw new NullReferenceException("Register Model is null");
-        
+    public  async Task<ResponseManager> LoginAsync(UserLoginViewModel model)
+    {
+        if (model == null)
+            throw new NullReferenceException("Register Model is null");
+        var user = await _userManager.FindByNameAsync(model.Username);
 
-    //}
+        if (user == null)
+        {
+            return new ResponseManager
+            {
+                Message = "No user found",
+                IsSuccess = false
+            };
+        }
+        var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
-    public async Task<ResponseManager> RegisterUserAsync(UserAddViewModel model)
+        if(!result)
+        {
+            return new ResponseManager
+            {
+                Message = "Invalid login",
+                IsSuccess = false
+            };
+        }
+        var claims = new[]
+        {
+            new Claim("Username", model.Username),
+            new Claim(ClaimTypes.NameIdentifier,user.Id)
+
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+        var token = new JwtSecurityToken(
+            issuer: _configuration["AuthSettings:Issuer"],
+            audience: _configuration["AuthSettings:Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddDays(30),
+            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+
+        string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return new ResponseManager
+        {
+            Message = tokenAsString,
+            IsSuccess = true,
+            ExpireDate = token.ValidTo
+        };
+
+
+    }
+
+    public async Task<ResponseManager> UserAddAsync(UserAddViewModel model)
     {
         if( model == null)
             throw new NullReferenceException("Register Model is null");
@@ -67,6 +116,7 @@ public class UserService : IUserService
             IsSuccess = false,
             Errors = result.Errors.Select(e => e.Description)
         };
+
         
     }
 }

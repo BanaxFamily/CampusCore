@@ -9,7 +9,13 @@ namespace CampusCore.Shared
 {
     public class UserLoginViewModel
     {
+        [Required]
+        [MinLength(4)]
+        [MaxLength(50)]
         public string Username { get; set; }
+        [Required]
+        [MinLength(6)]
+        [MaxLength(30)]
         public string Password { get; set; }
     }
 
@@ -20,13 +26,13 @@ namespace CampusCore.Shared
         public string Email { get; set; }
 
         [Required]
-        [MaxLength(60)]
-        [MinLength(8)]
+        [MaxLength(50)]
+        [MinLength(4)]
         public string Username { get; set; }
 
         [Required]
-        [MinLength(8, ErrorMessage = "Password must not be less than 8 characters")]
-        [MaxLength(25, ErrorMessage = "Password must not be more than 25 characters")]
+        [MinLength(6, ErrorMessage = "Password must not be less than 6 characters")]
+        [MaxLength(30, ErrorMessage = "Password must not be more than 30 characters")]
         public string Password { get; set; }
         [Required]
         [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
