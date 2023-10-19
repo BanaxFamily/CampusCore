@@ -49,5 +49,21 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
+            [HttpDelete("delete")]
+            public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                int courseId = model.Id;
+                var result = await _courseService.DeleteCourseAsync(courseId);
+
+                    if (result.IsSuccess)
+                        return Ok(result); //Status code: 200
+
+                    return BadRequest(result);
+                }
+                return BadRequest("Some properties are not valid for delete"); //status code: 400
+            }
+
     }
     }
