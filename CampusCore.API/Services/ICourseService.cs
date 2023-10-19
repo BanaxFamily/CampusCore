@@ -10,6 +10,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model);
         Task<ResponseManager> ViewCourseListAsync(); // new method to get course
         Task<ResponseManager> DeleteCourseAsync(int Id); // New method to delete a course
+        Task<ResponseManager> UpdateCourseAsync(int Id, CourseUpdateViewModel model);
 
     }
 
@@ -132,6 +133,59 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = false,
                     Message = "An error occurred while deleting the course",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> UpdateCourseAsync(int Id, CourseUpdateViewModel model)
+        {
+            try
+            {
+                var course = await _context.Courses.FindAsync(model.Id);
+
+                if (course == null)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Course not found",
+                        Errors = new List<string> { "Course with the specified ID does not exist" }
+                    };
+                }
+
+                // Update the course properties from the model
+                course.Name = model.Name;
+                course.Status = model.Status;
+                course.Description = model.Description;
+
+                // Save changes to the database
+                var result = await _context.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Course updated successfully"
+                    };
+                }
+                else
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Course update failed",
+                        Errors = new List<string> { "Error occurred while updating the course" }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while updating the course",
                     Errors = new List<string> { ex.Message }
                 };
             }
