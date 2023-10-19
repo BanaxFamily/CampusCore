@@ -8,6 +8,7 @@ namespace CampusCore.API.Services
     public interface ICourseService
     {
         Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model);
+        Task<ResponseManager> ViewCourseListAsync(); // new method to get course
 
     }
 
@@ -61,6 +62,32 @@ namespace CampusCore.API.Services
 
         }
 
-        //public async Task<ResponseManager> ViewCourseListAsync(ViewCourseListViewModel model)
+        public async Task<ResponseManager> ViewCourseListAsync()
+        {
+            try
+            {
+                //return await _context.Courses.ToListAsync();
+                var result = await _context.Courses.ToListAsync();
+               
+                return new ResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Course retrieved successfully",
+                    Data = result
+                };
+            } 
+            catch (Exception ex)
+            {
+                return new ResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+            
+        }
+
+
     }
 }
