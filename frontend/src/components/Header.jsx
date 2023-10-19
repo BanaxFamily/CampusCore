@@ -21,7 +21,7 @@ export const Header = () => {
     }
 
     return (
-        <nav className="bg-white">
+        <nav className="bg-white shadow-xl pb-2">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center ">
@@ -50,7 +50,7 @@ export const Header = () => {
                     <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                         <div className="flex flex-shrink-0 items-center">
                             <img className="h-14 w-auto" src={logoImg} alt="Campus Core logo" />
-                            <span className=' hidden md:block absolute bottom-0 left-14 text-[8px] font-semibold '>
+                            <span className=' hidden md:block absolute bottom-0 left-16 text-[8px] font-semibold '>
                                 A Secure Digital Repository as Knowledge Management System
                             </span>
                         </div>
