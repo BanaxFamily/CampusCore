@@ -13,4 +13,6 @@ namespace CampusCore.Shared
         public string Description { get; set; }
 
     }
+
+    
 }
