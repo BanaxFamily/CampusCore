@@ -1,10 +1,11 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 // eslint-disable-next-line no-unused-vars
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Home from "./Home"
-import CourseStudent from './student/CourseStudent'
+import Home from "./student/Home"
+// import CourseStudent from './student/CourseStudent'
 import CoursesAdmin from './administrator/CoursesAdmin'
 import ProfilesAdmin from './administrator/ProfilesAdmin'
+import RepositoryAdmin from './administrator/RepositoryAdmin'
 
 const Main = () => {
   return (
@@ -20,6 +21,10 @@ const Main = () => {
 
         //#region Profiles Routes Add conditional rendering when API is integrated          
         <Route path='/profile' element={<ProfilesAdmin />} />
+        //#endregion
+
+        //#region Repository Routes Add conditional rendering when API is integrated          
+        <Route path='/profile' element={<RepositoryAdmin />} />
         //#endregion
 
 
