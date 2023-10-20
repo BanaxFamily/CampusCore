@@ -5,6 +5,7 @@ import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import Main from './components/Main'
 import { Status } from './components/Status'
+// eslint-disable-next-line no-unused-vars
 import { adminLinks, studentNavLinks } from './constants/index'
 import SideNav from './components/SideNav';
 function App() {
@@ -40,6 +41,7 @@ function App() {
                     id={nav.id}
                     link={nav.link}
                     text={nav.title}
+                    icon={nav.icon}
                   />
                 ))
               }

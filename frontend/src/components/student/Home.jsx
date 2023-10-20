@@ -1,4 +1,4 @@
-import DashBoardHeading from "./DashBoardHeading";
+import DashBoardHeading from "../DashBoardHeading";
 
 const Home = () => {
     return ( 
