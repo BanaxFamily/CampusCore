@@ -1,10 +1,9 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Footer } from '../components/Footer'
 import { Header } from '../components/Header'
 import SideNav from '../components/SideNav'
 import Main from '../components/Main'
 import { Status } from '../components/Status'
-import {adminLinks, studentNavLinks} from '../constants/index'
+import { studentNavLinks } from '../constants/index'
 const ProtectedRoute = () => {
   return (
 
@@ -28,7 +27,7 @@ const ProtectedRoute = () => {
                     text={nav.title}
                   />
                 ))
-              } 
+              }
 
             </div>
           </div>
@@ -36,8 +35,6 @@ const ProtectedRoute = () => {
           <Status />
         </div>
       </div>
-
-      <Footer />
     </Router>
   )
 }
