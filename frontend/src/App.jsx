@@ -1,35 +1,25 @@
 // eslint-disable-next-line no-unused-vars
-import { adminLinks, studentNavLinks } from './constants/index'
-import Login from './components/Login';
-import { Footer } from './components/Footer'
-import campusCoreImg from './assets/CAMPUSCORE.png'
 import { useState } from 'react';
-import ProtectedRoute from './pages/ProtectedRoute';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Footer } from './components/Footer'
+import Home from './pages/Home';
 
 function App() {
   const [isLog, setisLog] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
-  const loginContainer =
-    <>
-      <div className='mx-auto max-w-7xl flex flex-col md:flex-row mb-10'>
-        <div className='md:w-1/2 '>
-          <img className=' max-h-screen w-auto block md:m-auto ' src={campusCoreImg} alt="Campus Core Logo" />
-        </div>
-
-        <div className='md:w-1/2 md:mt-5'>
-          <Login />
-
-        </div >
-      </div>
-    </>
+  // Add logic here when user GET API is finished
 
   return (
-    <>
-      {
-        isLog ? <ProtectedRoute /> : loginContainer
-      }
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<Home loggedInUser={loggedInUser} />}
+        />
+      </Routes>
       <Footer />
-    </>
+    </BrowserRouter>
   )
 }
 
