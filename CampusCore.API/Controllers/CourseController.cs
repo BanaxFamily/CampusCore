@@ -32,7 +32,55 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
-        // /api/course/viewList
-        //insert method here
-        }
+            // /api/course/viewList
+            //insert method here
+            [HttpGet("viewList")]
+            public async Task<IActionResult> ViewListAsync()
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _courseService.ViewCourseListAsync();
+
+                    if (result.IsSuccess)
+                        return Ok(result); //Status code: 200
+
+                    return BadRequest(result);
+                }
+                return BadRequest("Some properties are not valid"); //status code: 400
+            }
+
+            [HttpDelete("delete")]
+            public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                int courseId = model.Id;
+                var result = await _courseService.DeleteCourseAsync(courseId);
+
+                    if (result.IsSuccess)
+                        return Ok(result); //Status code: 200
+
+                    return BadRequest(result);
+                }
+                return BadRequest("Some properties are not valid for delete"); //status code: 400
+            }
+
+            // /api/course/update
+            [HttpPut("update")]
+            public async Task<IActionResult> UpdateAsync(int id, [FromBody] CourseUpdateViewModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _courseService.UpdateCourseAsync(id, model);
+
+                    if (result.IsSuccess)
+                        return Ok(result); // Status code: 200
+
+                    return BadRequest(result);
+                }
+                return BadRequest("Some properties are not valid for update"); // Status code: 400
+            }
+
+
     }
+}

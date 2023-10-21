@@ -11,6 +11,7 @@ namespace CampusCore.API.Models
 
         public DbSet<User> Users { get; set; }
         public DbSet<Course> Courses { get; set; }  
+        public DbSet<Deliverable> Deliverables { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

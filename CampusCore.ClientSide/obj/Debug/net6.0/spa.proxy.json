@@ -1,0 +1,8 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:44494",
+"LaunchCommand": "npm start",
+"WorkingDirectory": "C:\\Users\\alixa\\OneDrive\\Desktop\\CampusCore\\CampusCore.ClientSide\\ClientApp\\",
+"MaxTimeoutInSeconds": "120"
+}
+}
