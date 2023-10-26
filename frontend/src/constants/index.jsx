@@ -46,36 +46,59 @@ export const adminLinks = [
         id:"home",
         link:"/",
         title:"Home",
-        icon: <AiOutlineHome/>
+        icon: <AiOutlineHome size={20}/>
     },
     {
         id:"profile",
         link:"/profile",
         title:"Profile",
-        icon: <LuGraduationCap/>
+        icon: <LuGraduationCap size={20}/>
     },
     {
         id:"repository",
         link:"/repository",
         title:"Repository",
-        icon: <AiOutlineHome/>
+        icon: <AiOutlineHome size={20}/>
     },
     {
         id:"course",
         link:"/course",
         title:"Courses",
-        icon: <LuGraduationCap/>
+        icon: <LuGraduationCap size={20}/>
     },
     {
         id:"users",
         link:"/user",
         title:"Users",
-        icon: <LuGraduationCap/>
+        icon: <LuGraduationCap size={20}/>
     },
     {
         id:"reports",
         link:"/report",
         title:"Reports",
-        icon: <LuGraduationCap/>
+        icon: <LuGraduationCap size={20}/>
     },
 ];
+
+export const adminNavTitle = [
+    {
+        link: "Home"
+    },
+    {
+        link: "Profile"
+    },
+    {
+        link: "Repository"
+    },
+    {
+        link: "Courses"
+    },
+    {
+        link: "Users"
+    },
+    {
+        link: "Reports"
+    },
+
+    
+]

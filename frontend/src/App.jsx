@@ -1,25 +1,41 @@
 // eslint-disable-next-line no-unused-vars
 import { useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Footer } from './components/Footer'
-import Home from './pages/Home';
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
+import Home from "./components/Home";
+import Login from './components/Login';
+import CoursesAdmin from './components/administrator/CoursesAdmin';
+import ProfilesAdmin from './components/administrator/ProfilesAdmin';
+import ProtectedRoute from './pages/ProtectedRoute';
 
 function App() {
+  // 
+  // PARTIALLY USED BOOLEAN TO CHECK IF USER EXIST DB
+  // eslint-disable-next-line no-unused-vars
   const [isLog, setisLog] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null);
 
-  // Add logic here when user GET API is finished
+  const routes = createBrowserRouter(
+    createRoutesFromElements(
+      isLog ?
+        // Displayed when user is not authenticated
+        <Route path="/login" element={<Login />} />
+        :
+        // Displayed when user is authenticated
+        <Route path="/" element={<ProtectedRoute />}>
+          <Route index element={<Home />} />
+          <Route path="course" element={<CoursesAdmin />} />
+          <Route path='/profile' element={<ProfilesAdmin />} />
+        </Route>
+    )
+  );
+
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={<Home loggedInUser={loggedInUser} />}
-        />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+    <RouterProvider router={routes} />
   )
 }
 

@@ -1,41 +1,30 @@
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Header } from '../components/Header'
-import SideNav from '../components/SideNav'
-import Main from '../components/Main'
-import { Status } from '../components/Status'
-import { studentNavLinks } from '../constants/index'
+import { Header } from '../components/Header';
+import Main from '../components/Main';
+import { Status } from '../components/Status';
+import AdminLinks from '../components/administrator/AdminLinks';
 const ProtectedRoute = () => {
+  
   return (
-
-    <Router>
+    <>
       <Header />
+      
+      {/* Side Navigation for medium breakpoints */}
+      <div className="md:block hidden fixed top-[25%] ml-2 opacity-80 hover:opacity-100">
+        <AdminLinks />
+      </div>
 
-      <div className=" pt-4 md:p-12 w-full h-screen shadow ">
-        <div className=' mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 flex justify-between'>
-          <div className="w-[16%] hidden md:block h-[400px] p-2 border rounded-lg shadow-lg sticky top-0">
-            <div className="w-full flex flex-col justify-start items-start gap-6 md:gap-3 text-[12px]  
-                 
-            ">
-              {/* If user is a Student  ADD CONDITIONAL RENDERING*/}
-              {
-                studentNavLinks.map((nav) => (
-                  <SideNav
-                    key={nav.id}
-                    id={nav.id}
-                    link={nav.link}
-                    icon={nav.icon}
-                    text={nav.title}
-                  />
-                ))
-              }
-
-            </div>
+      <div className='flex h-screen overflow-hidden'>
+        <div className="w-full md:w-3/4 overflow-auto">
+          <div className='h-full pt-2'>
+            <Main />
           </div>
-          <Main />
+        </div>
+
+        <div className='hidden md:block w-1/4 overflow-auto'>
           <Status />
         </div>
       </div>
-    </Router>
+    </>
   )
 }
 

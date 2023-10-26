@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Login from "../components/Login";
 import ProtectedRoute from "./ProtectedRoute";
-import { Footer } from "../coamponents/Footer";
-import campusCoreImg from './assets/CAMPUSCORE.png'
+import Footer from "../components/Footer"
+import campusCoreImg from '../assets/CAMPUSCORE.png'
 
-export default function Home(props) {
+export default function Home() {
     const [isLog, setisLog] = useState(false);
 
     // Handle the PROPS passsed from the APP for authentication
@@ -21,6 +21,7 @@ export default function Home(props) {
 
                 </div >
             </div>
+            <Footer/>
         </>
 
     return (
@@ -28,7 +29,6 @@ export default function Home(props) {
             {
                 isLog ? <ProtectedRoute /> : loginContainer
             }
-            <Footer />
         </>
     )
 }
