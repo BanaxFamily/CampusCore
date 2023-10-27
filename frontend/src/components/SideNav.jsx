@@ -1,24 +1,18 @@
-import { Link } from "react-router-dom"
 import PropTypes from 'prop-types'
-// import { LuGraduationCap } from "react-icons/lu"
-// import { AiOutlineFileSearch, AiOutlineCalendar, AiOutlineIssuesClose, AiOutlineSetting, AiOutlineHome } from "react-icons/ai"
-// import { RiGitRepositoryCommitsLine } from "react-icons/ri"
+import { NavLink } from "react-router-dom"
 
 const SideNav = (props) => {
     return (
-        <Link to={props.link} key={props.id} className="w-full">
-            <div className="active:bg-mainBlueColor active:text-white w-full px-2 py-1 rounded-lg 
-                            border border-slate-400 hover:border-slate-700 
-                            hover:bg-mainBlueColor hover:text-white
-                ">
-                <span className="flex justify-start items-center gap-3">
-                    {/* <AiOutlineHome /> */}
-                    {props.icon}
-                    <button className=" w-full flex justify-start bg-transparent ">{props.text}</button>
-                </span>
 
-            </div>
-        </Link>
+        <div className={`${props.classname} flex flex-col bg-mainBlueColor shadow-gray-400 mb-2 p-3 rounded-full
+            hover:scale-110 ease-in duration-300 group
+        `}>
+            <NavLink to={props.link} key={props.id} className={` flex flex-col items-center group-hover:text-paleRed text-white`}>
+                {props.icon}
+                
+                <span className="text-[8px]">{props.title}</span>
+            </NavLink>
+        </div >
     )
 }
 
@@ -26,7 +20,10 @@ SideNav.propTypes = {
     link: PropTypes.string,
     icon: PropTypes.element,
     text: PropTypes.string,
-    id: PropTypes.string
+    id: PropTypes.string,
+    title: PropTypes.string,
+    mobile: PropTypes.bool,
+    classname: PropTypes.string
 }
 
 export default SideNav;

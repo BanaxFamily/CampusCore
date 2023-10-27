@@ -1,7 +1,7 @@
 
 export const Status = () => {
   return (
-    <div className="w-[45%] pr-4 flex flex-col gap-6">
+    <div className=" pr-4 flex flex-col gap-6">
 
       <div className=" h-48 border shadow-lg overflow-hidden ">
 
