@@ -34,7 +34,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 
-builder.Services.AddAuthentication( auth =>
+builder.Services.AddAuthentication(auth =>
 {
     auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,7 +45,7 @@ builder.Services.AddAuthentication( auth =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidAudience = builder.Configuration["AuthSettings:Audience"],
-        ValidIssuer = builder.Configuration["AuthSettings:Issuer"], 
+        ValidIssuer = builder.Configuration["AuthSettings:Issuer"],
         RequireExpirationTime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
         ValidateIssuerSigningKey = true
