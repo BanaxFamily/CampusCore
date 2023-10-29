@@ -1,42 +1,31 @@
 // eslint-disable-next-line no-unused-vars
 import { useState } from 'react';
-import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./components/Home";
 import Login from './components/Login';
 import CoursesAdmin from './components/administrator/CoursesAdmin';
-import ProfilesAdmin from './components/administrator/ProfilesAdmin';
 import ProtectedRoute from './pages/ProtectedRoute';
+import NotFound from './components/NotFound';
+import { AuthProvider } from './components/utils/Auth';
 
-function App() {
-  // 
-  // PARTIALLY USED BOOLEAN TO CHECK IF USER EXIST DB
-  // eslint-disable-next-line no-unused-vars
-  const [isLog, setisLog] = useState(false);
-
-  const routes = createBrowserRouter(
-    createRoutesFromElements(
-      isLog ?
-        // Displayed when user is not authenticated
-        <Route path="/login" element={<Login />} />
-        :
-        // Displayed when user is authenticated
-        <Route path="/" element={<ProtectedRoute />}>
-          <Route index element={<Home />} />
-          <Route path="course" element={<CoursesAdmin />} />
-          <Route path='/profile' element={<ProfilesAdmin />} />
-        </Route>
-    )
-  );
+export default function App() {
 
 
   return (
-    <RouterProvider router={routes} />
+    <AuthProvider>
+
+      <BrowserRouter>
+        <Routes>
+          <Route element={<ProtectedRoute />}>
+            <Route index element={<Home />} />
+            <Route path="courses" element={<CoursesAdmin />} />
+          </Route>
+
+          <Route path="login" element={<Login />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    
+    </AuthProvider>
   )
 }
-
-export default App

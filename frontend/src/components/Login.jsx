@@ -1,35 +1,43 @@
 // import { useState } from 'react'
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import campusCoreImg from '../assets/CAMPUSCORE.png';
 import Footer from './Footer';
-import * as UserApi from './network/user_api';
+import { useAuth } from './utils/UseAuth'
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
-  // const [error, setErrors] = useState(null);
+
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const [userState, setUserState] = useState('');
   const { register, handleSubmit, formState: { isSubmitting } } = useForm();
 
 
   async function onSubmit(credentials) {
     // try {
-    const user = await UserApi.signIn(credentials);
-    console.log(user)
-    // onLoginSuccesfull(user);
-
+      // const user = await UserApi.signIn(credentials);
+      console.log(credentials);
+      setUserState(credentials.username);
+      auth.login(userState);
+      navigate('/')
     // } catch (error) {
     //   alert(error);
     // }
   }
 
+
+
   return (
     <>
-      <div className='mx-auto max-w-7xl flex flex-col md:flex-row mb-10'>
+      <div className='mx-auto max-w-7xl h-screen flex flex-col md:flex-row mb-10'>
         <div className='md:w-1/2 '>
           <img className=' max-h-screen w-auto block md:m-auto ' src={campusCoreImg} alt="Campus Core Logo" />
         </div>
 
         <div className='md:w-1/2 md:mt-5'>
-
           <div className=" w-[95%] m-auto border border-slate-600 overflow-hidden 
                   bg-white h-auto md:mt-14 md:h-fit md:w-[65%] flex flex-col rounded-md ">
             <div className="p-2 ">
@@ -79,5 +87,11 @@ const Login = () => {
 
   )
 }
+
+Login.propTypes = {
+  setUser: PropTypes.any
+}
+
+
 
 export default Login

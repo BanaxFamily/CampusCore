@@ -5,7 +5,7 @@ export const Status = () => {
 
       <div className=" h-48 border shadow-lg overflow-hidden ">
 
-        <div className=" bg-mainBlueColor py-2 sticky top-0 ">
+        <div className=" bg-mainBlueColor py-2  ">
           <h2 className="text-[8px] md:text-[12px] pl-2 tracking-wider uppercase text-white">Completion Status</h2>
         </div>
 
@@ -15,7 +15,7 @@ export const Status = () => {
       </div>
 
       <div className=" h-72 border shadow-lg">
-        <div className="bg-paleRed py-2 sticky top-0">
+        <div className="bg-paleRed py-2 ">
           <h2 className="text-[8px] md:text-[12px] pl-2 tracking-wider uppercase text-white">Dealines</h2>
         </div>
 
