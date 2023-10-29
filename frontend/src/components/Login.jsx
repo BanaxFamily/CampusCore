@@ -1,33 +1,29 @@
 // import { useState } from 'react'
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import campusCoreImg from '../assets/CAMPUSCORE.png';
 import Footer from './Footer';
-import { useAuth } from './utils/UseAuth'
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({state}) => {
 
 
-  const auth = useAuth();
-  const navigate = useNavigate();
-  const [userState, setUserState] = useState('');
   const { register, handleSubmit, formState: { isSubmitting } } = useForm();
 
 
-  async function onSubmit(credentials) {
-    // try {
-      // const user = await UserApi.signIn(credentials);
-      console.log(credentials);
-      setUserState(credentials.username);
-      auth.login(userState);
-      navigate('/')
-    // } catch (error) {
-    //   alert(error);
-    // }
+  const [user, setState] = useState(null);
+  async function onSubmit() {
+    try {
+      // let user = await login(event.target);
+      setState(user);
+    } catch (error) {
+      this.setState({ error });
+    }
   }
+  console.log(state)
 
+  if(state) {return <Navigate to="/" replace={true}/>}
 
 
   return (
@@ -89,9 +85,8 @@ const Login = () => {
 }
 
 Login.propTypes = {
-  setUser: PropTypes.any
+  state: PropTypes.bool
 }
-
 
 
 export default Login

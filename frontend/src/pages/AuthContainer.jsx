@@ -1,10 +1,13 @@
+import PropTypes from 'prop-types';
+import { Navigate } from "react-router-dom";
 import { Header } from "../components/Header";
 import Main from "../components/Main";
 import { Status } from "../components/Status";
 import AdminLinks from "../components/administrator/AdminLinks";
-    
 
-const AuthContainer = () => {
+const AuthContainer = ({ state }) => {
+
+    if (!state) return <Navigate to="/login" replace={true} />
     return (
         <>
             <Header />
@@ -25,6 +28,10 @@ const AuthContainer = () => {
             </div>
         </>
     );
+}
+
+AuthContainer.propTypes = {
+    state: PropTypes.bool
 }
 
 export default AuthContainer;
