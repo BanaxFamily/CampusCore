@@ -2,7 +2,7 @@ import { LuGraduationCap } from "react-icons/lu"
 import { AiOutlineFileSearch,  AiOutlineIssuesClose, AiOutlineSetting, AiOutlineHome } from "react-icons/ai"
 import { RiGitRepositoryCommitsLine } from "react-icons/ri"
 
-export const studentNavLinks = [
+export const studentLinks = [
     {
         id:"home",
         link:"/",
@@ -79,26 +79,3 @@ export const adminLinks = [
         icon: <LuGraduationCap size={20}/>
     },
 ];
-
-export const adminNavTitle = [
-    {
-        link: "Home"
-    },
-    {
-        link: "Profile"
-    },
-    {
-        link: "Repository"
-    },
-    {
-        link: "Courses"
-    },
-    {
-        link: "Users"
-    },
-    {
-        link: "Reports"
-    },
-
-    
-]

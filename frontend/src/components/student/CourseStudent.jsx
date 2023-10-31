@@ -4,7 +4,7 @@ const CourseStudent = () => {
     return (
         <>
 
-            <DashBoardHeading title="courses" />
+            <DashBoardHeading title="student courses" />
 
             
         </>

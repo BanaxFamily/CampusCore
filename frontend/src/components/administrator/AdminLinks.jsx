@@ -1,8 +1,7 @@
-import PropTypes from "prop-types"
 import { adminLinks } from '../../constants/index'
 import SideNav from '../SideNav'
 
-const AdminLinks = (props) => {
+const AdminLinks = () => {
   return (
     <>
       {
@@ -13,7 +12,6 @@ const AdminLinks = (props) => {
             link={nav.link}
             icon={nav.icon}
             title={nav.title}
-            classname={props.classname}
           />
           
         ))
@@ -22,8 +20,5 @@ const AdminLinks = (props) => {
   )
 }
 
-AdminLinks.propTypes = {
-  classname: PropTypes.string
-}
 
 export default AdminLinks
