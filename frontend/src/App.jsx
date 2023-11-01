@@ -1,42 +1,41 @@
 // eslint-disable-next-line no-unused-vars
-import { useState } from 'react';
-import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import Home from "./components/Home";
 import Login from './components/Login';
+import NotFound from './components/NotFound';
 import CoursesAdmin from './components/administrator/CoursesAdmin';
-import ProfilesAdmin from './components/administrator/ProfilesAdmin';
-import ProtectedRoute from './pages/ProtectedRoute';
+import AuthContainer from "./pages/AuthContainer";
 
-function App() {
-  // 
-  // PARTIALLY USED BOOLEAN TO CHECK IF USER EXIST DB
-  // eslint-disable-next-line no-unused-vars
-  const [isLog, setisLog] = useState(false);
-
-  const routes = createBrowserRouter(
+export default function App() {
+  const state = true
+  const user = {
+    'admin': false,
+    'student': true,
+    'dean': false,
+    'faculty': false,
+  }
+  const router = createBrowserRouter(
     createRoutesFromElements(
-      isLog ?
-        // Displayed when user is not authenticated
-        <Route path="/login" element={<Login />} />
-        :
-        // Displayed when user is authenticated
-        <Route path="/" element={<ProtectedRoute />}>
+
+      <Route path="/" >
+        
+        <Route path="login" element={<Login state={state}/>} />
+
+        <Route element={<AuthContainer state={state}/>}>
           <Route index element={<Home />} />
-          <Route path="course" element={<CoursesAdmin />} />
-          <Route path='/profile' element={<ProfilesAdmin />} />
+          {/* ADD ROUTES THAT BASED ON USER TYPES */}
+          <Route path="courses" element={<CoursesAdmin />} />
         </Route>
+
+        <Route path='*' element={<NotFound />} />
+      </Route>
+
     )
-  );
+  )
+
 
 
   return (
-    <RouterProvider router={routes} />
+    <RouterProvider router={router} />
   )
 }
-
-export default App
