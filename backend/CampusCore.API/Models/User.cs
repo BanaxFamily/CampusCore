@@ -26,6 +26,8 @@ namespace CampusCore.API.Models
         public List<StudentGroup> AdvisoreeGroups { get; set; }
       
         //to add digital signature later. Will research first if it's part of Identity already
+
+        //changes
     }
 
 
