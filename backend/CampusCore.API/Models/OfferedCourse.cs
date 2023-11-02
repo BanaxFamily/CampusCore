@@ -21,7 +21,7 @@ namespace CampusCore.API.Models
         //faculty assigned
 
         [ForeignKey("UserId")]
-        public string FacultyId { get; set; }
+        public string? FacultyId { get; set; }
         public User FacultyAssigned { get; set; }
 
 
