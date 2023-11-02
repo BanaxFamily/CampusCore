@@ -1,7 +1,9 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -20,12 +22,19 @@ public class UserService : IUserService
 {
     private UserManager<User> _userManager;
     private IConfiguration _configuration;
-    public UserService(UserManager<User> userManager, IConfiguration configuration)
+    private RoleManager<IdentityRole> _roleManager;
+
+    public UserService(UserManager<User> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _roleManager = roleManager;
+       
     }
+  
+      
 
+    
     public  async Task<ResponseManager> LoginAsync(UserLoginViewModel model)
     {
         if (model == null)
@@ -67,7 +76,7 @@ public class UserService : IUserService
 
         string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new ResponseManager
+        return new LoginResponseManager
         {
             Message = tokenAsString,
             IsSuccess = true,
@@ -76,7 +85,7 @@ public class UserService : IUserService
 
 
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<ResponseManager> UserAddAsync(UserAddViewModel model)
     {
         if( model == null)
@@ -103,14 +112,15 @@ public class UserService : IUserService
 
         if(result.Succeeded)
         {
-            return new ResponseManager
+           await  _userManager.AddToRoleAsync(user, model.Role);
+                return new ResponseManager
             {
                 Message = "User created successfully!",
                 IsSuccess = true
             };
 
         }
-        return new ResponseManager
+        return new ErrorResponseManager
         {
             Message = "User is not created",
             IsSuccess = false,
