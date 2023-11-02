@@ -4,7 +4,7 @@ using CampusCore.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -85,10 +85,40 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole(role));
-            AddPermissionsToRole(role, roleManager);
         }
-            
     }
+    
+
+
+
+
+    //seeding admin account
+    string username = "admin";
+    string password = "AdminPas$123";
+    string email = "admin@campuscore.com";
+    if (await userManager.FindByNameAsync(username) == null)
+    {
+        var user = new User();
+        user.UserName = username;
+        user.Email = email;
+
+        await userManager.CreateAsync(user, password);
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+
+}
+#endregion
+
+
+
+    
+
+
+// Define the AddPermission method to add custom permissions to a role
+
+
+
+
 
     
     //seeding admin account
