@@ -2,6 +2,7 @@
 using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -20,12 +21,18 @@ public class UserService : IUserService
 {
     private UserManager<User> _userManager;
     private IConfiguration _configuration;
+    private RoleManager<IdentityRole> _roleManager;
+
     public UserService(UserManager<User> userManager, IConfiguration configuration)
     {
         _userManager = userManager;
         _configuration = configuration;
+       
     }
+  
+      
 
+    
     public  async Task<ResponseManager> LoginAsync(UserLoginViewModel model)
     {
         if (model == null)
