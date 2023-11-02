@@ -9,8 +9,8 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model);
         Task<ResponseManager> ViewCourseListAsync(); // new method to get course
-        Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model); // New method to delete a course
-        Task<ResponseManager> UpdateCourseAsync(CourseUpdateViewModel model);
+        Task<ResponseManager> DeleteCourseAsync(int Id); // New method to delete a course
+        Task<ResponseManager> UpdateCourseAsync(int Id, CourseUpdateViewModel model);
 
     }
 
@@ -51,7 +51,7 @@ namespace CampusCore.API.Services
             
             
 
-                return new ErrorResponseManager
+                return new ResponseManager
                 {
                     Message = "Course is not created",
                     IsSuccess = false,
@@ -71,7 +71,7 @@ namespace CampusCore.API.Services
                 //return await _context.Courses.ToListAsync();
                 var result = await _context.Courses.ToListAsync();
                
-                return new DataResponseManager
+                return new ResponseManager
                 {
                     IsSuccess = true,
                     Message = "Course retrieved successfully",
@@ -80,7 +80,7 @@ namespace CampusCore.API.Services
             } 
             catch (Exception ex)
             {
-                return new ErrorResponseManager
+                return new ResponseManager
                 {
                     IsSuccess = false,
                     Message = "An error occurred while fetching courses",
@@ -90,15 +90,15 @@ namespace CampusCore.API.Services
             
         }
 
-        public async Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model)
+        public async Task<ResponseManager> DeleteCourseAsync(int Id)
         {
             try
             {
-                var course = await _context.Courses.FindAsync(model.Id);
+                var course = await _context.Courses.FindAsync(Id);
 
                 if (course == null)
                 {
-                    return new ErrorResponseManager
+                    return new ResponseManager
                     {
                         IsSuccess = false,
                         Message = "Course not found",
@@ -119,7 +119,7 @@ namespace CampusCore.API.Services
                 }
                 else
                 {
-                    return new ErrorResponseManager
+                    return new ResponseManager
                     {
                         IsSuccess = false,
                         Message = "Course deletion failed",
@@ -129,7 +129,7 @@ namespace CampusCore.API.Services
             }
             catch (Exception ex)
             {
-                return new ErrorResponseManager
+                return new ResponseManager
                 {
                     IsSuccess = false,
                     Message = "An error occurred while deleting the course",
@@ -138,7 +138,7 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> UpdateCourseAsync(CourseUpdateViewModel model)
+        public async Task<ResponseManager> UpdateCourseAsync(int Id, CourseUpdateViewModel model)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace CampusCore.API.Services
 
                 if (course == null)
                 {
-                    return new ErrorResponseManager
+                    return new ResponseManager
                     {
                         IsSuccess = false,
                         Message = "Course not found",
@@ -172,7 +172,7 @@ namespace CampusCore.API.Services
                 }
                 else
                 {
-                    return new ErrorResponseManager
+                    return new ResponseManager
                     {
                         IsSuccess = false,
                         Message = "Course update failed",
@@ -182,7 +182,7 @@ namespace CampusCore.API.Services
             }
             catch (Exception ex)
             {
-                return new ErrorResponseManager
+                return new ResponseManager
                 {
                     IsSuccess = false,
                     Message = "An error occurred while updating the course",

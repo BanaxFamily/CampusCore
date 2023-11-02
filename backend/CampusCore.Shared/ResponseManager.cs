@@ -10,26 +10,8 @@ namespace CampusCore.Shared
     {
         public string Message { get; set; }
         public bool IsSuccess { get; set; }
-        
-       
-    }
-
-    public class DataResponseManager:ResponseManager {
-        
-        public object Data { get; set; }
-
-    }
-
-    public class LoginResponseManager : ResponseManager
-    {
+        public IEnumerable<string> Errors { get; set; }
         public DateTime ExpireDate { get; set; }
         public object Data { get; set; }
-
     }
-
-    public class ErrorResponseManager : ResponseManager
-    {
-        public IEnumerable<string> Errors { get; set; }
-    }
-    
 }

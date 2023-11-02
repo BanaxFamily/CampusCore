@@ -54,8 +54,8 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                
-                var result = await _courseService.DeleteCourseAsync(model);
+                int courseId = model.Id;
+                var result = await _courseService.DeleteCourseAsync(courseId);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -67,11 +67,11 @@ namespace CampusCore.API.Controllers
 
             // /api/course/update
             [HttpPut("update")]
-            public async Task<IActionResult> UpdateAsync([FromBody] CourseUpdateViewModel model)
+            public async Task<IActionResult> UpdateAsync(int id, [FromBody] CourseUpdateViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.UpdateCourseAsync(model);
+                    var result = await _courseService.UpdateCourseAsync(id, model);
 
                     if (result.IsSuccess)
                         return Ok(result); // Status code: 200

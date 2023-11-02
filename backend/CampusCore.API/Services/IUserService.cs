@@ -1,7 +1,6 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.API.Services;
 using CampusCore.Shared;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -24,11 +23,10 @@ public class UserService : IUserService
     private IConfiguration _configuration;
     private RoleManager<IdentityRole> _roleManager;
 
-    public UserService(UserManager<User> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+    public UserService(UserManager<User> userManager, IConfiguration configuration)
     {
         _userManager = userManager;
         _configuration = configuration;
-        _roleManager = roleManager;
        
     }
   
@@ -76,7 +74,7 @@ public class UserService : IUserService
 
         string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new LoginResponseManager
+        return new ResponseManager
         {
             Message = tokenAsString,
             IsSuccess = true,
@@ -85,7 +83,7 @@ public class UserService : IUserService
 
 
     }
-    [Authorize(Roles = "Admin")]
+
     public async Task<ResponseManager> UserAddAsync(UserAddViewModel model)
     {
         if( model == null)
@@ -112,15 +110,14 @@ public class UserService : IUserService
 
         if(result.Succeeded)
         {
-           await  _userManager.AddToRoleAsync(user, model.Role);
-                return new ResponseManager
+            return new ResponseManager
             {
                 Message = "User created successfully!",
                 IsSuccess = true
             };
 
         }
-        return new ErrorResponseManager
+        return new ResponseManager
         {
             Message = "User is not created",
             IsSuccess = false,
