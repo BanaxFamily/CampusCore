@@ -3,11 +3,13 @@
     public class Issue
     {
         public int Id { get; set; }
-        //public int course_deliverable_id { get; set;} // lacking foreign key from CourseTable
+        public int CourseDeliverableId { get; set; } // foreign key from CourseTable
+        public Course Course { get; set; } // navigation property
         public string Name { get; set; }
         public string Status { get; set; }
         public string DateOpened { get; set; }
         public string DateClosed { get; set; }
-        //public int User_Id { get; set; } // lacking Foriegn Key from UserTable
+        public string UserId { get; set; } // Foriegn Key from UserTable
+        public User User { get; set; } // navigatin property
     }
 }
