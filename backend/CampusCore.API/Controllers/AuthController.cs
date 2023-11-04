@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 
@@ -10,12 +11,12 @@ namespace CampusCore.API.Controllers
     public class AuthController : Controller
     {
         private IUserService _userService;
-
         public AuthController (IUserService userService)
         {
             _userService = userService;
         }
 
+       
         // /api/auth/add
         [HttpPost("add")]
         public async Task<IActionResult> UserAddAsync(UserAddViewModel model)

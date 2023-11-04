@@ -4,6 +4,7 @@ using CampusCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231102103717_ConfiguredStudentGroups")]
+    partial class ConfiguredStudentGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +46,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.CourseEnrollment", b =>
@@ -64,7 +66,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CourseEnrollments", (string)null);
+                    b.ToTable("CourseEnrollments");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.OfferedCourse", b =>
@@ -82,6 +84,7 @@ namespace CampusCore.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FacultyId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Schedule")
@@ -98,7 +101,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("OfferedCourses", (string)null);
+                    b.ToTable("OfferedCourses");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.StudentGroup", b =>
@@ -130,7 +133,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("StudentGroups", (string)null);
+                    b.ToTable("StudentGroups");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>
@@ -152,7 +155,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogs", (string)null);
+                    b.ToTable("UserLogs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -420,7 +423,8 @@ namespace CampusCore.API.Migrations
                     b.HasOne("CampusCore.API.Models.User", "FacultyAssigned")
                         .WithMany()
                         .HasForeignKey("FacultyId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Course");
 
