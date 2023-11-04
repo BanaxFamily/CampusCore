@@ -19,7 +19,7 @@ namespace CampusCore.Shared
             First,
             Second,
             Summer
-        }
+    }
     }
 
     public class OfferedCourseUpdateViewModel
@@ -57,4 +57,5 @@ namespace CampusCore.Shared
     }
 
 
+    
 }
