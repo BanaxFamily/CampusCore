@@ -2,7 +2,7 @@ import { LuGraduationCap } from "react-icons/lu"
 import { AiOutlineFileSearch,  AiOutlineIssuesClose, AiOutlineSetting, AiOutlineHome } from "react-icons/ai"
 import { RiGitRepositoryCommitsLine } from "react-icons/ri"
 
-export const studentNavLinks = [
+export const studentLinks = [
     {
         id:"home",
         link:"/",
@@ -10,35 +10,42 @@ export const studentNavLinks = [
         icon: <AiOutlineHome/>
     },
     {
-        id:"course",
-        link:"/course",
-        title:"Courses",
+        id:"profile",
+        link:"/manage/profile",
+        title:"Manage profile",
         icon: <LuGraduationCap/>
     },
     {
-        id:"files",
-        link:"/files",
-        title:"Files",
+        id:"research",
+        link:"/research",
+        title:"Research repository",
         icon: <AiOutlineFileSearch/>
     },
     {
-        id:"repository",
-        link:"/repository",
-        title:"Repository",
+        id:"course",
+        link:"/course",
+        title:"Courses",
         icon: <RiGitRepositoryCommitsLine/>
     },
     {
-        id:"issues",
-        link:"/issues",
-        title:"Issues",
+        id:"deliverable",
+        link:"/deliverable",
+        title:"Deliverables",
         icon: <AiOutlineIssuesClose/>
     },
     {
         id:"setting",
-        link:"/settings",
-        title:"Settings",
+        link:"/issues",
+        title:"Issues",
         icon: <AiOutlineSetting/>
     },
+    {
+        id:"setting",
+        link:"/timatable",
+        title:"Timetable",
+        icon: <AiOutlineSetting/>
+    },
+    
 ];
 
 export const adminLinks = [
@@ -50,55 +57,26 @@ export const adminLinks = [
     },
     {
         id:"profile",
-        link:"/profile",
-        title:"Profile",
+        link:"manage/profile",
+        title:"Manage profile",
+        icon: <LuGraduationCap size={20}/>
+    },
+    {
+        id:"profile",
+        link:"manage/course",
+        title:"Manage course",
         icon: <LuGraduationCap size={20}/>
     },
     {
         id:"repository",
-        link:"/repository",
-        title:"Repository",
+        link:"/manage/user",
+        title:"Manage users",
         icon: <AiOutlineHome size={20}/>
     },
     {
-        id:"course",
-        link:"/course",
-        title:"Courses",
-        icon: <LuGraduationCap size={20}/>
-    },
-    {
         id:"users",
-        link:"/user",
-        title:"Users",
+        link:"/reports",
+        title:"Generate reports",
         icon: <LuGraduationCap size={20}/>
-    },
-    {
-        id:"reports",
-        link:"/report",
-        title:"Reports",
-        icon: <LuGraduationCap size={20}/>
-    },
+    }
 ];
-
-export const adminNavTitle = [
-    {
-        link: "Home"
-    },
-    {
-        link: "Profile"
-    },
-    {
-        link: "Repository"
-    },
-    {
-        link: "Courses"
-    },
-    {
-        link: "Users"
-    },
-    {
-        link: "Reports"
-    },
-
-    
-]
