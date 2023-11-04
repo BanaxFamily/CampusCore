@@ -5,26 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.API.Controllers
 {
-        
-        [Route("api/course")]
+    
+        [Route("api/offered-course")]
         [ApiController]
-        public class CourseController : Controller
+        public class OfferedCourseController : Controller
         {
-            private ICourseService _courseService;
+            private IOfferedCourseService _offeredCourseService;
 
-            public CourseController(ICourseService courseService)
+            public OfferedCourseController(IOfferedCourseService offeredCourseService)
             {
-                _courseService = courseService;
+                _offeredCourseService = offeredCourseService;
             }
 
-            // /api/course/create
-            [HttpPost("create")]
-            [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> CreateAsync(CourseAddViewModel model)
+        // /api/course/create
+        [Authorize(Roles = "Admin,Dean")]
+        [HttpPost("add")]
+            public async Task<IActionResult> CreateAsync([FromBody] OfferedCourseAddViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.CreateCourseAsync(model);
+                    var result = await _offeredCourseService.CreateOfferedCourseAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -37,11 +37,11 @@ namespace CampusCore.API.Controllers
             // /api/course/viewList
             //insert method here
             [HttpGet("viewList")]
-            public async Task<IActionResult> ViewListAsync(CourseListViewModel model)
+            public async Task<IActionResult> ViewListAsync([FromBody] OfferedCourseListViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.ViewCourseListAsync(model);
+                    var result = await _offeredCourseService.ViewOfferedCourseListAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -51,14 +51,14 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
-            [HttpDelete("delete")]
-            [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
+        [Authorize(Roles = "Admin,Dean")]
+        [HttpDelete("delete")]
+            public async Task<IActionResult> DeleteAsync([FromBody] OfferedCourseDeleteModel model)
             {
                 if (ModelState.IsValid)
                 {
-                
-                var result = await _courseService.DeleteCourseAsync(model);
+
+                    var result = await _offeredCourseService.DeleteOfferedCourseAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -68,14 +68,14 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid for delete"); //status code: 400
             }
 
-            // /api/course/update
-            [HttpPut("update")]
-            [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateAsync([FromBody] CourseUpdateViewModel model)
+        // /api/course/update
+        [Authorize(Roles = "Admin,Dean")]
+        [HttpPut("update")]
+            public async Task<IActionResult> UpdateAsync([FromBody] OfferedCourseUpdateViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.UpdateCourseAsync(model);
+                    var result = await _offeredCourseService.UpdateOfferedCourseAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); // Status code: 200
@@ -86,5 +86,6 @@ namespace CampusCore.API.Controllers
             }
 
 
-    }
+        }
+    
 }

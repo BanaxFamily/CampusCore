@@ -4,6 +4,7 @@ using CampusCore.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,6 +15,9 @@ namespace CampusCore.API.Services
     public interface IUserService
     {
         Task<ResponseManager> UserAddAsync(UserAddViewModel model);
+        Task<ResponseManager> UserListAsync(UserListViewModel model);
+        Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model);
+        Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model);
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
     }
 }
@@ -59,10 +63,12 @@ public class UserService : IUserService
                 IsSuccess = false
             };
         }
+        var userRole = await _userManager.GetRolesAsync(user);
         var claims = new[]
         {
             new Claim("Username", model.Username),
-            new Claim(ClaimTypes.NameIdentifier,user.Id)
+            new Claim(ClaimTypes.NameIdentifier,user.Id),
+            new Claim(ClaimTypes.Role, userRole.First())
 
         };
 
@@ -78,9 +84,9 @@ public class UserService : IUserService
 
         return new LoginResponseManager
         {
-            Message = tokenAsString,
+            Token = tokenAsString,
             IsSuccess = true,
-            ExpireDate = token.ValidTo
+            Message = "Successfully logged in"
         };
 
 
@@ -128,5 +134,153 @@ public class UserService : IUserService
         };
 
         
+    }
+
+    public async Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model)
+    {
+        try
+        {
+            var deleteUser = await _userManager.FindByIdAsync(model.Id);
+            
+
+            if (deleteUser == null)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "Course not found",
+                    Errors = new List<string> { "User with the specified ID does not exist" }
+                };
+            }
+            try
+            {
+                await _userManager.DeleteAsync(deleteUser);
+                return new ResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "User deleted successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while deleting the user",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while deleting the user",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+
+    public async Task<ResponseManager> UserListAsync(UserListViewModel model)
+    {
+        string searchKey = model.SearchKey;
+
+        if (string.IsNullOrEmpty(model.SearchKey) || string.IsNullOrWhiteSpace(model.SearchKey))
+        {
+            try
+            {
+                var result = await _userManager.Users.ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Users retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching users",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+        else
+        {
+            try
+            {
+
+                var searchResults = await _userManager.Users
+                    .Where(oc => EF.Functions.Like(oc.FirstName, $"%{model.SearchKey}%") || EF.Functions.Like(oc.LastName, $"%{model.SearchKey}%"))
+                    .ToListAsync();
+
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Offered courses retrieved successfully",
+                    Data = searchResults
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching offered courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+    }
+
+    public async Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+
+            if (user == null)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "Course not found",
+                    Errors = new List<string> { "Course with the specified ID does not exist" }
+                };
+            }
+
+            // Update the user properties from the model
+            user.Email = model.Email;
+            user.UserName = model.Username;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Status = model.Status;
+
+            // Save changes to the database
+            var result = await _userManager.UpdateAsync(user);
+
+            return new ResponseManager
+            {
+                IsSuccess = true,
+                Message = "Course updated successfully"
+            };
+        }   
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while updating the course",
+                Errors = new List<string> { ex.Message }
+            };
+        }
     }
 }

@@ -22,9 +22,7 @@ namespace CampusCore.Shared
 
     public class LoginResponseManager : ResponseManager
     {
-        public DateTime ExpireDate { get; set; }
-        public object Data { get; set; }
-
+        public object Token { get; set; }
     }
 
     public class ErrorResponseManager : ResponseManager
