@@ -2,9 +2,9 @@
 {
     public class CourseDeliverable
     {
-        public int deliverable_Id { get; set; }
-        public string offered_course_id { get; set; }
-        public string Status { get; set; }
-        public string Description { get; set; }
+        public int Id { get; set; }
+        public int OfferedCourseId { get; set; }
+        //public int DeliverableId { get; set; } // lacking foreign key from DeliverableTable
+        public DateTime DeliverableDeadline { get; set; }
     }
 }

@@ -2,6 +2,10 @@
 {
     public class SubmissionIssue
     {
-        // contents to be added soon
+        public int targetIssueId { get; set; }
+        //public int submissionId { get; set;} // to add foreign key from submissionTable ?
+        //public int versionId { get; set;} // lacking foreign key from VersionTable ?
+        //public int issueId { get; set; } // lacking foreign key from IssueTable
+        
     }
 }
