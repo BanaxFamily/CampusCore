@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "nwp62Crhx94FATrcvau1v5bwD4R4hXeuqW69SIEgZaNwSF0OYfFc/T6eg3P3yuvlEDknA5m2x+BxaD/aPgGTVQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\alixa\\OneDrive\\Desktop\\CampusCore\\CampusCore.Shared\\CampusCore.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\alixa\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

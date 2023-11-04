@@ -7,12 +7,18 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateDeliverableAsync(DeliverableAddViewModel model);
     }
-    public class DeliverableService : ICourseService
+
+    public class DeliverableService : IDeliverableServices
     {
         private AppDbContext _context;
         public DeliverableService(AppDbContext context)
         {
             _context = context;
+        }
+
+        public Task<ResponseManager> CreateDeliverableAsync(DeliverableAddViewModel model)
+        {
+            throw new NotImplementedException();
         }
     }
 }
