@@ -17,6 +17,11 @@ namespace CampusCore.API.Models
         public DbSet<OfferedCourse> OfferedCourses { get; set; }
         public DbSet<CourseEnrollment> CourseEnrollments { get; set; }
         public DbSet<StudentGroup> StudentGroups { get; set; }
+        public DbSet<CourseDeliverable> CourseDeliverables { get; set; }
+        public DbSet<Deliverable> Deliverables { get; set; }
+        public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
+        public DbSet<Issue> Issues { get; set; }
+        public DbSet<IssueComment> IssueComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -55,6 +60,53 @@ namespace CampusCore.API.Models
                 .HasOne(sg => sg.Adviser)
                 .WithMany()
                 .HasForeignKey(sg => sg.AdviserId);
+            builder.Entity<CourseDeliverable>()
+                .HasOne(cd => cd.Deliverable)
+                .WithMany()
+                .HasForeignKey(cd => cd.DeliverableId);
+            builder.Entity<CourseDeliverable>()
+                .HasOne(oc => oc.OfferedCourse)
+                .WithMany()
+                .HasForeignKey(oc => oc.OfferedCourseId);
+            builder.Entity<Deliverable>()
+                .HasOne(di => di.Course)
+                .WithMany()
+                .HasForeignKey(di => di.CourseId);
+            //builder.Entity<SubmissionList>()
+            //    .HasOne(sl => sl.OfferedCourse)
+            //    .WithMany()
+            //    .HasForeignKey(sl => sl.OfferedCourseId);
+            //builder.Entity<SubmissionIssue>()
+            //    .HasOne(si => si.Submission)
+            //    .WithMany()
+            //    .HasForeignKey(si => si.SubmissionId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<SubmissionIssue>()
+            //    .HasOne(vi => vi.Version)
+            //    .WithMany()
+            //    .HasForeignKey(vi => vi.VersionId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<SubmissionIssue>()
+            //    .HasOne(ii => ii.Issue)
+            //    .WithMany()
+            //    .HasForeignKey(ii => ii.IssueId);
+            builder.Entity<Issue>()
+                .HasOne(i => i.Course)
+                .WithMany()
+                .HasForeignKey(i => i.CourseDeliverableId);
+            builder.Entity<Issue>()
+                .HasOne(i => i.User)
+                .WithMany()
+                .HasForeignKey(i => i.UserId);
+            builder.Entity<IssueComment>()
+                .HasOne(ic => ic.Issue)
+                .WithMany()
+                .HasForeignKey(ic => ic.IssueId);
+            builder.Entity<IssueComment>()
+                .HasOne(ic => ic.User)
+                .WithMany()
+                .HasForeignKey(ic => ic.UserId)
+                .OnDelete(DeleteBehavior.NoAction); ;
 
 
             base.OnModelCreating(builder);
