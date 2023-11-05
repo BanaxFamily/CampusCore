@@ -21,6 +21,8 @@ import Issues from "./components/student/Issues";
 import ResearchRepo from "./components/student/ResearchRepo";
 import Timetable from "./components/student/Timetable";
 import MainContents from "./pages/MainConents";
+import { Register } from "./components/administrator/Register";
+import ManageRepo from "./components/administrator/ManageRepo";
 
 
 export default function App() {
@@ -66,7 +68,11 @@ export default function App() {
                 <Route index element={<ManageCourse />} />
               </Route>
               <Route path="manage/user/*" element={<ManageUsers />}>
-                <Route path="admin/:id" element={<Edit />} />
+                <Route path="edit/:id" element={<Edit />} />
+                <Route path="register" element={<Register />} />
+              </Route>
+              <Route path="manage/repository/*" element={<ManageRepo />}>
+                <Route path="register" element={<Register />} />
               </Route>
               <Route path="reports" element={<GenerateReport />} />
             </>

@@ -89,11 +89,11 @@ export const Header = () => {
       {/* <!-- Mobile menu, show/hide based on menu state. --> */}
       {mobileMenu && (
         <div
-          className="fixed w-full h-screen flex flex-col justify-center items-center
-                    bg-white/90 z-20
+          className="fixed w-full h-screen flex flex-col items-center py-20
+                    bg-white/90 z-30
                 "
         >
-          <Route user_type="admin"/>
+          <Route setProfileOpen={openMobileMenu} userType="admin" className="w-3/4 bg-mainBlueColor flex items-center justify-center"/>
         </div>
       )}
 

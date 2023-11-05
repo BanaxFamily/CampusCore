@@ -16,26 +16,30 @@ const ProtectedContainer = (props) => {
     <>
       <Header />
       <div className="mx-auto max-w-7xl ">
-        <div className="flex sm:flex-col-reverse md:flex-row sm:mx-auto">
-          <div className=" hidden sm:block w-[20%] min-h-screen bg-mainBlueColor">
-            <div className=" fixed left-0">
-              <div className="md:block hidden w-full mt-10 opacity-80 hover:opacity-100 ">
-                <div className="fixed left-0">
+        {/* <div className="flex sm:flex-col-reverse md:flex-row sm:justify-center items-center"> */}
+        <div className="flex sm:flex-col-reverse sm:justify-center md:flex-row ">
+          <div className=" hidden relative md:block w-[350px] lg:w-[20%] min-h-screen bg-mainBlueColor">
+            <div className=" ">
+              <div className="md:block relative hidden w-full mt-10 opacity-80 hover:opacity-100 ">
+                <div className="absolute  left-0 top-0">
                   {/* <Route userType="admin" /> */}
                   <Route userType={props.userType} />
                 </div>
               </div>
             </div>
           </div>
-          <div className="w-full md:w-[90%] m-0" role="main">
-            <div className="p-6">
+          <div
+            className="w-full md:w-[80%] m-0 border-x border-slate-400"
+            role="main"
+          >
+            <div className="p-6 sm:p-0 sm:px-6 mt-4">
               <div className="mx-auto w-full ">{props.component}</div>
             </div>
           </div>
 
-          <div className="hidden sm:block sm:w-full md:w-[30%] overflow-auto m-0">
+          <div className="hidden overflow-auto mx-auto w-[80%] md:block md:mx-auto md:w-[30%] ">
             <div className="py-6">
-              <div className="w-full mx-auto">
+              <div className="w-full mx-auto sm:shadow-md">
                 <Status />
               </div>
             </div>
