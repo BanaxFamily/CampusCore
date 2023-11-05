@@ -20,16 +20,16 @@ const Login = () => {
   }
   async function onSubmit(credentials) {
     const user = await UserApi.signIn(credentials);
-    if (user.status === 200) {
-      const data = await user.json();
-      const token = data.message; // Adjust this to match your backend response structure
-
+    // if (user == 200) {
+    //   const data = await user.json();
+      const token = user.token; // Adjust this to match your backend response structure
       // Store the JWT token in localStorage
       localStorage.setItem('token', token);
-    } else {
-      // Handle login failure, e.g., show an error message
-      console.error("Login failed.");
-    }
+    // } else {
+    //   // Handle login failure, e.g., show an error message
+    //   console.error("Login failed.");
+    // }
+
   }
 
 
