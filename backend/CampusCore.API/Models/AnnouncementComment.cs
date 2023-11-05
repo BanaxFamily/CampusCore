@@ -3,8 +3,10 @@
     public class AnnouncementComment
     {
         public int Id { get; set; }
-        //public int announcement_id { get; set; } // lacking foreign key from AnnouncementTable
-        //public int user_id { get; set; } // lacking foreign key from UsersTable
+        public int AnnouncementId { get; set; } // foreign key from AnnouncementTable
+        public Announcement Announcement { get; set; } // navigation property
+        public string UserId { get; set; } // foreign key from UsersTable
+        public User User { get; set; } // navigation property
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
     }
