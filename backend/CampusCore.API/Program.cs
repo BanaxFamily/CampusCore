@@ -61,6 +61,7 @@ builder.Services.AddAuthentication(auth =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 
