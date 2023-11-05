@@ -6,7 +6,8 @@
         public string Title { get; set; }
         public string Description { get; set; }
         public string Authors { get; set; }
-        //public int submission_id { get; set; } // lacking foreign key from SubmissionTable
+        public int SubmissionId { get; set; } // foreign key from SubmissionTable
+        public SubmissionList SubmissionList { get; set; } // navigation property
         public string FilePath { get; set; }
         public DateTime DateUploaded { get; set;}
         public DateTime DateApproved { get; set;}

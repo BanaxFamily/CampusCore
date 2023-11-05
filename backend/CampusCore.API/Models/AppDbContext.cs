@@ -22,6 +22,10 @@ namespace CampusCore.API.Models
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueComment> IssueComments { get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<AnnouncementComment> AnnouncementComments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -106,7 +110,33 @@ namespace CampusCore.API.Models
                 .HasOne(ic => ic.User)
                 .WithMany()
                 .HasForeignKey(ic => ic.UserId)
-                .OnDelete(DeleteBehavior.NoAction); ;
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Announcement>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserId);
+            builder.Entity<Announcement>()
+                .HasOne(a => a.OfferedCourse)
+                .WithMany()
+                .HasForeignKey(a => a.OfferedCourseId);
+            builder.Entity<AnnouncementComment>()
+                .HasOne(ac => ac.Announcement)
+                .WithMany()
+                .HasForeignKey(ac => ac.AnnouncementId);
+            builder.Entity<AnnouncementComment>()
+                .HasOne(ac => ac.User)
+                .WithMany()
+                .HasForeignKey(ac => ac.UserId)
+                .OnDelete(DeleteBehavior.NoAction); // specify OnDelete behavior
+            builder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId);
+            builder.Entity<PublicResearchRepository>()
+                .HasOne(prr => prr.SubmissionList)
+                .WithMany()
+                .HasForeignKey(prr => prr.SubmissionId);
+
 
 
             base.OnModelCreating(builder);

@@ -3,8 +3,10 @@
     public class Announcement
     {
         public int Id { get; set; }
-        //public int user_id { get; set; } // lacking foreign key from UserTable
-        //public int offered_course_id { get; set; } // lacking foreign key from OfferedCourseTable
+        public string UserId { get; set; } // foreign key from UserTable
+        public User User { get; set; } // navigation property
+        public int OfferedCourseId { get; set; } // foreign key from OfferedCourseTable
+        public OfferedCourse OfferedCourse { get; set; } // navigation property
         public string Title { get; set; }
     }
 }

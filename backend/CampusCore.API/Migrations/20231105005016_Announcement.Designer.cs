@@ -4,6 +4,7 @@ using CampusCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231105005016_Announcement")]
+    partial class Announcement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,37 +50,6 @@ namespace CampusCore.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Announcements");
-                });
-
-            modelBuilder.Entity("CampusCore.API.Models.AnnouncementComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("AnnouncementId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnnouncementId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AnnouncementComments");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Course", b =>
@@ -253,39 +224,6 @@ namespace CampusCore.API.Migrations
                     b.ToTable("IssueComments");
                 });
 
-            modelBuilder.Entity("CampusCore.API.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IsRead")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("CampusCore.API.Models.OfferedCourse", b =>
                 {
                     b.Property<int>("Id")
@@ -318,53 +256,6 @@ namespace CampusCore.API.Migrations
                     b.HasIndex("FacultyId");
 
                     b.ToTable("OfferedCourses");
-                });
-
-            modelBuilder.Entity("CampusCore.API.Models.PublicResearchRepository", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Authors")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateApproved")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUploaded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SubmissionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ViewCount")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubmissionId");
-
-                    b.ToTable("PublicResearchRepository");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.StudentGroup", b =>
@@ -410,40 +301,6 @@ namespace CampusCore.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SubmissionIssues");
-                });
-
-            modelBuilder.Entity("CampusCore.API.Models.SubmissionList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("DateApproved")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateSubmitted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("VersionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SubmissionLists");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>
@@ -718,25 +575,6 @@ namespace CampusCore.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CampusCore.API.Models.AnnouncementComment", b =>
-                {
-                    b.HasOne("CampusCore.API.Models.Announcement", "Announcement")
-                        .WithMany()
-                        .HasForeignKey("AnnouncementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CampusCore.API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Announcement");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("CampusCore.API.Models.CourseDeliverable", b =>
                 {
                     b.HasOne("CampusCore.API.Models.Deliverable", "Deliverable")
@@ -828,17 +666,6 @@ namespace CampusCore.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CampusCore.API.Models.Notification", b =>
-                {
-                    b.HasOne("CampusCore.API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("CampusCore.API.Models.OfferedCourse", b =>
                 {
                     b.HasOne("CampusCore.API.Models.Course", "Course")
@@ -855,17 +682,6 @@ namespace CampusCore.API.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("FacultyAssigned");
-                });
-
-            modelBuilder.Entity("CampusCore.API.Models.PublicResearchRepository", b =>
-                {
-                    b.HasOne("CampusCore.API.Models.SubmissionList", "SubmissionList")
-                        .WithMany()
-                        .HasForeignKey("SubmissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SubmissionList");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.StudentGroup", b =>
