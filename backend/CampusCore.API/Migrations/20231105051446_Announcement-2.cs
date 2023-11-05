@@ -5,12 +5,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CampusCore.API.Migrations
 {
-    public partial class PublicResearchRepository : Migration
+    public partial class Announcement2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "Content",
+                table: "Announcements",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreatedAt",
+                table: "Announcements",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
             migrationBuilder.CreateTable(
-                name: "SubmissionLists",
+                name: "SubmissionList",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -24,7 +38,7 @@ namespace CampusCore.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubmissionLists", x => x.Id);
+                    table.PrimaryKey("PK_SubmissionList", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,9 +61,9 @@ namespace CampusCore.API.Migrations
                 {
                     table.PrimaryKey("PK_PublicResearchRepository", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PublicResearchRepository_SubmissionLists_SubmissionId",
+                        name: "FK_PublicResearchRepository_SubmissionList_SubmissionId",
                         column: x => x.SubmissionId,
-                        principalTable: "SubmissionLists",
+                        principalTable: "SubmissionList",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -66,7 +80,15 @@ namespace CampusCore.API.Migrations
                 name: "PublicResearchRepository");
 
             migrationBuilder.DropTable(
-                name: "SubmissionLists");
+                name: "SubmissionList");
+
+            migrationBuilder.DropColumn(
+                name: "Content",
+                table: "Announcements");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedAt",
+                table: "Announcements");
         }
     }
 }

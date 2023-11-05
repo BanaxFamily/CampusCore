@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231105014337_PublicResearchRepository")]
-    partial class PublicResearchRepository
+    [Migration("20231105051446_Announcement-2")]
+    partial class Announcement2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,6 +31,13 @@ namespace CampusCore.API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("OfferedCourseId")
                         .HasColumnType("int");
@@ -445,7 +452,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubmissionLists");
+                    b.ToTable("SubmissionList");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>
