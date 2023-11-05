@@ -15,7 +15,7 @@ namespace CampusCore.API.Models
         //Foreign links
 
         //list of students
-        List<User> Students { get; set; }
+        //List<User> Students { get; set; }
 
 
         //faculty assigned
