@@ -6,7 +6,6 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public string Instruction { get; set; }
-        public int CourseId { get; set; } // foreign key from CourseTable
-        public Course Course { get; set;} // navigation property
+        
     }
 }

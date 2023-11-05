@@ -9,10 +9,7 @@ namespace CampusCore.API.Models
         public int Id { get; set; }
 
         public DateTime DateApproved { get; set; }
-        public int OfferedCourseId { get; set; } // foreign key from offeredCourseTable
-        public OfferedCourse OfferedCourse { get; set; } // navigation property
-        public int DeliverableId { get; set; } // foreign key from DeliverableTable
-        public Deliverable Deliverable { get; set; } // Navigation Property
+        
 
         [ForeignKey("UserId")]
         public string SubmitterId { get; set; } // foreign key from UserTable
