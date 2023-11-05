@@ -19,9 +19,9 @@ namespace CampusCore.API.Models
         public DbSet<StudentGroup> StudentGroups { get; set; }
         public DbSet<CourseDeliverable> CourseDeliverables { get; set; }
         public DbSet<Deliverable> Deliverables { get; set; }
-        //public DbSet<Submission> Submissions { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
         //public DbSet<SubmissionVersion> SubmissionVersions { get; set; }
-        //public DbSet<Version> Versions { get; set; }
+        public DbSet<Version> Versions { get; set; }
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueComment> IssueComments { get; set; }
@@ -83,14 +83,14 @@ namespace CampusCore.API.Models
                 .HasOne(di => di.Course)
                 .WithMany()
                 .HasForeignKey(di => di.CourseId);
-            //builder.Entity<Submission>()
-            //    .HasOne(sl => sl.OfferedCourse)
-            //    .WithMany()
-            //    .HasForeignKey(sl => sl.OfferedCourseId);
-            //builder.Entity<Submission>()
-            //    .HasOne(sl => sl.Submitter)
-            //    .WithMany()
-            //    .HasForeignKey(sl => sl.SubmitterId);
+            builder.Entity<Submission>()
+                .HasOne(sl => sl.OfferedCourse)
+                .WithMany()
+                .HasForeignKey(sl => sl.OfferedCourseId);
+            builder.Entity<Submission>()
+                .HasOne(sl => sl.Submitter)
+                .WithMany()
+                .HasForeignKey(sl => sl.SubmitterId);
             //builder.Entity<SubmissionVersion>()
             //    .HasOne(sl => sl.Submission)
             //    .WithMany()
@@ -99,6 +99,7 @@ namespace CampusCore.API.Models
             //    .HasOne(sv => sv.Version)
             //    .WithMany()
             //    .HasForeignKey(sv => sv.VersionId);
+
             //builder.Entity<SubmissionIssue>()
             //    .HasOne(si => si.Submission)
             //    .WithMany()
