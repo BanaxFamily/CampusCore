@@ -68,7 +68,8 @@ public class UserService : IUserService
         {
             new Claim("Username", model.Username),
             new Claim(ClaimTypes.NameIdentifier,user.Id),
-            new Claim(ClaimTypes.Role, userRole.First())
+            new Claim(ClaimTypes.Role, userRole.First()),
+            
 
         };
 

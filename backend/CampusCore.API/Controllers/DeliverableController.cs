@@ -5,26 +5,27 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.API.Controllers
 {
+    [Route("api/deliverable")]
+    [ApiController]
+    public class DeliverableController:Controller
+    {
         
-        [Route("api/course")]
-        [ApiController]
-        public class CourseController : Controller
-        {
-            private ICourseService _courseService;
+       
+            private IDeliverableServices _deliverableService;
 
-            public CourseController(ICourseService courseService)
+            public DeliverableController(IDeliverableServices deliverableService)
             {
-                _courseService = courseService;
+                _deliverableService = deliverableService;
             }
 
-            // /api/course/create
+            // /api/deliverable/create
             [HttpPost("create")]
-            [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> CreateAsync(CourseAddViewModel model)
+            [Authorize(Roles = "Dean")]
+            public async Task<IActionResult> CreateAsync(DeliverableAddViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.CreateCourseAsync(model);
+                    var result = await _deliverableService.CreateDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -34,14 +35,15 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
-            // /api/course/viewList
+            // /api/deliverable/viewList
             //insert method here
             [HttpGet("viewList")]
-            public async Task<IActionResult> ViewListAsync()
+        [Authorize(Roles = "Dean,Faculty")]
+        public async Task<IActionResult> ViewListAsync()
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.ViewCourseListAsync();
+                    var result = await _deliverableService.ViewDeliverableAsync();
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -50,13 +52,14 @@ namespace CampusCore.API.Controllers
                 }
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
-            //api/course/search
-            [HttpPost("search")]
-            public async Task<IActionResult> SearchAsync(CourseSearchViewModel model)
+        //api/deliverable/search
+        [Authorize(Roles = "Dean,Faculty")]
+        [HttpPost("search")]
+            public async Task<IActionResult> SearchAsync(DeliverableSearchViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.SearchCourseAsync(model);
+                    var result = await _deliverableService.SearchDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -67,13 +70,13 @@ namespace CampusCore.API.Controllers
             }
 
             [HttpDelete("delete")]
-            [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
+            [Authorize(Roles = "Dean")]
+            public async Task<IActionResult> DeleteAsync(DeliverableDeleteViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                
-                var result = await _courseService.DeleteCourseAsync(model);
+
+                    var result = await _deliverableService.DeleteDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -83,14 +86,14 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid for delete"); //status code: 400
             }
 
-                // /api/course/update
+            // /api/Deliverable/update
             [HttpPut("update")]
-            [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> UpdateAsync([FromBody] CourseUpdateViewModel model)
+            [Authorize(Roles = "Dean")]
+            public async Task<IActionResult> UpdateAsync([FromBody] DeliverableUpdateViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.UpdateCourseAsync(model);
+                    var result = await _deliverableService.UpdateDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); // Status code: 200
@@ -101,5 +104,6 @@ namespace CampusCore.API.Controllers
             }
 
 
-    }
+        }
+    
 }

@@ -1,24 +1,26 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CampusCore.API.Controllers
 {
-    [Route("api/course")]
+    [Route("api/course-enrollment")]
     [ApiController]
     public class CourseEnrollmentController:Controller
     {
         private ICourseEnrollmentService _courseEnrollmentService;
 
-        CourseEnrollmentController(ICourseEnrollmentService courseEnrollmentService) 
+        public CourseEnrollmentController(ICourseEnrollmentService courseEnrollmentService) 
         {
             _courseEnrollmentService = courseEnrollmentService;
         }
 
         // /api/course/create
         [HttpPost("create")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Dean")]
         public async Task<IActionResult> CreateAsync(CourseEnrollmentAddViewModel model)
         {
             if (ModelState.IsValid)
@@ -36,11 +38,13 @@ namespace CampusCore.API.Controllers
         // /api/course/viewList
         //insert method here
         [HttpGet("viewList")]
-        public async Task<IActionResult> ViewListAsync(CourseEnrollmentListViewModel model)
+        [Authorize(Roles = "Admin,Dean,Faculty,Student")]
+        public async Task<IActionResult> ViewListAsync()
         {
+            var role = User.FindFirstValue(ClaimTypes.Role);
             if (ModelState.IsValid)
             {
-                var result = await _courseEnrollmentService.ViewCourseEnrollmentListAsync(model);
+                var result = await _courseEnrollmentService.ViewCourseEnrollmentAsync(role,User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -51,7 +55,7 @@ namespace CampusCore.API.Controllers
         }
 
         [HttpDelete("delete")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Dean")]
         public async Task<IActionResult> DeleteAsync(CourseEnrollmentDeleteViewModel model)
         {
             if (ModelState.IsValid)
@@ -67,21 +71,6 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for delete"); //status code: 400
         }
 
-        // /api/course/update
-        [HttpPut("update")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateAsync([FromBody] CourseEnrollmentUpdateViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _courseEnrollmentService.UpdateCourseEnrollmentAsync(model);
-
-                if (result.IsSuccess)
-                    return Ok(result); // Status code: 200
-
-                return BadRequest(result);
-            }
-            return BadRequest("Some properties are not valid for update"); // Status code: 400
-        }
+       
     }
 }
