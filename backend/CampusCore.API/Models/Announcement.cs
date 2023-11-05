@@ -8,5 +8,7 @@
         public int OfferedCourseId { get; set; } // foreign key from OfferedCourseTable
         public OfferedCourse OfferedCourse { get; set; } // navigation property
         public string Title { get; set; }
+        public string Content { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

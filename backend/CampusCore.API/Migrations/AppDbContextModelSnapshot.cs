@@ -30,6 +30,13 @@ namespace CampusCore.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("OfferedCourseId")
                         .HasColumnType("int");
 
@@ -443,7 +450,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubmissionLists");
+                    b.ToTable("SubmissionList");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>
