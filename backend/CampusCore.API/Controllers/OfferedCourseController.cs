@@ -18,9 +18,9 @@ namespace CampusCore.API.Controllers
             }
 
         // /api/course/create
-        [Authorize(Roles = "Admin,Dean")]
+        //[Authorize(Roles = "Admin,Dean")]
         [HttpPost("add")]
-            public async Task<IActionResult> CreateAsync([FromBody] OfferedCourseAddViewModel model)
+        public async Task<IActionResult> CreateAsync([FromBody] OfferedCourseAddViewModel model)
             {
                 if (ModelState.IsValid)
                 {
@@ -51,7 +51,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
-        [Authorize(Roles = "Admin,Dean")]
+        //[Authorize(Roles = "Admin,Dean")]
         [HttpDelete("delete")]
             public async Task<IActionResult> DeleteAsync([FromBody] OfferedCourseDeleteModel model)
             {
@@ -69,7 +69,7 @@ namespace CampusCore.API.Controllers
             }
 
         // /api/course/update
-        [Authorize(Roles = "Admin,Dean")]
+        //[Authorize(Roles = "Admin,Dean")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] OfferedCourseUpdateViewModel model)
         {

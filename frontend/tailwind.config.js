@@ -11,6 +11,9 @@ export default {
         'paleRed': '#EC3C3C',
       }
     },
+    fontFamily: {
+      'body': ['ui-serif', 'Georgia'],
+    },
   },
   plugins: [],
 }
