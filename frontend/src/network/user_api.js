@@ -14,4 +14,14 @@ export async function signIn(data) {
   return response;
 }
 
+export async function addUser(data) {
+  const respone = await fetchData("api/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
+  return respone;
+}

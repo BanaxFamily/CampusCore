@@ -1,11 +1,16 @@
-import { Link } from "react-router-dom";
+import { useOutlet } from "react-router-dom";
 import DashBoardHeading from "../reusable/DashBoardHeading";
-
+import UserWrapper from "./user-wrapper/UserWrapper";
 export default function ManageUsers() {
+  const checkOutlet = useOutlet();
   return (
     <div>
-      <DashBoardHeading title="User management" />
-      <Link to={`/manage/user/${1231}`}>Go tooo</Link>
+      {checkOutlet || (
+        <>
+          <DashBoardHeading title="User management" />
+          <UserWrapper/>
+        </>
+      )}
     </div>
   );
 }
