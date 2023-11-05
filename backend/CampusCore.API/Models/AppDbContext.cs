@@ -19,6 +19,9 @@ namespace CampusCore.API.Models
         public DbSet<StudentGroup> StudentGroups { get; set; }
         public DbSet<CourseDeliverable> CourseDeliverables { get; set; }
         public DbSet<Deliverable> Deliverables { get; set; }
+        //public DbSet<Submission> Submissions { get; set; }
+        //public DbSet<SubmissionVersion> SubmissionVersions { get; set; }
+        //public DbSet<Version> Versions { get; set; }
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueComment> IssueComments { get; set; }
@@ -53,13 +56,21 @@ namespace CampusCore.API.Models
                 .HasForeignKey(ce => ce.OfferedCourseId);
 
             builder.Entity<StudentGroup>()
-                .HasMany(sg => sg.Members)
-                .WithOne(u => u.StudentGroup)
-                .HasForeignKey(u => u.StudentGroupId); // Explicitly specify the foreign key for Members
+                .HasOne(sg => sg.Student)
+                .WithMany()
+                .HasForeignKey(u => u.StudentId); 
             builder.Entity<StudentGroup>()
+                .HasOne(sg => sg.Group)
+                .WithMany()
+                .HasForeignKey(u => u.GroupId);
+            builder.Entity<Group>()
                 .HasOne(sg => sg.Adviser)
                 .WithMany()
                 .HasForeignKey(sg => sg.AdviserId);
+            builder.Entity<Group>()
+                .HasOne(sg => sg.OfferedCourse)
+                .WithMany()
+                .HasForeignKey(sg => sg.OfferedCourseId);
             builder.Entity<CourseDeliverable>()
                 .HasOne(cd => cd.Deliverable)
                 .WithMany()
@@ -72,10 +83,22 @@ namespace CampusCore.API.Models
                 .HasOne(di => di.Course)
                 .WithMany()
                 .HasForeignKey(di => di.CourseId);
-            //builder.Entity<SubmissionList>()
+            //builder.Entity<Submission>()
             //    .HasOne(sl => sl.OfferedCourse)
             //    .WithMany()
             //    .HasForeignKey(sl => sl.OfferedCourseId);
+            //builder.Entity<Submission>()
+            //    .HasOne(sl => sl.Submitter)
+            //    .WithMany()
+            //    .HasForeignKey(sl => sl.SubmitterId);
+            //builder.Entity<SubmissionVersion>()
+            //    .HasOne(sl => sl.Submission)
+            //    .WithMany()
+            //    .HasForeignKey(sl => sl.SubmissionId);
+            //builder.Entity<SubmissionVersion>()
+            //    .HasOne(sv => sv.Version)
+            //    .WithMany()
+            //    .HasForeignKey(sv => sv.VersionId);
             //builder.Entity<SubmissionIssue>()
             //    .HasOne(si => si.Submission)
             //    .WithMany()
