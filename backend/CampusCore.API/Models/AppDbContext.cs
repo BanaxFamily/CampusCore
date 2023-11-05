@@ -20,7 +20,7 @@ namespace CampusCore.API.Models
         public DbSet<CourseDeliverable> CourseDeliverables { get; set; }
         public DbSet<Deliverable> Deliverables { get; set; }
         public DbSet<Submission> Submissions { get; set; }
-        //public DbSet<SubmissionVersion> SubmissionVersions { get; set; }
+        public DbSet<SubmissionVersion> SubmissionVersions { get; set; }
         public DbSet<Version> Versions { get; set; }
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
