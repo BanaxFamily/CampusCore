@@ -15,7 +15,9 @@ namespace CampusCore.API.Services
     public interface IUserService
     {
         Task<ResponseManager> UserAddAsync(UserAddViewModel model);
-        Task<ResponseManager> UserListAsync(UserListViewModel model);
+        Task<ResponseManager> UserListSearchAsync(UserListSearchViewModel model);
+        Task<ResponseManager> UserListAllAsync();
+
         Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model);
         Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model);
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
@@ -68,8 +70,7 @@ public class UserService : IUserService
         {
             new Claim("Username", model.Username),
             new Claim(ClaimTypes.NameIdentifier,user.Id),
-            new Claim(ClaimTypes.Role, userRole.First()),
-            
+            new Claim(ClaimTypes.Role, userRole.FirstOrDefault())
 
         };
 
@@ -185,35 +186,53 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<ResponseManager> UserListAsync(UserListViewModel model)
+    public async Task<ResponseManager> UserListAllAsync()
+    {
+        try
+        {
+            var result = new List<UserListViewModel>(); // Adding this model just to have it in a nice list.
+            var users = _userManager.Users;
+            
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                {
+                    result.Add(new UserListViewModel
+                    {
+                        Id = user.Id,
+                        Username = user.UserName,
+                        HashedPassword = user.PasswordHash,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Status = user.Status,
+                        Role = string.Join(", ", roles)
+                });
+                }
+            }
+
+            return new DataResponseManager
+            {
+                IsSuccess = true,
+                Message = "Users retrieved successfully",
+                Data = result
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while fetching users",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+
+    public async Task<ResponseManager> UserListSearchAsync(UserListSearchViewModel model)
     {
         string searchKey = model.SearchKey;
 
-        if (string.IsNullOrEmpty(model.SearchKey) || string.IsNullOrWhiteSpace(model.SearchKey))
-        {
-            try
-            {
-                var result = await _userManager.Users.ToListAsync();
-
-                return new DataResponseManager
-                {
-                    IsSuccess = true,
-                    Message = "Users retrieved successfully",
-                    Data = result
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ErrorResponseManager
-                {
-                    IsSuccess = false,
-                    Message = "An error occurred while fetching users",
-                    Errors = new List<string> { ex.Message }
-                };
-            }
-        }
-        else
-        {
+       
             try
             {
 
@@ -239,7 +258,7 @@ public class UserService : IUserService
                     Errors = new List<string> { ex.Message }
                 };
             }
-        }
+        
     }
 
     public async Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model)

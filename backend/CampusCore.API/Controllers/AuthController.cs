@@ -32,6 +32,65 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+        [HttpGet("viewList")]
+        public async Task<IActionResult> ViewListAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.UserListAllAsync();
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+        [HttpPost("search")]
+        public async Task<IActionResult> ViewListSearchAsync(UserListSearchViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.UserListSearchAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteAsync(UserDeleteViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var result = await _userService.UserDeleteAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for delete"); //status code: 400
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateAsync(UserUpdateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var result = await _userService.UserUpdateAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for delete"); //status code: 400
+        }
 
         // /api/auth/login
         [HttpPost ("login")]
