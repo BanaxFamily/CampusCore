@@ -19,9 +19,20 @@ namespace CampusCore.API.Models
         public DbSet<StudentGroup> StudentGroups { get; set; }
         public DbSet<CourseDeliverable> CourseDeliverables { get; set; }
         public DbSet<Deliverable> Deliverables { get; set; }
+        public DbSet<CourseDeliverableSubmission> CourseDeliverableSubmissions { get; set; }
+
+        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<SubmissionVersion> SubmissionVersions { get; set; }
+        public DbSet<Version> Versions { get; set; }
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueComment> IssueComments { get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<AnnouncementComment> AnnouncementComments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<PublicResearchRepository> ResearchRepository { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -39,8 +50,8 @@ namespace CampusCore.API.Models
                 .HasForeignKey(oc => oc.FacultyId).OnDelete(DeleteBehavior.NoAction);
 
             // Configure the many-to-many relationship between OfferedCourse and User through CourseEnrollment
-            builder.Entity<CourseEnrollment>()
-            .HasKey(ce => new { ce.OfferedCourseId, ce.StudentId }); ;
+            //builder.Entity<CourseEnrollment>()
+            //.HasKey(ce => new { ce.OfferedCourseId, ce.StudentId }); ;
 
             builder.Entity<CourseEnrollment>()
                 .HasOne(ce => ce.Student)
@@ -53,13 +64,21 @@ namespace CampusCore.API.Models
                 .HasForeignKey(ce => ce.OfferedCourseId);
 
             builder.Entity<StudentGroup>()
-                .HasMany(sg => sg.Members)
-                .WithOne(u => u.StudentGroup)
-                .HasForeignKey(u => u.StudentGroupId); // Explicitly specify the foreign key for Members
+                .HasOne(sg => sg.Student)
+                .WithMany()
+                .HasForeignKey(u => u.StudentId); 
             builder.Entity<StudentGroup>()
+                .HasOne(sg => sg.Group)
+                .WithMany()
+                .HasForeignKey(u => u.GroupId);
+            builder.Entity<Group>()
                 .HasOne(sg => sg.Adviser)
                 .WithMany()
                 .HasForeignKey(sg => sg.AdviserId);
+            builder.Entity<Group>()
+                .HasOne(sg => sg.OfferedCourse)
+                .WithMany()
+                .HasForeignKey(sg => sg.OfferedCourseId);
             builder.Entity<CourseDeliverable>()
                 .HasOne(cd => cd.Deliverable)
                 .WithMany()
@@ -68,14 +87,21 @@ namespace CampusCore.API.Models
                 .HasOne(oc => oc.OfferedCourse)
                 .WithMany()
                 .HasForeignKey(oc => oc.OfferedCourseId);
-            builder.Entity<Deliverable>()
-                .HasOne(di => di.Course)
+            
+            
+            builder.Entity<Submission>()
+                .HasOne(sl => sl.Submitter)
                 .WithMany()
-                .HasForeignKey(di => di.CourseId);
-            //builder.Entity<SubmissionList>()
-            //    .HasOne(sl => sl.OfferedCourse)
+                .HasForeignKey(sl => sl.SubmitterId);
+            //builder.Entity<SubmissionVersion>()
+            //    .HasOne(sl => sl.Submission)
             //    .WithMany()
-            //    .HasForeignKey(sl => sl.OfferedCourseId);
+            //    .HasForeignKey(sl => sl.SubmissionId);
+            //builder.Entity<SubmissionVersion>()
+            //    .HasOne(sv => sv.Version)
+            //    .WithMany()
+            //    .HasForeignKey(sv => sv.VersionId);
+
             //builder.Entity<SubmissionIssue>()
             //    .HasOne(si => si.Submission)
             //    .WithMany()
@@ -90,10 +116,7 @@ namespace CampusCore.API.Models
             //    .HasOne(ii => ii.Issue)
             //    .WithMany()
             //    .HasForeignKey(ii => ii.IssueId);
-            builder.Entity<Issue>()
-                .HasOne(i => i.Course)
-                .WithMany()
-                .HasForeignKey(i => i.CourseDeliverableId);
+            
             builder.Entity<Issue>()
                 .HasOne(i => i.User)
                 .WithMany()
@@ -106,7 +129,33 @@ namespace CampusCore.API.Models
                 .HasOne(ic => ic.User)
                 .WithMany()
                 .HasForeignKey(ic => ic.UserId)
-                .OnDelete(DeleteBehavior.NoAction); ;
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Announcement>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserId);
+            builder.Entity<Announcement>()
+                .HasOne(a => a.OfferedCourse)
+                .WithMany()
+                .HasForeignKey(a => a.OfferedCourseId);
+            builder.Entity<AnnouncementComment>()
+                .HasOne(ac => ac.Announcement)
+                .WithMany()
+                .HasForeignKey(ac => ac.AnnouncementId);
+            builder.Entity<AnnouncementComment>()
+                .HasOne(ac => ac.User)
+                .WithMany()
+                .HasForeignKey(ac => ac.UserId)
+                .OnDelete(DeleteBehavior.NoAction); // specify OnDelete behavior
+            builder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId);
+            builder.Entity<PublicResearchRepository>()
+                .HasOne(prr => prr.Submission)
+                .WithMany()
+                .HasForeignKey(prr => prr.SubmissionId);
+
 
 
             base.OnModelCreating(builder);
