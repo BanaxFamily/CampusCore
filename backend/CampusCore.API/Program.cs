@@ -60,7 +60,12 @@ builder.Services.AddAuthentication(auth =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
+builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
+builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 
 var app = builder.Build();
 
@@ -112,10 +117,11 @@ using (var scope = app.Services.CreateScope())
 
 
 
-    
 
 
 
+app.UseDeveloperExceptionPage();
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Use CORS middleware
@@ -125,7 +131,7 @@ app.MapControllers();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+
 
 app.MapControllers();
 

@@ -1,11 +1,16 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace CampusCore.API.Services
 {
     public interface IDeliverableServices
     {
         Task<ResponseManager> CreateDeliverableAsync(DeliverableAddViewModel model);
+        Task<ResponseManager> ViewDeliverableAsync();
+        Task<ResponseManager> UpdateDeliverableAsync(DeliverableUpdateViewModel model);
+        Task<ResponseManager> DeleteDeliverableAsync(DeliverableDeleteViewModel model);
+        Task<ResponseManager> SearchDeliverableAsync(DeliverableSearchViewModel model);
     }
 
     public class DeliverableService : IDeliverableServices
@@ -16,9 +21,199 @@ namespace CampusCore.API.Services
             _context = context;
         }
 
-        public Task<ResponseManager> CreateDeliverableAsync(DeliverableAddViewModel model)
+        public async Task<ResponseManager> CreateDeliverableAsync(DeliverableAddViewModel model)
         {
-            throw new NotImplementedException();
+            if (model == null)
+                throw new NullReferenceException("Register Model is null");
+
+
+            var deliverable = new Deliverable
+            {
+                Name = model.Name,
+                Description = model.Description,
+                Instruction = model.Instruction,
+            };
+
+
+            _context.Deliverables.Add(deliverable);
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return new ResponseManager
+                {
+                    Message = "Deliverable created successfully!",
+                    IsSuccess = true
+                };
+
+            }
+
+
+
+            return new ErrorResponseManager
+            {
+                Message = "Deliverable is not created",
+                IsSuccess = false,
+                Errors = new List<string>() { "Error adding deliverable in DB" }
+            };
+
+        }
+
+        public async Task<ResponseManager> DeleteDeliverableAsync(DeliverableDeleteViewModel model)
+        {
+            try
+            {
+                var deliverable = await _context.Deliverables.FindAsync(model.Id);
+
+                if (deliverable == null)
+                {
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Course not found",
+                        Errors = new List<string> { "deliverable with the specified ID does not exist" }
+                    };
+                }
+
+                _context.Deliverables.Remove(deliverable);
+                var result = await _context.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Deliverable deleted successfully"
+                    };
+                }
+                else
+                {
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Deliverable deletion failed",
+                        Errors = new List<string> { "Error occurred while deleting the deliverable" }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while deleting the deliverable",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> SearchDeliverableAsync(DeliverableSearchViewModel model)
+        {
+            string searchKey = model.SearchKey;
+
+            try
+            {
+                
+                var searchResults = await _context.Deliverables
+                    .Where(oc => EF.Functions.Like(oc.Name, $"%{model.SearchKey}%"))
+                    .ToListAsync();
+
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Searched deliverable retrieved successfully",
+                    Data = searchResults
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching searched deliverables",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> UpdateDeliverableAsync(DeliverableUpdateViewModel model)
+        {
+            try
+            {
+                var deliverable = await _context.Deliverables.FindAsync(model.Id);
+
+                if (deliverable == null)
+                {
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Deliverable not found",
+                        Errors = new List<string> { "Deliverable with the specified ID does not exist" }
+                    };
+                }
+
+                // Update the course properties from the model
+                deliverable.Name = model.Name;
+                deliverable.Description = model.Description;
+                deliverable.Instruction = model.Instruction;
+                
+
+                // Save changes to the database
+                var result = await _context.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Deliverable updated successfully"
+                    };
+                }
+                else
+                {
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Deliverable update failed",
+                        Errors = new List<string> { "Error occurred while updating the deliverable" }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while updating the deliverable",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> ViewDeliverableAsync()
+        {
+            try
+            {
+                var result = await _context.Deliverables.ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Deliverables retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching deliverables",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
         }
     }
 }
