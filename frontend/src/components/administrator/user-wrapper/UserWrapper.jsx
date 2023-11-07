@@ -4,8 +4,8 @@ import { AiOutlineUserAdd } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import * as UserApi from "../../../network/user_api";
+import AddModalUser from "./AddModalUser";
 import TableBody from "./TableBody";
-import AddModal from "./AddModal";
 import UpdateModal from "./UpdateModal";
 
 export default function UserWrapper() {
@@ -147,7 +147,7 @@ export default function UserWrapper() {
         </div>
       </div>
 
-      {showAddModal && <AddModal onClose={() => setShowAddModal(false)} />}
+      {showAddModal && <AddModalUser onClose={() => setShowAddModal(false)} />}
       {showUpdateModal && (
         <UpdateModal
           user={userToUpdate}

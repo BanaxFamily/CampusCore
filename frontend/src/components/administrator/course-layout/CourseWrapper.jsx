@@ -1,10 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineFolderAdd } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
-import CourseModal from "./CourseModal";
+import AddModalCourse from "./AddModalCourse";
+import * as CourseApi from "../../../network/course_api";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 export default function UserWrapper() {
+  const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm();
+
+  useEffect(() => {
+    async function loadCourse(){
+      const resposnse = await CourseApi.viewCourse()
+      
+    }
+    }
+  });
+  async function newCourse() {
+    const response = await CourseApi.addCourse();
+    if (response.status !== 200) {
+      alert(`Error: ${response.message}`);
+    } else {
+      alert("Course added successfully!");
+      reset()
+      navigate(0)
+
+    }
 
   return (
     <div className="mt-4 min-h-[20rem] overflow-auto text-sm">
@@ -66,7 +94,9 @@ export default function UserWrapper() {
         </div>
       </div>
 
-      {showAddModal && <CourseModal onClose={() => setShowAddModal(false)} />}
+      {showAddModal && (
+        <AddModalCourse onClose={() => setShowAddModal(false)} />
+      )}
     </div>
   );
 }

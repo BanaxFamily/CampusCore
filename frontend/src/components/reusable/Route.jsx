@@ -15,7 +15,7 @@ export default function Route(props) {
             icon={nav.icon}
             title={nav.title}
             onDismiss={props.onDismiss}
-
+            
             //   classNames={classNames}
           />
         ))}
