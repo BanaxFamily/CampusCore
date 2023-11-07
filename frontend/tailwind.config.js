@@ -14,6 +14,9 @@ export default {
     fontFamily: {
       'body': ['ui-serif', 'Georgia'],
     },
+    backgroundImage: {
+      'CampusCore': "url('./public/CAMPUSCORE.png')"
+    },
   },
   plugins: [],
 }

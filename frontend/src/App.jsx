@@ -6,11 +6,12 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import GenerateReport from "./components/administrator/GenerateReport";
-import ManageCourse from "./components/administrator/ManageCourse";
-import ManageUsers from "./components/administrator/ManageUsers";
-import CourseWrapper from "./components/administrator/course-layout/CourseWrapper";
+import GenerateReport from "./components/administrator/report/GenerateReport";
+import ManageCourse from "./components/administrator//course-layout/ManageCourse";
+import ManageRepo from "./components/administrator/ManageRepo";
 import Edit from "./components/administrator/user-wrapper/Edit";
+import ManageUsers from "./components/administrator/user-wrapper/ManageUsers";
+import { Register } from "./components/administrator/user-wrapper/Register";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import Home from "./components/shared-route/Home";
@@ -21,18 +22,11 @@ import Issues from "./components/student/Issues";
 import ResearchRepo from "./components/student/ResearchRepo";
 import Timetable from "./components/student/Timetable";
 import MainContents from "./pages/MainConents";
-import { Register } from "./components/administrator/Register";
-import ManageRepo from "./components/administrator/ManageRepo";
-
 
 export default function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
   let user_role = "admin";
 
-  // if (loggedInUser) {
-  //   session_user = loggedInUser;
-  //   console.log(typeof(session_user))
-  // }
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/*">
@@ -48,8 +42,9 @@ export default function App() {
           }
         />
 
-        <Route element={<MainContents/>}>
+        <Route element={<MainContents user_role={user_role}/>}>
           <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />
           <Route path="manage/profile" element={<ManageProfile />} />
           {user_role === "student" && (
             <>
@@ -64,17 +59,19 @@ export default function App() {
           {user_role === "admin" && (
             <>
               {/* <Route path="manage/profile" element={<ManageProfile />} /> */}
-              <Route path="manage/course" element={<CourseWrapper />}>
-                <Route index element={<ManageCourse />} />
+              <Route path="manage/course" element={<ManageCourse />}>
+                <Route path="register" element={<Register />} />
               </Route>
               <Route path="manage/user/*" element={<ManageUsers />}>
-                <Route path="edit/:id" element={<Edit />} />
+                <Route path="edit/:role/:id" element={<Edit />} />
                 <Route path="register" element={<Register />} />
               </Route>
               <Route path="manage/repository/*" element={<ManageRepo />}>
                 <Route path="register" element={<Register />} />
               </Route>
-              <Route path="reports" element={<GenerateReport />} />
+              <Route path="reports" element={<GenerateReport />} >
+                
+              </Route>
             </>
           )}
         </Route>

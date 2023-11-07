@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { BsArrowBarLeft } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import * as UserApi from "../../network/user_api";
+import * as UserApi from "../../../network/user_api";
 
 export const Register = () => {
   const {
@@ -26,7 +26,7 @@ export const Register = () => {
 
   return (
     <>
-      <div className="w-full flex text-blue-200 group">
+      <div className="w-full flex text-black group">
         <Link
           to=".."
           path="relative"

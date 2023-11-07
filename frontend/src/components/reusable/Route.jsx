@@ -14,6 +14,8 @@ export default function Route(props) {
             link={nav.link}
             icon={nav.icon}
             title={nav.title}
+            onDismiss={props.onDismiss}
+
             //   classNames={classNames}
           />
         ))}
@@ -28,6 +30,7 @@ export default function Route(props) {
             title={nav.title}
             classNames={props.className}
             openMobileMenu={props.openMobileMenu}
+            onDismiss={props.onDismiss}
           />
         ))}
     </>
