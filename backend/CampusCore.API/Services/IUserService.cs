@@ -107,6 +107,7 @@ public class UserService : IUserService
 
         var user = new User
         {
+            Idno = model.Idno,
             Email = model.Email,
             UserName = model.Username,
             FirstName = model.FirstName,
@@ -259,6 +260,7 @@ public class UserService : IUserService
             }
 
             // Update the user properties from the model
+            user.Idno = model.Idno;
             user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;

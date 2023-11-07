@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExpressiveAnnotations.Attributes;
 using static CampusCore.Shared.UserAddViewModel;
 
 namespace CampusCore.Shared
@@ -52,6 +53,11 @@ namespace CampusCore.Shared
 
         [Required]
         public string Role { get; set; }
+        
+        [RequiredIf("Role != Admin", ErrorMessage = "Enter Id number")]
+        [MaxLength(10)]
+        [MinLength(8)]
+        public string Idno { get; set; }
 
         //to add digital signature later. Will research first if it's part of Identity already
 
@@ -59,6 +65,7 @@ namespace CampusCore.Shared
         {
             Active,
             Inactive,
+            Alumni
         }
 
         public enum UserType
@@ -80,6 +87,11 @@ namespace CampusCore.Shared
     {
         [Required]
         public string Id;
+
+        [RequiredIf("Role != Admin", ErrorMessage = "Enter Id number")]
+        [MaxLength(10)]
+        [MinLength(8, ErrorMessage = "Minimum of 8 characters")]
+        public string Idno;
 
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address")]
