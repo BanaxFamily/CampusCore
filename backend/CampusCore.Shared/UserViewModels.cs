@@ -78,7 +78,7 @@ namespace CampusCore.Shared
         }
     }
 
-    public class UserListViewModel
+    public class UserListSearchViewModel
     {
         public string SearchKey { get; set; }
     }
@@ -129,5 +129,17 @@ namespace CampusCore.Shared
     {
         public  string  Id { get; set; }
     }
+
+    public class UserListViewModel
+    {
+        public string Id { get; set; }
+        public string Username { get; set; }    
+        public string HashedPassword { get; set; }
+        public string FirstName { get; set;}
+        public string LastName { get; set;}
+        public string Status { get; set; }
+        public string Role { get; set; }
+
+    }   
     
 }
