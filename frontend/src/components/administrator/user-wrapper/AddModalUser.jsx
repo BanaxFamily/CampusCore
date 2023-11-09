@@ -5,7 +5,7 @@ import Modal from "../Modal";
 import { useNavigate } from "react-router-dom";
 import DashBoarHeading from "../../reusable/DashBoardHeading";
 
-export default function AddModal(props) {
+export default function AddModalUser(props) {
   const navigate = useNavigate();
   const {
     register,

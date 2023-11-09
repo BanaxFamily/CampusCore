@@ -13,13 +13,20 @@ export default function Edit() {
     reset,
   } = useForm();
 
-  async function onSubmit(credentials) {
+  async function updateUser(credentials) {
     const response = await UserApi.addUser(credentials);
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
-      alert("User added successfully!");
+      alert("User updated successfully!");
       reset();
+    }
+  }
+
+  function updateConfirmation(credentials){
+    const text = "Do you want to proceed? Data will be overriden."
+    if(confirm(text) === true){
+      updateUser(credentials)
     }
   }
   return (
@@ -49,7 +56,7 @@ export default function Edit() {
 
         <div className="shadow-md">
           <div className="p-2">
-            <form action="" onSubmit={handleSubmit(onSubmit)}>
+            <form action="" onSubmit={handleSubmit(updateConfirmation)}>
               <div className="flex flex-col sm:flex-row sm:gap-1">
                 <div className="w-full flex-col sm:flex sm:w-1/2 justify-start md:gap-[3px]">
                   <div className="flex flex-col w-full mt-1">

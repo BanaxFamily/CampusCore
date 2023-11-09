@@ -19,7 +19,7 @@ namespace CampusCore.API.Controllers
 
             // /api/course/create
             [HttpPost("create")]
-            [Authorize(Roles = "Admin")]
+            //[Authorize(Roles = "Admin")]
             public async Task<IActionResult> CreateAsync(CourseAddViewModel model)
             {
                 if (ModelState.IsValid)
@@ -67,7 +67,7 @@ namespace CampusCore.API.Controllers
             }
 
             [HttpDelete("delete")]
-            [Authorize(Roles = "Admin")]
+            //  [Authorize(Roles = "Admin")]
             public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
             {
                 if (ModelState.IsValid)
@@ -85,7 +85,7 @@ namespace CampusCore.API.Controllers
 
                 // /api/course/update
             [HttpPut("update")]
-            [Authorize(Roles = "Admin")]
+            //[Authorize(Roles = "Admin")]
             public async Task<IActionResult> UpdateAsync([FromBody] CourseUpdateViewModel model)
             {
                 if (ModelState.IsValid)

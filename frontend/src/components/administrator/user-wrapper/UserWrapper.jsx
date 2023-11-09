@@ -1,36 +1,30 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
+import { IoRefreshCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import * as UserApi from "../../../network/user_api";
+import AddModalUser from "./AddModalUser";
 import TableBody from "./TableBody";
-import AddModal from "./AddModal";
 import UpdateModal from "./UpdateModal";
 
-export default function UserWrapper() {
+export default function UserWrapper({ users }) {
+  let count = 0;
   const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [userToUpdate, setUserToUpdate] = useState(null);
-  let count = 0;
+  // const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const userData = users.data;
+  const [searchkey, setSearchKey] = useState("");
   const {
-    // register,
-    // handleSubmit,
+    register,
+    handleSubmit,
     formState: { isSubmitting },
   } = useForm();
-  const [users, setUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState([]);
-
-  useEffect(() => {
-    async function loadUsers() {
-      const response = await UserApi.viewUser();
-      setUsers(response.data);
-      setFilteredUsers(response.data);
-    }
-    loadUsers();
-  }, []);
 
   async function handleDeleteUser(id) {
     const response = await UserApi.deleteUser(id);
@@ -45,18 +39,25 @@ export default function UserWrapper() {
     }
   }
 
-  const handleInputChange = (e) => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
+  async function handleSearchSubmit(key) {
+    const response = await UserApi.searchUser(key);
+    if (response.isSuccess === true) {
+      setFilteredUsers(response.data);
+      setSearchKey(key);
+    }
+  }
+  // const handleInputChange = (e) => {
+  //   const searchTerm = e.target.value;
+  //   setSearchTerm(searchTerm);
 
-    const filteredData = users.filter(
-      (user) =>
-        user.firstName &&
-        user.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-    );
+  //   const filteredData = userData.filter(
+  //     (user) =>
+  //       user.firstName &&
+  //       user.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+  //   );
 
-    setFilteredUsers(filteredData);
-  };
+  //   setFilteredUsers(filteredData);
+  // };
 
   const deleteConfirmation = (id) => {
     let text = "Are you sure you want to delete this user?";
@@ -96,22 +97,28 @@ export default function UserWrapper() {
           </span>
           {/* Used Search function with the combination of View users and filter method */}
           {/* currently un-used the react hook form*/}
-          <form className="flex">
-            <input
-              type="text"
-              placeholder="search by name...."
-              name="searchKey"
-              defaultValue={searchTerm}
-              onChange={handleInputChange}
-              className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
-              // {...register("searchKey", { required: true })}
-            />
-            <button disabled={isSubmitting} className="cursor-pointer">
-              <BsSearch className="ml-2" />
+          <div className="flex  gap-4">
+            <form className="flex" onSubmit={handleSubmit(handleSearchSubmit)}>
+              <input
+                type="text"
+                placeholder="search by name...."
+                name="searchKey"
+                className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
+                {...register("searchKey", { required: true })}
+              />
+              <button disabled={isSubmitting} className="cursor-pointer">
+                <BsSearch className="ml-2" />
+              </button>
+            </form>
+            <button
+              className="hover:text-slate-400"
+              onClick={() => navigate(0)}
+            >
+              <IoRefreshCircleOutline size={30} />
             </button>
-          </form>
+          </div>
         </div>
-        <div className="overflow-auto  shadow-md shadow-gray-500 rounded-sm">
+        <div className="overflow-auto shadow-md shadow-gray-500 rounded-sm">
           <table className="table-auto text-center max-h-80 overflow-auto min-w-[650px] lg:min-w-0 lg:w-full ">
             <thead className="uppercase">
               <tr className="text-[12px] bg-gray-300 font-medium">
@@ -127,32 +134,57 @@ export default function UserWrapper() {
                 </td>
               </tr>
             </thead>
-            {filteredUsers.map((user, index) => {
-              count++;
-              return (
-                <TableBody
-                  className="py-[1px] mt-1 px-2"
-                  key={index}
-                  index={count}
-                  user={user}
-                  onDeleteUserCliked={deleteConfirmation}
-                  showModalUpdate={() => {
-                    setShowUpdateModal(true);
-                    setUserToUpdate(user);
-                  }}
-                />
-              );
-            })}
+            {searchkey ? (
+              filteredUsers.length ? (
+                filteredUsers.map((user, index) => {
+                  count++;
+                  return (
+                    <TableBody
+                      className="py-[1px] mt-1 px-2"
+                      key={index}
+                      index={count}
+                      user={user}
+                      onDeleteUserCliked={deleteConfirmation}
+                      showModalUpdate={() => {
+                        setShowUpdateModal(true);
+                        setUserToUpdate(user);
+                      }}
+                    />
+                  );
+                })
+              ) : (
+                <tbody>
+                  <span className="w-full flex just">No records found</span>
+                </tbody>
+              )
+            ) : (
+              userData.map((user, index) => {
+                count++;
+                return (
+                  <TableBody
+                    className="py-[1px] mt-1 px-2"
+                    key={index}
+                    index={count}
+                    user={user}
+                    onDeleteUserCliked={deleteConfirmation}
+                    showModalUpdate={() => {
+                      setShowUpdateModal(true);
+                      setUserToUpdate(user);
+                    }}
+                  />
+                );
+              })
+            )}
           </table>
         </div>
       </div>
 
-      {showAddModal && <AddModal onClose={() => setShowAddModal(false)} />}
+      {showAddModal && <AddModalUser onClose={() => setShowAddModal(false)} />}
       {showUpdateModal && (
         <UpdateModal
           user={userToUpdate}
           onClose={() => {
-            setUserToUpdate(null)
+            setUserToUpdate(null);
             setShowUpdateModal(false);
           }}
         />

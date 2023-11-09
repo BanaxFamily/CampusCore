@@ -183,7 +183,7 @@ namespace CampusCore.API.Services
             {
                 var course = await _context.Courses.FindAsync(model.Id);
 
-                if (course == null)
+                if (course == null) 
                 {
                     return new ErrorResponseManager
                     {
