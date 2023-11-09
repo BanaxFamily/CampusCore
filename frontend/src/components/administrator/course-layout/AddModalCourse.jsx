@@ -17,7 +17,7 @@ export default function AddModalCourse({ onClose }) {
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
-      alert("User added successfully!");
+      alert("Course added successfully!");
       reset();
     }
   }
@@ -46,8 +46,8 @@ export default function AddModalCourse({ onClose }) {
               <label htmlFor="status">Status&nbsp;</label>
               <select
                 id="roles"
-                name="role"
-                {...register("role", { required: "select one option" })}
+                name="status"
+                {...register("status", { required: "select one option" })}
                 className="w-full text-sm md:text-[12px] border-0 rounded-md bg-gray-300 py-2 md:py-2 px-4 "
               >
                 <option defaultValue="" className="text-gray-300">
