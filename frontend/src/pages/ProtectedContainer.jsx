@@ -12,7 +12,7 @@ const ProtectedContainer = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [openSideNavigation, setOpenSideNavigation] = useState(false);
 
-  console.log(props.userType);
+  // console.log(props.userType);
 
   // if (!props.userSignedIn) return <Navigate to="/login" replace={true} />;
   return (

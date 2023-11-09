@@ -9,7 +9,7 @@ export default function TableBodyCourse(props) {
       <td className={props.className}>{props.index}</td>
       <td className={props.className}>{props.course.name}</td>
       <td className={props.className}>{props.course.description}</td>
-      <td className="pt-2">
+      <td>
         {props.course.status === "open" ? (
           <form action="">
             <button>

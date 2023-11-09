@@ -42,3 +42,15 @@ export async function deleteCourse(id) {
 
   return respone;
 }
+
+export async function searchCourse(key) {
+  const response = await fetchData("api/course/search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(key),
+  });
+
+  return response;
+}

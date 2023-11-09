@@ -13,10 +13,11 @@ import UpdateModalCourse from "./UpdateModalCourse";
 export default function CourseWrapper({ courses }) {
   let count = 0;
   const navigate = useNavigate();
+  const courseData = courses.data
   const [modalAddCourse, setModalAMddCourse] = useState(false);
   const [modalUpdateCourse, setModalUpdateCourse] = useState(false);
-  const [filteredCourse, setFilteredCourse] = useState(courses.data);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCourse, setFilteredCourse] = useState([]);
+  const [searchKey, setSearchKey] = useState("");
   const [courseToUpdate, setCourseToUpdate] = useState(null);
   const {
     register,
@@ -29,19 +30,26 @@ export default function CourseWrapper({ courses }) {
     const response = await CourseApi.deleteCourse(id);
     console.log(id)
   }
+  async function handleCourseSearch(key) {
+    const response = await CourseApi.searchCourse(key);
+    if (response.isSuccess === true) {
+      setFilteredCourse(response.data);
+      setSearchKey(key);
+    }
+  }
 
-  const handleSearch = (e) => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
+  // const handleSearch = (e) => {
+  //   const searchTerm = e.target.value;
+  //   setSearchTerm(searchTerm);
 
-    const filteredData = courses.filter(
-      (course) =>
-        course.name &&
-        course.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-    );
+  //   const filteredData = courses.filter(
+  //     (course) =>
+  //       course.name &&
+  //       course.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+  //   );
 
-    setFilteredCourse(filteredData);
-  };
+  //   setFilteredCourse(filteredData);
+  // };
 
   return (
     <div className="mt-4 min-h-[20rem] overflow-auto text-sm">
@@ -69,15 +77,14 @@ export default function CourseWrapper({ courses }) {
           </span>
           {/* Used Search function with the combination of View users and filter method */}
           {/* currently un-used the react hook form*/}
-          <form className="flex">
+          <form className="flex" onSubmit={handleSubmit(handleCourseSearch)}>
             <input
               type="text"
               placeholder="search by name...."
               name="searchKey"
               // defaultValue={searchTerm}
-              onChange={handleSearch}
               className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
-              // {...register("searchKey", { required: true })}
+              {...register("searchKey", { required: true })}
             />
             <button className="cursor-pointer">
               <BsSearch className="ml-2" />
@@ -100,7 +107,49 @@ export default function CourseWrapper({ courses }) {
               </tr>
             </thead>
             <tbody className="text-[13px] bg-gray-100 hover:bg-gray-200">
-              {filteredCourse.map((course, index) => {
+            {searchKey ? (
+              filteredCourse.length ? (
+                filteredCourse.map((course, index) => {
+                  count++;
+                  return (
+                    <TableBodyCourse
+                      className="py-[1px] mt-1 px-2"
+                      key={index}
+                      index={count}
+                      course={course}
+                    onDeleteUserCliked={handleDeleteCourse}
+                    openModalUpdate={() => {
+                      setCourseToUpdate(course);
+                      setModalUpdateCourse(true);
+                    }}
+                    />
+                  );
+                })
+              ) : (
+                <tbody>
+                  <span className="w-full flex just">No records found</span>
+                </tbody>
+              )
+            ) : (
+              courseData.map((course, index) => {
+                count++;
+                return (
+                  <TableBodyCourse
+                    className="py-[1px] mt-1 px-2"
+                    key={index}
+                    index={count}
+                    course={course}
+                    onDeleteUserCliked={handleDeleteCourse}
+                    openModalUpdate={() => {
+                      setCourseToUpdate(course);
+                      setModalUpdateCourse(true);
+                    }}
+                  />
+                );
+              })
+            )}
+              
+              {/* {filteredCourse.map((course, index) => {
                 count++;
                 return (
                   <TableBodyCourse
@@ -115,7 +164,7 @@ export default function CourseWrapper({ courses }) {
                     }}
                   />
                 );
-              })}
+              })} */}
             </tbody>
           </table>
         </div>
