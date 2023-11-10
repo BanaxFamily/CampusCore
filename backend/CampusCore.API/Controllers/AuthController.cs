@@ -51,7 +51,7 @@ namespace CampusCore.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userService.UserListSearchAsync(model);
+                var result = await _userService.UserSearchAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -107,6 +107,36 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid");
         }
 
-        
+        // api/auth/getById
+        [HttpPost("getById")]
+        public async Task<IActionResult> GetByIdAsync(UserGetByIdViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.UserGetByIdAsync(model);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+        // api/auth/getByRole
+        [HttpPost("getByRole")]
+        public async Task<IActionResult> UserListByRoleAsync(UserGetByRoleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.UserListByRoleAsync(model);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+       
+
+
     }
 }

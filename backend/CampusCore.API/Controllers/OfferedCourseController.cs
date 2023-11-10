@@ -37,11 +37,11 @@ namespace CampusCore.API.Controllers
             // /api/course/viewList
             //insert method here
             [HttpGet("viewList")]
-            public async Task<IActionResult> ViewListAsync([FromBody] OfferedCourseListViewModel model)
+            public async Task<IActionResult> ViewListAsync()
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _offeredCourseService.ViewOfferedCourseListAsync(model);
+                    var result = await _offeredCourseService.ViewOfferedCourseListAsync();
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
