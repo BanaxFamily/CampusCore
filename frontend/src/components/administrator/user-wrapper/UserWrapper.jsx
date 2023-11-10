@@ -7,8 +7,11 @@ import { IoRefreshCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import * as UserApi from "../../../network/user_api";
 import AddModalUser from "./AddModalUser";
-import TableBody from "./TableBody";
 import UpdateModal from "./UpdateModal";
+import WrapperLayout from "../../reusable/WrapperLayout";
+import DynamicTable from "../../reusable/DynamicTable";
+import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import TableBodyUser from "./TableBody";
 
 export default function UserWrapper({ users }) {
   let count = 0;
@@ -67,101 +70,76 @@ export default function UserWrapper({ users }) {
   };
 
   return (
-    <div className="mt-4 min-h-[20rem] overflow-auto text-sm">
-      <div className="flex flex-col gap-2 py-2 ">
-        <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
-          <div className="flex ">
-            <div className="bg-blue-600 px-4 py-2 rounded-md">
-              {/* <NavLink
+    <WrapperLayout>
+      {/* // <div className="mt-4 min-h-[20rem] overflow-auto text-sm"> */}
+      {/* // <div className="flex flex-col gap-2 py-2 "> */}
+      <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
+        <div className="flex ">
+          <div className="bg-blue-600 px-4 py-2 rounded-md">
+            {/* <NavLink
                 to="../user/register"
                 relative="path"
                 className="text-sm flex items-center gap-1 text-white uppercase px-2 "
               > */}
-              <span
-                className="text-sm flex items-center gap-1 text-white uppercase px-
+            <span
+              className="text-sm flex items-center gap-1 text-white uppercase px-
                 group-hover:text-slate-300  hover:cursor-pointer"
-              >
-                {" "}
-                Add
-                <AiOutlineUserAdd
-                  size={20}
-                  onClick={() => setShowAddModal(true)}
-                />
-              </span>
-            </div>
-          </div>
-          <span className="flex text-black ">
-            <label htmlFor="" className="hidden">
-              Search
-            </label>
-          </span>
-          {/* Used Search function with the combination of View users and filter method */}
-          {/* currently un-used the react hook form*/}
-          <div className="flex  gap-4">
-            <form className="flex" onSubmit={handleSubmit(handleSearchSubmit)}>
-              <input
-                type="text"
-                placeholder="search by name...."
-                name="searchKey"
-                className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
-                {...register("searchKey", { required: true })}
-              />
-              <button disabled={isSubmitting} className="cursor-pointer">
-                <BsSearch className="ml-2" />
-              </button>
-            </form>
-            <button
-              className="hover:text-slate-400"
-              onClick={() => navigate(0)}
             >
-              <IoRefreshCircleOutline size={30} />
-            </button>
+              {" "}
+              Add
+              <AiOutlineUserAdd
+                size={20}
+                onClick={() => setShowAddModal(true)}
+              />
+            </span>
           </div>
         </div>
-        <div className="overflow-auto shadow-md shadow-gray-500 rounded-sm">
-          <table className="table-auto text-center max-h-80 overflow-auto min-w-[650px] lg:min-w-0 lg:w-full ">
-            <thead className="uppercase">
-              <tr className="text-[12px] bg-gray-300 font-medium">
-                <td className="px-2 py-1">ID</td>
-                <td className="px-2 py-1">username</td>
-                <td className="px-2 py-1">firstname</td>
-                <td className="px-2 py-1">lastname</td>
-                <td className="px-2 py-1">email</td>
-                <td className="px-2 py-1">status</td>
-                <td className="px-2 py-1">role</td>
-                <td className="px-2 py-1" colSpan="2">
-                  action
-                </td>
-              </tr>
-            </thead>
-            {searchkey ? (
-              filteredUsers.length ? (
-                filteredUsers.map((user, index) => {
-                  count++;
-                  return (
-                    <TableBody
-                      className="py-[1px] mt-1 px-2"
-                      key={index}
-                      index={count}
-                      user={user}
-                      onDeleteUserCliked={deleteConfirmation}
-                      showModalUpdate={() => {
-                        setShowUpdateModal(true);
-                        setUserToUpdate(user);
-                      }}
-                    />
-                  );
-                })
-              ) : (
-                <tbody>
-                  <span className="w-full flex just">No records found</span>
-                </tbody>
-              )
-            ) : (
-              userData.map((user, index) => {
+        <span className="flex text-black ">
+          <label htmlFor="" className="hidden">
+            Search
+          </label>
+        </span>
+        {/* Used Search function with the combination of View users and filter method */}
+        {/* currently un-used the react hook form*/}
+        <div className="flex  gap-4">
+          <form className="flex" onSubmit={handleSubmit(handleSearchSubmit)}>
+            <input
+              type="text"
+              placeholder="search by name...."
+              name="searchKey"
+              className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
+              {...register("searchKey", { required: true })}
+            />
+            <button disabled={isSubmitting} className="cursor-pointer">
+              <BsSearch className="ml-2" />
+            </button>
+          </form>
+          <button className="hover:text-slate-400" onClick={() => navigate(0)}>
+            <IoRefreshCircleOutline size={30} />
+          </button>
+        </div>
+      </div>
+      <div className="overflow-auto shadow-md shadow-gray-500 rounded-sm">
+       <DynamicTable>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Username</TableCell>
+            <TableCell>Firstname</TableCell>
+            <TableCell>Lastname</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Role</TableCell>
+            <TableCell colSpan={2} align="center">Action</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        {searchkey ? (
+            filteredUsers.length ? (
+              filteredUsers.map((user, index) => {
                 count++;
                 return (
-                  <TableBody
+                  <TableBodyUser
                     className="py-[1px] mt-1 px-2"
                     key={index}
                     index={count}
@@ -174,10 +152,31 @@ export default function UserWrapper({ users }) {
                   />
                 );
               })
-            )}
-          </table>
-        </div>
+            ) : (
+                <span className="w-full flex just">No records found</span>
+            )
+          ) : (
+            userData.map((user, index) => {
+              count++;
+              return (
+                <TableBodyUser
+                  className="py-[1px] mt-1 px-2"
+                  key={index}
+                  index={count}
+                  user={user}
+                  onDeleteUserCliked={deleteConfirmation}
+                  showModalUpdate={() => {
+                    setShowUpdateModal(true);
+                    setUserToUpdate(user);
+                  }}
+                />
+              );
+            })
+          )}
+        </TableBody>
+       </DynamicTable>
       </div>
+      {/* </div> */}
 
       {showAddModal && <AddModalUser onClose={() => setShowAddModal(false)} />}
       {showUpdateModal && (
@@ -189,6 +188,7 @@ export default function UserWrapper({ users }) {
           }}
         />
       )}
-    </div>
+      {/* // </div> */}
+    </WrapperLayout>
   );
 }
