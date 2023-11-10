@@ -63,3 +63,15 @@ export async function deleteUser(id) {
 
   return response;
 }
+
+export async function searchUser(key) {
+  const response = await fetchData("api/auth/search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(key),
+  });
+
+  return response;
+}

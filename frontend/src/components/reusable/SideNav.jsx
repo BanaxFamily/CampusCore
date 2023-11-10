@@ -8,14 +8,14 @@ const SideNav = (props) => {
       className={`${props.classNames}  flex items-center shadow-gray-400 mb-2 p-2 rounded-full hover:scale-110 ease-in duration-300 group`}
     >
       <NavLink
-        onClick={props.openMobileMenu}
+        onClick={props.onDismiss}
         to={props.link}
         key={props.id}
-        className={`flex justify-start gap-2 group-hover:text-paleRed text-white`}
+        className={`flex flex-row justify-start gap-6 w-full md:gap-6 group-hover:text-paleRed text-white`}
       >
         {props.icon}
 
-        <span className="text-[20px] sm:text-[12px] text-center">
+        <span className="text-2xl sm:text-lg md:text-sm lg:text-sm text-center tracking-wide">
           {props.title}
         </span>
       </NavLink>
