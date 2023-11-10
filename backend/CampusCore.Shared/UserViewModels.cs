@@ -80,7 +80,16 @@ namespace CampusCore.Shared
 
     public class UserListSearchViewModel
     {
+        //
+        public string Option { get; set; }
         public string SearchKey { get; set; }
+        
+        public enum Options
+        {
+            Name, 
+            Username,
+            Id
+        }
     }
 
     public class UserUpdateViewModel
@@ -128,6 +137,12 @@ namespace CampusCore.Shared
     public class UserDeleteViewModel
     {
         public  string  Id { get; set; }
+    }
+    public class UserGetByRoleViewModel
+    {
+        [Required]
+        [AssertThat("Contains('Admin', Role) || Contains('Dean', Role) || Contains('Faculty', Role) || Contains('Student', Role) || Contains('PRC', Role)")]
+        public string Role { get; set; }
     }
 
     public class UserListViewModel

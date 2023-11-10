@@ -5,16 +5,18 @@ namespace CampusCore.API.Models
 {
     public class User : IdentityUser
     {
-        
+
         public string FirstName { get; set; }
-        
+
         public string LastName { get; set; }
         public string Status { get; set; }
-      
+
         public string Idno { get; set; }
 
-        //foreign navigator
-        public List<CourseEnrollment> Enrollments { get; set; }
+        public string FullName
+        {
+            get { return $"{FirstName} {LastName}"; }
+        }
 
         //student group
         public int? StudentGroupId { get; set; } // Foreign key to StudentGroup

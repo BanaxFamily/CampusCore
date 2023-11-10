@@ -39,7 +39,7 @@ namespace CampusCore.Shared
         }
     }
 
-    public class OfferedCourseListViewModel
+    public class OfferedCourseSearchViewModel
     {
         public string SearchKey { get; set; } = "";
         public string SearchCategory { get; set; }

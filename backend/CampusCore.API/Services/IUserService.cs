@@ -3,7 +3,6 @@ using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,8 +14,9 @@ namespace CampusCore.API.Services
     public interface IUserService
     {
         Task<ResponseManager> UserAddAsync(UserAddViewModel model);
-        Task<ResponseManager> UserListSearchAsync(UserListSearchViewModel model);
+        Task<ResponseManager> UserSearchAsync(UserListSearchViewModel model);
         Task<ResponseManager> UserListAllAsync();
+        Task<ResponseManager> UserListByRoleAsync(UserGetByRoleViewModel model);
 
         Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model);
         Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model);
@@ -28,13 +28,11 @@ public class UserService : IUserService
 {
     private UserManager<User> _userManager;
     private IConfiguration _configuration;
-    private RoleManager<IdentityRole> _roleManager;
 
-    public UserService(UserManager<User> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+    public UserService(UserManager<User> userManager, IConfiguration configuration)
     {
         _userManager = userManager;
         _configuration = configuration;
-        _roleManager = roleManager;
        
     }
   
@@ -151,7 +149,7 @@ public class UserService : IUserService
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "Course not found",
+                    Message = "user not found",
                     Errors = new List<string> { "User with the specified ID does not exist" }
                 };
             }
@@ -229,37 +227,146 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<ResponseManager> UserListSearchAsync(UserListSearchViewModel model)
+    public async Task<ResponseManager> UserSearchAsync(UserListSearchViewModel model)
     {
         string searchKey = model.SearchKey;
+        string option = model.Option;
 
        
             try
             {
+                List<User> searchResults = null;
 
-                var searchResults = await _userManager.Users
-                    .Where(oc => EF.Functions.Like(oc.FirstName, $"%{model.SearchKey}%") || EF.Functions.Like(oc.LastName, $"%{model.SearchKey}%"))
-                    .ToListAsync();
+                if(option == "Name")
+                {
+                   searchResults = await _userManager.Users
+                                        .Where(oc => EF.Functions.Like(oc.FullName, $"%{model.SearchKey}%") )
+                                        .ToListAsync();
+                }
+                else if (option == "Username")
+                {
+                   searchResults = await _userManager.Users
+                                        .Where(oc => EF.Functions.Like(oc.UserName, $"%{model.SearchKey}%"))
+                                        .ToListAsync();
+                }
+                else if (option == "Id")
+                {
+                   searchResults = await _userManager.Users
+                                        .Where(oc => EF.Functions.Like(oc.Idno, $"%{model.SearchKey}%"))
+                                        .ToListAsync();
+                }
+
 
 
 
                 return new DataResponseManager
-                {
-                    IsSuccess = true,
-                    Message = "Offered courses retrieved successfully",
-                    Data = searchResults
-                };
+                    {
+                        IsSuccess = true,
+                        Message = "users retrieved successfully",
+                        Data = searchResults
+                    };
             }
             catch (Exception ex)
             {
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching offered courses",
+                    Message = "An error occurred while fetching users",
                     Errors = new List<string> { ex.Message }
                 };
             }
         
+    }
+
+    //method to get user by id ("id" means id in database)
+    public async Task<ResponseManager> UserGetByIdAsync(string id)
+    {
+        try
+        {
+
+            var user = await _userManager.FindByIdAsync(id);
+
+
+
+            return new DataResponseManager
+            {
+                IsSuccess = true,
+                Message = "User retrieved successfully",
+                Data = user
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while fetching user",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+
+    }
+    public async Task<ResponseManager> UserListByRoleAsync(UserGetByRoleViewModel model)
+    {
+        var role = model.Role;
+        try
+        {
+            
+            var searchResults = await _userManager.GetUsersInRoleAsync(role);
+
+            
+            if(searchResults.Count > 0)
+            {
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"Users with {role} role retrieved successfully",
+                    Data = searchResults
+                };
+            }
+            return new ErrorResponseManager
+            {
+                IsSuccess = true,
+                Message = $"There are no users with {role} role"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = $" Error fetching users in {role} role",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+    //search user by id number (Idno in database)
+    public async Task<ResponseManager> UserSearchByIdAsync(string id)
+    {
+        try
+        {
+
+            var user = await _userManager.FindByIdAsync(id);
+
+
+
+            return new DataResponseManager
+            {
+                IsSuccess = true,
+                Message = "user retrieved successfully",
+                Data = user
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while fetching user",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+
     }
 
     public async Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model)
@@ -273,12 +380,13 @@ public class UserService : IUserService
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "Course not found",
-                    Errors = new List<string> { "Course with the specified ID does not exist" }
+                    Message = "user not found",
+                    Errors = new List<string> { "user with the specified ID does not exist" }
                 };
             }
 
             // Update the user properties from the model
+            
             user.Idno = model.Idno;
             user.Email = model.Email;
             user.UserName = model.Username;
@@ -292,7 +400,7 @@ public class UserService : IUserService
             return new ResponseManager
             {
                 IsSuccess = true,
-                Message = "Course updated successfully"
+                Message = "user updated successfully"
             };
         }   
         catch (Exception ex)
@@ -300,7 +408,7 @@ public class UserService : IUserService
             return new ErrorResponseManager
             {
                 IsSuccess = false,
-                Message = "An error occurred while updating the course",
+                Message = "An error occurred while updating the user",
                 Errors = new List<string> { ex.Message }
             };
         }
