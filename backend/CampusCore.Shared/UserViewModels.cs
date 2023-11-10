@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExpressiveAnnotations.Attributes;
 using static CampusCore.Shared.UserAddViewModel;
 
 namespace CampusCore.Shared
@@ -52,6 +53,11 @@ namespace CampusCore.Shared
 
         [Required]
         public string Role { get; set; }
+        
+        [RequiredIf("Role != Admin", ErrorMessage = "Enter Id number")]
+        [MaxLength(10)]
+        [MinLength(8)]
+        public string Idno { get; set; }
 
         //to add digital signature later. Will research first if it's part of Identity already
 
@@ -59,6 +65,7 @@ namespace CampusCore.Shared
         {
             Active,
             Inactive,
+            Alumni
         }
 
         public enum UserType
@@ -73,13 +80,28 @@ namespace CampusCore.Shared
 
     public class UserListSearchViewModel
     {
+        //
+        public string Option { get; set; }
         public string SearchKey { get; set; }
+        
+        public enum Options
+        {
+            Name, 
+            Username,
+            Id
+        }
     }
 
     public class UserUpdateViewModel
     {
-        [Required]
+
+        [RequiredIf("Role != Admin", ErrorMessage = "Enter Id number")]
+        [MaxLength(10)]
+        [MinLength(8, ErrorMessage = "Minimum of 8 characters")]
+        public string Idno;
+
         public string Id { get; set; }
+
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
@@ -107,6 +129,12 @@ namespace CampusCore.Shared
     public class UserDeleteViewModel
     {
         public  string  Id { get; set; }
+    }
+    public class UserGetByRoleViewModel
+    {
+        [Required]
+        //[AssertThat("Contains('Admin', Role) || Contains('Dean', Role) || Contains('Faculty', Role) || Contains('Student', Role) || Contains('PRC', Role)")]
+        public string Role { get; set; }
     }
 
     public class UserListViewModel

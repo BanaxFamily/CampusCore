@@ -7,7 +7,7 @@ namespace CampusCore.API.Services
     public interface IOfferedCourseService
     {
         Task<ResponseManager> CreateOfferedCourseAsync(OfferedCourseAddViewModel model);
-        Task<ResponseManager> ViewOfferedCourseListAsync(OfferedCourseListViewModel model);
+        Task<ResponseManager> ViewOfferedCourseListAsync();
         Task<ResponseManager> DeleteOfferedCourseAsync(OfferedCourseDeleteModel model); // New method to delete a course
         Task<ResponseManager> UpdateOfferedCourseAsync(OfferedCourseUpdateViewModel model);
     }
@@ -163,86 +163,111 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> ViewOfferedCourseListAsync(OfferedCourseListViewModel model)
+        public async Task<ResponseManager> ViewOfferedCourseListAsync()
         {
-            string searchKey = model.SearchKey;
-            string searchCategory = model.SearchCategory;
-
-            if (string.IsNullOrEmpty(model.SearchKey) || string.IsNullOrWhiteSpace(model.SearchKey))
+            try
             {
-                try
-                {
-                    var result = await _context.OfferedCourses.ToListAsync();
+                var result = await _context.OfferedCourses.ToListAsync();
 
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Offered courses retrieved successfully",
-                        Data = result
-                    };
-                }
-                catch (Exception ex)
+                return new DataResponseManager
                 {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching offered courses",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+                    IsSuccess = true,
+                    Message = "Offered courses retrieved successfully",
+                    Data = result
+                };
             }
-            else
+            catch (Exception ex)
             {
-                try
+                return new ErrorResponseManager
                 {
-                    List<OfferedCourse> searchResults;
-
-                    if (searchCategory == "Course")
-                    {
-                        searchResults = await _context.OfferedCourses
-                            .Include(oc => oc.Course)
-                            .Where(oc => EF.Functions.Like(oc.Course.Name, $"%{model.SearchKey}%"))
-                            .ToListAsync();
-                    }
-                    else if (searchCategory == "Faculty")
-                    {
-                        searchResults = await _context.OfferedCourses
-                            .Include(oc => oc.FacultyAssigned)
-                            .Where(oc => EF.Functions.Like(oc.FacultyAssigned.FirstName, $"%{model.SearchKey}%") ||
-                                         EF.Functions.Like(oc.FacultyAssigned.LastName, $"%{model.SearchKey}%"))
-                            .ToListAsync();
-                    }
-                    else
-                    {
-                        // Handle an unexpected search category
-                        return new ErrorResponseManager
-                        {
-                            IsSuccess = false,
-                            Message = "An error occurred while fetching offered courses",
-                            Errors = new List<string> { "Unexpected search category"}
-                        };
-                    }
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Offered courses retrieved successfully",
-                        Data = searchResults
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching offered courses",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching offered courses",
+                    Errors = new List<string> { ex.Message }
+                };
             }
+        }
+        
+        //public async Task<ResponseManager> SearchOfferedCourseListAsync(OfferedCourseSearchViewModel model)
+        //{
+        //    string searchKey = model.SearchKey;
+        //    string searchCategory = model.SearchCategory;
+
+        //    if (string.IsNullOrEmpty(model.SearchKey) || string.IsNullOrWhiteSpace(model.SearchKey))
+        //    {
+        //        try
+        //        {
+        //            var result = await _context.OfferedCourses.ToListAsync();
+
+        //            return new DataResponseManager
+        //            {
+        //                IsSuccess = true,
+        //                Message = "Offered courses retrieved successfully",
+        //                Data = result
+        //            };
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return new ErrorResponseManager
+        //            {
+        //                IsSuccess = false,
+        //                Message = "An error occurred while fetching offered courses",
+        //                Errors = new List<string> { ex.Message }
+        //            };
+        //        }
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+        //            List<OfferedCourse> searchResults;
+
+        //            if (searchCategory == "Course")
+        //            {
+        //                searchResults = await _context.OfferedCourses
+        //                    .Include(oc => oc.Course)
+        //                    .Where(oc => EF.Functions.Like(oc.Course.Name, $"%{model.SearchKey}%"))
+        //                    .ToListAsync();
+        //            }
+        //            else if (searchCategory == "Faculty")
+        //            {
+        //                searchResults = await _context.OfferedCourses
+        //                    .Include(oc => oc.FacultyAssigned)
+        //                    .Where(oc => EF.Functions.Like(oc.FacultyAssigned.FirstName, $"%{model.SearchKey}%") ||
+        //                                 EF.Functions.Like(oc.FacultyAssigned.LastName, $"%{model.SearchKey}%"))
+        //                    .ToListAsync();
+        //            }
+        //            else
+        //            {
+        //                // Handle an unexpected search category
+        //                return new ErrorResponseManager
+        //                {
+        //                    IsSuccess = false,
+        //                    Message = "An error occurred while fetching offered courses",
+        //                    Errors = new List<string> { "Unexpected search category" }
+        //                };
+        //            }
+
+        //            return new DataResponseManager
+        //            {
+        //                IsSuccess = true,
+        //                Message = "Offered courses retrieved successfully",
+        //                Data = searchResults
+        //            };
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return new ErrorResponseManager
+        //            {
+        //                IsSuccess = false,
+        //                Message = "An error occurred while fetching offered courses",
+        //                Errors = new List<string> { ex.Message }
+        //            };
+        //        }
+        //    }
 
             // Add a default return statement or throw an exception here.
-        }
+        //}
+    
 
     }
 }
