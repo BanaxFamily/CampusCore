@@ -31,15 +31,30 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+        //api/announcement/getById
+        [HttpPost("getById")]
+        public async Task<IActionResult> GetByIdAsync(int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _announcementService.GetByIdAnnouncementAsync(id);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
 
         // /api/announcement/viewList
         //insert method here
         [HttpGet("viewList")]
-        public async Task<IActionResult> ViewListAsync(AnnouncementListViewModel model)
+        public async Task<IActionResult> ViewListAsync()
         {
             if (ModelState.IsValid)
             {
-                var result = await _announcementService.ViewAnnouncementListAsync(model);
+                var result = await _announcementService.ViewAnnouncementListAsync();
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200

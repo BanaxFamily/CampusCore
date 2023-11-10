@@ -17,10 +17,10 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UserSearchAsync(UserListSearchViewModel model);
         Task<ResponseManager> UserListAllAsync();
         Task<ResponseManager> UserListByRoleAsync(UserGetByRoleViewModel model);
-
         Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model);
         Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model);
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
+        Task<ResponseManager> UserGetByIdAsync(UserGetByIdViewModel model);
     }
 }
 
@@ -279,12 +279,12 @@ public class UserService : IUserService
     }
 
     //method to get user by id ("id" means id in database)
-    public async Task<ResponseManager> UserGetByIdAsync(string id)
+    public async Task<ResponseManager> UserGetByIdAsync(UserGetByIdViewModel model)
     {
         try
         {
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(model.Id);
 
 
 
@@ -340,34 +340,7 @@ public class UserService : IUserService
             };
         }
     }
-    //search user by id number (Idno in database)
-    public async Task<ResponseManager> UserSearchByIdAsync(string id)
-    {
-        try
-        {
-
-            var user = await _userManager.FindByIdAsync(id);
-
-
-
-            return new DataResponseManager
-            {
-                IsSuccess = true,
-                Message = "user retrieved successfully",
-                Data = user
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ErrorResponseManager
-            {
-                IsSuccess = false,
-                Message = "An error occurred while fetching user",
-                Errors = new List<string> { ex.Message }
-            };
-        }
-
-    }
+    
 
     public async Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model)
     {

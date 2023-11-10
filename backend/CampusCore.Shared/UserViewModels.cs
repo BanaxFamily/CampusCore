@@ -92,6 +92,12 @@ namespace CampusCore.Shared
         }
     }
 
+    public class UserGetByIdViewModel
+    {
+        //
+        public string Id { get; set; }
+    }
+
     public class UserUpdateViewModel
     {
 
