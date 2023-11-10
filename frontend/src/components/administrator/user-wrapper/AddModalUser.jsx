@@ -16,6 +16,8 @@ export default function AddModalUser(props) {
 
   async function onSubmit(credentials) {
     const response = await UserApi.addUser(credentials);
+    console.log(credentials)
+    console.log(response)
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
@@ -34,6 +36,20 @@ export default function AddModalUser(props) {
           <form action="" onSubmit={handleSubmit(onSubmit)} >
             <div className="flex flex-col sm:flex-row sm:gap-1">
               <div className="w-full flex-col sm:flex sm:w-1/2 justify-start md:gap-[3px]">
+              <label
+                  className="text-[18px] md:text-[15px] font-[200]"
+                  htmlFor="idno"
+                >
+                  IDNO
+                </label>
+                <input
+                  className=" w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
+                  type="text"
+                  name="idno"
+                  placeholder="18XXXXX"
+                  id="idno"
+                  {...register("idno")}
+                />
                 <div className="flex flex-col w-full mt-1">
                   <label
                     className="text-[18px] md:text-[15px] font-[200]"

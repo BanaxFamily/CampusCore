@@ -204,6 +204,7 @@ public class UserService : IUserService
                         LastName = user.LastName,
                         Email = user.Email,
                         Status = user.Status,
+                        Idno = user.Idno,
                         Role = string.Join(", ", roles)
                 });
                 }

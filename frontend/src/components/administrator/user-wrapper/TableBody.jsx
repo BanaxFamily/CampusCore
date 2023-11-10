@@ -11,11 +11,11 @@ export default function TableBodyUser(props) {
   return (
     <TableRow>
       <TableCell className={props.className}>{props.index}</TableCell>
+      <TableCell className={props.className}>{props.user.idno}</TableCell>
       <TableCell className={props.className}>{props.user.username}</TableCell>
       <TableCell className={props.className}>{props.user.firstName}</TableCell>
       <TableCell className={props.className}>{props.user.lastName}</TableCell>
       <TableCell className={props.className}>{props.user.email}</TableCell>
-      <TableCell className={props.className}>{props.user.status}</TableCell>
 
       <TableCell>
         {props.user.status === "active" ? (
@@ -32,6 +32,7 @@ export default function TableBodyUser(props) {
           </form>
         )}
       </TableCell>
+      <TableCell className={props.className}>{props.user.role}</TableCell>
       <TableCell>
         <div className=" flex items-center justify-center">
           <button

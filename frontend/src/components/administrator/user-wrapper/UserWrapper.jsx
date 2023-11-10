@@ -28,6 +28,7 @@ export default function UserWrapper({ users }) {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
+  console.log(userData)
 
   async function handleDeleteUser(id) {
     const response = await UserApi.deleteUser(id);
@@ -123,7 +124,8 @@ export default function UserWrapper({ users }) {
        <DynamicTable>
         <TableHead>
           <TableRow>
-            <TableCell>ID</TableCell>
+            <TableCell></TableCell>
+            <TableCell>ID#</TableCell>
             <TableCell>Username</TableCell>
             <TableCell>Firstname</TableCell>
             <TableCell>Lastname</TableCell>
