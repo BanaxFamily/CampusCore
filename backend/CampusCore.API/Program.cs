@@ -60,7 +60,7 @@ builder.Services.AddAuthentication(auth =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
-builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
+//builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
 builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();

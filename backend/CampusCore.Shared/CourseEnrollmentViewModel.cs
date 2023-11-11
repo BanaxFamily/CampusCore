@@ -35,4 +35,12 @@ namespace CampusCore.Shared
     {
         public int Id { get; set; }
     }
+    public class GetEnrolledCourseViewModel
+    {
+        public string StudentId { get; set; }
+    }
+    public class GetEnrolledStudentsViewModel
+    {
+        public int CourseId { get; set; }
+    }
 }
