@@ -18,9 +18,9 @@ namespace CampusCore.API.Controllers
             }
 
         // /api/course/create
-        [Authorize(Roles = "Admin,Dean")]
+        //[Authorize(Roles = "Admin,Dean")]
         [HttpPost("add")]
-            public async Task<IActionResult> CreateAsync([FromBody] OfferedCourseAddViewModel model)
+        public async Task<IActionResult> CreateAsync([FromBody] OfferedCourseAddViewModel model)
             {
                 if (ModelState.IsValid)
                 {
@@ -51,7 +51,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
-        [Authorize(Roles = "Admin,Dean")]
+        //[Authorize(Roles = "Admin,Dean")]
         [HttpDelete("delete")]
             public async Task<IActionResult> DeleteAsync([FromBody] OfferedCourseDeleteModel model)
             {
@@ -69,23 +69,23 @@ namespace CampusCore.API.Controllers
             }
 
         // /api/course/update
-        [Authorize(Roles = "Admin,Dean")]
+        //[Authorize(Roles = "Admin,Dean")]
         [HttpPut("update")]
-            public async Task<IActionResult> UpdateAsync([FromBody] OfferedCourseUpdateViewModel model)
+        public async Task<IActionResult> UpdateAsync([FromBody] OfferedCourseUpdateViewModel model)
+        {
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    var result = await _offeredCourseService.UpdateOfferedCourseAsync(model);
+                var result = await _offeredCourseService.UpdateOfferedCourseAsync(model);
 
-                    if (result.IsSuccess)
-                        return Ok(result); // Status code: 200
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
 
-                    return BadRequest(result);
-                }
-                return BadRequest("Some properties are not valid for update"); // Status code: 400
+                return BadRequest(result);
             }
-
-
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
         }
+
+
+    }
     
 }
