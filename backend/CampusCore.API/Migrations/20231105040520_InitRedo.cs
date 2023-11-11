@@ -459,10 +459,7 @@ namespace CampusCore.API.Migrations
                 table: "CourseEnrollments",
                 column: "StudentId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_CourseEnrollments_UserId",
-                table: "CourseEnrollments",
-                column: "UserId");
+           
 
             migrationBuilder.CreateIndex(
                 name: "IX_Deliverables_CourseId",
@@ -519,10 +516,7 @@ namespace CampusCore.API.Migrations
                 table: "StudentGroups",
                 column: "StudentId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentGroups_UserId",
-                table: "StudentGroups",
-                column: "UserId");
+            
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLogs_UserId",

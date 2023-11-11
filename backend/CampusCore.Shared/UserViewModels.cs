@@ -53,11 +53,11 @@ namespace CampusCore.Shared
 
         [Required]
         public string Role { get; set; }
-        
-        [RequiredIf("Role != Admin", ErrorMessage = "Enter Id number")]
+
+        [RequiredIf("Role != 'Admin'", ErrorMessage = "Enter Id number")]
         [MaxLength(10)]
         [MinLength(8)]
-        public string Idno { get; set; }
+        public string? Idno { get; set; }
 
         //to add digital signature later. Will research first if it's part of Identity already
 
@@ -101,7 +101,7 @@ namespace CampusCore.Shared
     public class UserUpdateViewModel
     {
 
-        [RequiredIf("Role != Admin", ErrorMessage = "Enter Id number")]
+        [RequiredIf("Role != Role.", ErrorMessage = "Enter Id number")]
         [MaxLength(10)]
         [MinLength(8, ErrorMessage = "Minimum of 8 characters")]
         public string Idno;
@@ -146,6 +146,8 @@ namespace CampusCore.Shared
     public class UserListViewModel
     {
         public string Id { get; set; }
+        public string? Idno { get; set; }
+
         public string Username { get; set; }    
         public string FirstName { get; set;}
         public string LastName { get; set;}

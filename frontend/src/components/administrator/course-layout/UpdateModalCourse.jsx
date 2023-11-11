@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
+import { Button, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as CourseApi from "../../../network/course_api";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
 import Modal from "../Modal";
+
 export default function UpdateModalCourse(props) {
   const navigate = useNavigate();
 
@@ -43,48 +45,49 @@ export default function UpdateModalCourse(props) {
       >
         <div className="w-full flex flex-col">
           <div className="flex flex-col flex-grow">
-            <input
-              type="text"
-              name="id"
-              defaultValue={props.course.id}
-              {...register("id", { required: true })}
-              hidden
-            />
-            <label htmlFor="name">Name&nbsp;</label>
-            <input
-              type="text"
-              id="name"
+          <input type="text" hidden name="id" value={props.course.id} {...register("id", { required: "select one option" })} />
+
+            <TextField
+              id="outline-name"
               name="name"
-              placeholder="course.."
+              label="Name"
+              variant="filled"
               defaultValue={props.course.name}
-              className=" bg-gray-200 pl-2 py-1 w-full border-b border-gray-500 rounded-md"
+              // value={selectedItem.id || ''}
+
               {...register("name", { required: true })}
             />
-            <label htmlFor="status">Status&nbsp;</label>
-            <select
-              id="roles"
-              name="status"
-              defaultValue={props.course.status}
-              {...register("status", { required: "select one option" })}
-              className="w-full text-sm md:text-[12px] border-0 rounded-md bg-gray-300 py-2 md:py-2 px-4 "
-            >
-              <option defaultValue="" className="text-gray-300">
-                --open or close
-              </option>
-              <option value="open">Open</option>
-              <option value="faculty">Close</option>
-            </select>
-            <label htmlFor="desc  ription">Description&nbsp;</label>
-            <input
-              type="text"
-              id="description"
+            <div className="flex flex-col w-full mt-1">
+              <TextField
+                id="filled-role"
+                select
+                label="Course status"
+                defaultValue={props.course.status}
+                SelectProps={{
+                  native: true,
+                }}
+                helperText="Please select a type of user"
+                variant="filled"
+                name="status"
+                {...register("status", { required: "select one option" })}
+              >
+                <option value=""></option>
+                <option value="open">Open</option>
+                <option value="close">Close</option>
+              </TextField>
+            </div>
+            <TextField
+              id="outline-name"
               name="description"
+              label="Description"
+              variant="filled"
               defaultValue={props.course.description}
-              className=" bg-gray-200 py-1 w-full border-b border-gray-500 rounded-md"
+              // value={selectedItem.id || ''}
+
               {...register("description", { required: true })}
             />
           </div>
-          <button
+          <Button
             disabled={isSubmitting}
             type="submit"
             className="w-1/4 flex mt-2 self-end justify-center 
@@ -92,7 +95,7 @@ export default function UpdateModalCourse(props) {
               hover:cursor-pointer hover:bg-blue-700"
           >
             Submit
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

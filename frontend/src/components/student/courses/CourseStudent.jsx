@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import DashBoardHeading from "../reusable/DashBoardHeading";
-import * as CourseApi from "../../network/course_api";
-import EnrolledCourse from "../reusable/EnrolledCourse";
-import Semester from "../reusable/Semester";
+import DashBoardHeading from "../../reusable/DashBoardHeading";
+import * as CourseApi from "../../../network/course_api";
+import EnrolledCourse from "../../reusable/EnrolledCourse";
+import Semester from "../../reusable/Semester";
 
 const course = [
   "rescom",
@@ -36,7 +36,7 @@ const CourseStudent = () => {
       <DashBoardHeading title="student courses" />
       <Semester sem="1st SEMESTER" />
       <div className="w-full rounded-sm">
-        <div className="h-fit py- my-4 mx-4 ">
+        <div className="h-fit  my-4 mx-4 ">
           <EnrolledCourse subject={course} />
         </div>
       </div>

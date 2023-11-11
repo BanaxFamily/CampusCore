@@ -37,15 +37,9 @@ namespace CampusCore.API.Migrations
                     
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Submissions_DeliverableId",
-                table: "Submissions",
-                column: "DeliverableId");
+            
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Submissions_OfferedCourseId",
-                table: "Submissions",
-                column: "OfferedCourseId");
+            
 
             migrationBuilder.CreateIndex(
                 name: "IX_Submissions_StudentGroupId",
