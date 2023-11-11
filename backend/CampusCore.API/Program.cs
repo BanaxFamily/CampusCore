@@ -67,6 +67,7 @@ builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
 builder.Services.AddScoped<IAnnouncementCommentService, AnnouncementCommentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
+builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
 
 var app = builder.Build();
 
