@@ -25,6 +25,11 @@ namespace CampusCore.Shared
         public int Id { get; set; }
 
     }
+    public class AnnouncementGetByIdModel
+    {
+        public int Id { get; set; }
+
+    }
     public class AnnouncementUpdateViewModel
     {
         public int Id { get; set; }

@@ -9,7 +9,10 @@ namespace CampusCore.API.Services
     public interface ICourseEnrollmentService
     {
         Task<ResponseManager> CreateCourseEnrollmentAsync(CourseEnrollmentAddViewModel model);
-        Task<ResponseManager> ViewCourseEnrollmentAsync(string role, string studentId);
+        
+        Task<ResponseManager> GetAllCourseEnrolled(string studentId);
+        Task<ResponseManager> GetEnrolledStudents(int courseOfferedId);
+
         Task<ResponseManager> DeleteCourseEnrollmentAsync(CourseEnrollmentDeleteViewModel model);
     }
 
@@ -106,63 +109,60 @@ namespace CampusCore.API.Services
             }
         }
 
-        
-
-        public async Task<ResponseManager> ViewCourseEnrollmentAsync(string role, string studentId)
+        public async Task<ResponseManager> GetAllCourseEnrolled(string studentId)
         {
-            
-
-            if(role == "Student")
+            try
             {
-                try
-                {
-                    var result = await _context.CourseEnrollments
-                                 .Where(ce => ce.StudentId == studentId)
-                                 .ToListAsync();
+                var result = await _context.CourseEnrollments
+                             .Where(ce => ce.StudentId == studentId)
+                             .ToListAsync();
 
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Enrolled courses retrieved successfully",
-                        Data = result
-                    };
-                }
-                catch (Exception ex)
+                return new DataResponseManager
                 {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching enrolled courses",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+                    IsSuccess = true,
+                    Message = "Enrolled courses retrieved successfully",
+                    Data = result
+                };
             }
-            else
+            catch (Exception ex)
             {
-                try
+                return new ErrorResponseManager
                 {
-                    var result = await _context.CourseEnrollments
-                                 .ToListAsync();
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Courses and students retrieved successfully",
-                        Data = result
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching enrolled courses",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching enrolled courses",
+                    Errors = new List<string> { ex.Message }
+                };
             }
-            
         }
+
+        public async Task<ResponseManager> GetEnrolledStudents(int courseOfferedId)
+        {
+            try
+            {
+                var result = await _context.CourseEnrollments
+                                           .Where(ce => ce.OfferedCourseId == courseOfferedId)
+                                           .Include(ce => ce.Student)
+                                           .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Courses and students retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching enrolled courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+       
 
        
     }
