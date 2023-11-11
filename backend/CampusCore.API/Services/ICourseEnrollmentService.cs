@@ -9,10 +9,8 @@ namespace CampusCore.API.Services
     public interface ICourseEnrollmentService
     {
         Task<ResponseManager> CreateCourseEnrollmentAsync(CourseEnrollmentAddViewModel model);
-        
-        Task<ResponseManager> GetAllCourseEnrolled(string studentId);
-        Task<ResponseManager> GetEnrolledStudents(int courseOfferedId);
-
+        Task<ResponseManager> GetAllCourseEnrolled(GetEnrolledCourseViewModel model);
+        Task<ResponseManager> GetEnrolledStudents(GetEnrolledStudentsViewModel model);
         Task<ResponseManager> DeleteCourseEnrollmentAsync(CourseEnrollmentDeleteViewModel model);
     }
 
@@ -109,12 +107,12 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllCourseEnrolled(string studentId)
+        public async Task<ResponseManager> GetAllCourseEnrolled(GetEnrolledCourseViewModel model)
         {
             try
             {
                 var result = await _context.CourseEnrollments
-                             .Where(ce => ce.StudentId == studentId)
+                             .Where(ce => ce.StudentId == model.StudentId)
                              .ToListAsync();
 
                 return new DataResponseManager
@@ -135,12 +133,12 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetEnrolledStudents(int courseOfferedId)
+        public async Task<ResponseManager> GetEnrolledStudents(GetEnrolledStudentsViewModel model)
         {
             try
             {
                 var result = await _context.CourseEnrollments
-                                           .Where(ce => ce.OfferedCourseId == courseOfferedId)
+                                           .Where(ce => ce.OfferedCourseId == model.CourseId)
                                            .Include(ce => ce.Student)
                                            .ToListAsync();
 
