@@ -32,7 +32,7 @@ export async function updateCourse(data) {
 }
 
 export async function deleteCourse(id) {
-  const respone = await fetchData("api/course/delete", {
+  const response = await fetchData("api/course/delete", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -40,7 +40,7 @@ export async function deleteCourse(id) {
     body: JSON.stringify(id),
   });
 
-  return respone;
+  return response;
 }
 
 export async function searchCourse(key) {

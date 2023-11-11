@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { AiOutlineFolderAdd } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
-import AddModalCourse from "./AddModalCourse";
-import * as CourseApi from "../../../network/course_api";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import * as CourseApi from "../../../network/course_api";
+import DynamicTable from "../../reusable/DynamicTable";
+import WrapperLayout from "../../reusable/WrapperLayout";
+import AddModalCourse from "./AddModalCourse";
 import TableBodyCourse from "./TableBodyCourse";
 import UpdateModalCourse from "./UpdateModalCourse";
-import WrapperLayout from "../../reusable/WrapperLayout";
-import DynamicTable from "../../reusable/DynamicTable";
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 
 export default function CourseWrapper({ courses }) {
   let count = 0;
@@ -32,7 +32,9 @@ export default function CourseWrapper({ courses }) {
   async function handleDeleteCourse(id) {
     const response = await CourseApi.deleteCourse(id);
     console.log(id);
+    console.log(response)
   }
+
   async function handleCourseSearch(key) {
     const response = await CourseApi.searchCourse(key);
     if (response.isSuccess === true) {
@@ -41,18 +43,6 @@ export default function CourseWrapper({ courses }) {
     }
   }
 
-  // const handleSearch = (e) => {
-  //   const searchTerm = e.target.value;
-  //   setSearchTerm(searchTerm);
-
-  //   const filteredData = courses.filter(
-  //     (course) =>
-  //       course.name &&
-  //       course.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-  //   );
-
-  //   setFilteredCourse(filteredData);
-  // };
 
   return (
     <WrapperLayout>
@@ -84,7 +74,6 @@ export default function CourseWrapper({ courses }) {
             type="text"
             placeholder="search by name...."
             name="searchKey"
-            // defaultValue={searchTerm}
             className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
             {...register("searchKey", { required: true })}
           />
@@ -96,12 +85,12 @@ export default function CourseWrapper({ courses }) {
       <div className="overflow-auto border shadow-md h-[30rem] shadow-gray-500 rounded-sm">
       <DynamicTable>
         <TableHead>
-          <TableRow>
+          <TableRow className="uppercase">
             <TableCell>ID</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Description</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell colSpan={2}>action</TableCell>
+            <TableCell colSpan={2} align="center">action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -114,7 +103,7 @@ export default function CourseWrapper({ courses }) {
                       key={index}
                       index={count}
                       course={course}
-                      onDeleteUserCliked={handleDeleteCourse}
+                      onDeleteCourseClicked={handleDeleteCourse}
                       openModalUpdate={() => {
                         setCourseToUpdate(course);
                         setModalUpdateCourse(true);
@@ -135,7 +124,7 @@ export default function CourseWrapper({ courses }) {
                     key={index}
                     index={count}
                     course={course}
-                    onDeleteUserCliked={handleDeleteCourse}
+                    onDeleteCourseClicked={handleDeleteCourse}
                     openModalUpdate={() => {
                       setCourseToUpdate(course);
                       setModalUpdateCourse(true);

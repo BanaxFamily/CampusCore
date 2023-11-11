@@ -9,6 +9,7 @@ export default function TableBodyCourse(props) {
     <TableRow
       key={props.index}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      className="hover:bg-slate-200"
     >
       <TableCell>{props.index}</TableCell>
       <TableCell>{props.course.name}</TableCell>
@@ -47,7 +48,7 @@ export default function TableBodyCourse(props) {
             <MdDeleteForever
               size={20}
               onClick={(e) => {
-                props.onDeleteUserCliked(props.course.id);
+                props.onDeleteCourseClicked(props.course);
                 e.stopPropagation();
               }}
             />

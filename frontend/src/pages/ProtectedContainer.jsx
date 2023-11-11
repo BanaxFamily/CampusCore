@@ -12,35 +12,14 @@ const ProtectedContainer = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [openSideNavigation, setOpenSideNavigation] = useState(false);
 
-  // console.log(props.userType);
-
-  // if (!props.userSignedIn) return <Navigate to="/login" replace={true} />;
   return (
     <>
-      <div className="mx-auto max-w-7xl ">
-        <Header
-          // isOpen={() => setOpenSideNavigation(!openSideNavigation)}
-          // state={openSideNavigation}
-        />
-        {/* <div className="flex sm:flex-col-reverse md:flex-row sm:justify-center items-center"> */}
+      <div className="mx-auto max-w-full 2xl:max-w-7xl static 2xl:relative">
+        <Header />
         <div className="flex sm:flex-col-reverse sm:justify-center md:flex-row ">
           <div className="hidden md:block w-full sm:w-1/2  md:w-[28%] lg:w-[25%]">
-            {/* {openSideNavigation && (
-              <div
-                className={` text-center px-8 fixed left-0 w-full sm:w-1/2  md:w-[24%] lg:w-1/5
-                md:block h-screen bg-mainBlueColor/90  z-50`}
-              >
-                <div className="w-full mt-10 opacity-80 hover:opacity-100 ">
-                  <Route
-                    userType={props.userType}
-                    onDismiss={() => setOpenSideNavigation(!openSideNavigation)}
-                  />
-                </div>
-              </div>
-            )} */}
-
             <div
-              className={`hidden fixed left-0 w-full sm:w-1/2  md:w-[24%] lg:w-1/5
+              className={`hidden fixed 2xl:absolute left-0 w-full sm:w-1/2  md:w-[24%] lg:w-1/5
                 md:block h-screen bg-mainBlueColor`}
             >
               <div className="w-full mt-10 opacity-80 hover:opacity-100 ">

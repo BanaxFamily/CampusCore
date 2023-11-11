@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
+import { TextField, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
-import * as UserApi from "../../../network/user_api";
-import Modal from "../Modal";
 import { useNavigate } from "react-router-dom";
+import * as UserApi from "../../../network/user_api";
 import DashBoarHeading from "../../reusable/DashBoardHeading";
+import Modal from "../Modal";
 
 export default function AddModalUser(props) {
   const navigate = useNavigate();
@@ -17,7 +18,6 @@ export default function AddModalUser(props) {
   async function onSubmit(credentials) {
     const response = await UserApi.addUser(credentials);
     console.log(credentials)
-    console.log(response)
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
@@ -26,6 +26,7 @@ export default function AddModalUser(props) {
       navigate(0);
     }
   }
+
   return (
     <Modal
       onDismiss={props.onClose}
@@ -36,161 +37,139 @@ export default function AddModalUser(props) {
           <form action="" onSubmit={handleSubmit(onSubmit)} >
             <div className="flex flex-col sm:flex-row sm:gap-1">
               <div className="w-full flex-col sm:flex sm:w-1/2 justify-start md:gap-[3px]">
-              <label
-                  className="text-[18px] md:text-[15px] font-[200]"
-                  htmlFor="idno"
-                >
-                  IDNO
-                </label>
-                <input
-                  className=" w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
-                  type="text"
+
+
+                <TextField
+                  id="outline-idno"
                   name="idno"
-                  placeholder="18XXXXX"
-                  id="idno"
-                  {...register("idno")}
+                  label="ID #"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
+                  {...register("idno", { required: true })}
                 />
                 <div className="flex flex-col w-full mt-1">
-                  <label
-                    className="text-[18px] md:text-[15px] font-[200]"
-                    htmlFor="roles"
-                  >
-                    Type of user
-                  </label>
-                  <select
-                    id="roles"
+                  <TextField
+                    id="filled-userType"
+                    select
+                    label="User type"
+                    // defaultValue="  "
+                    SelectProps={{
+                      native: true,
+                    }}
+                    helperText="Please select a type of user"
+                    variant="filled"
                     name="role"
                     {...register("role", { required: "select one option" })}
-                    className="w-full text-sm md:text-[12px] border-0 rounded-md bg-gray-300 py-2 md:py-2 px-4 "
                   >
-                    <option disabled value="" className="text-gray-300">
-                      --Choose user type
-                    </option>
+                    <option value=""></option>
                     <option value="Admin">Admin</option>
                     <option value="Faculty">Faculty</option>
                     <option value="PRC">PRC</option>
                     <option value="Dean">Dean</option>
                     <option value="Student">Student</option>
-                  </select>
+                  </TextField>
                 </div>
                 <div className="flex flex-col w-full ">
-                  <label
-                    className="text-[18px] md:text-[15px] font-[200]"
-                    htmlFor="status"
-                  >
-                    User status
-                  </label>
-                  <select
-                    id="status"
+
+                  <TextField
+                    id="filled-status"
+                    select
+                    label="Status"
+                    // defaultValue=""
+                    SelectProps={{
+                      native: true,
+                    }}
+
+                    helperText="Please select if user is active or not"
+                    variant="filled"
                     name="status"
                     {...register("status", { required: "select one option" })}
-                    className="w-full text-sm md:text-[12px] border-0 rounded-md bg-gray-300 py-2 md:py-2 px-4 "
                   >
-                    <option disabled value="" className="text-gray-300">
-                      --Choose user type
-                    </option>
+
+                    <option value=""></option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
-                  </select>
+                  </TextField>
                 </div>
 
-                <label
-                  className="text-[18px] md:text-[15px] font-[200]"
-                  htmlFor="firstname"
-                >
-                  Firstname
-                </label>
-                <input
-                  className=" bg-gray-300 rounded-lg w-full mr-2 py-2 px-4 md:py-1"
-                  type="text"
-                  name="firstname"
-                  placeholder="Paul"
-                  id="firstName"
+                <TextField
+                  id="outline-firstname"
+                  name="firstName"
+                  label="Firstname"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
                   {...register("firstName", { required: true })}
                 />
-                <label
-                  className="text-[18px] md:text-[15px] font-[200]"
-                  htmlFor="lastname"
-                >
-                  Lastname
-                </label>
-                <input
-                  className=" bg-gray-300 rounded-lg w-full mr-2 py-2 px-4 md:py-1"
-                  type="text"
-                  name="lastname"
-                  placeholder="Ebara"
-                  id="lastName"
+
+                <TextField
+                  id="outline-lastName"
+                  name="lastName"
+                  label="Lastname"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
                   {...register("lastName", { required: true })}
                 />
               </div>
 
               <div className="w-full sm:w-1/2 flex flex-col gap-[4px]">
-                <label
-                  className="text-[18px] md:text-[15px] font-[200]"
-                  htmlFor="username"
-                >
-                  Username
-                </label>
-                <input
-                  className=" w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
-                  type="username"
+
+
+                <TextField
+                  id="outline-username"
                   name="username"
-                  placeholder="xxxxxxx"
-                  id="username"
+                  label="Username"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
                   {...register("username", { required: true })}
                 />
-                <label
-                  className="text-[18px] md:text-[15px] font-[200]"
-                  htmlFor="email"
-                >
-                  Email address
-                </label>
-                <input
-                  className=" w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
-                  type="email"
+
+                <TextField
+                  id="outline-email"
                   name="email"
-                  placeholder="juan@gmail.com"
-                  id="email"
+                  label="Email"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
                   {...register("email", { required: true })}
                 />
 
-                <label
-                  className="text-[18px] md:text-[15px] font-[200]"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <input
-                  className="w-full bg-gray-300 rounded-lg  mr-2 py-2 px-4 md:py-1"
-                  type="password"
+
+                <TextField
+                  id="outline-password"
                   name="password"
-                  placeholder="***********"
-                  id="password"
+                  label="Password"
+                  variant="filled"
+                  type="password"
+                  // value={selectedItem.id || ''}
+
                   {...register("password", { required: true })}
                 />
 
-                <label
-                  className="text-[18px]  md:text-[15px] font-[200]"
-                  htmlFor="rePassword"
-                >
-                  Confirm password
-                </label>
-                <input
-                  className="w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
-                  type="password"
+
+                <TextField
+                  id="outline-confirmPass"
                   name="rePassword"
-                  placeholder="juan@gmail.com"
-                  id="rePassword"
+                  label="Confirm password"
+                  variant="filled"
+                  type="password"
+                  // value={selectedItem.id || ''}
+
                   {...register("rePassword", { required: true })}
                 />
-                <button
+                <Button
+                  type="submit"
                   disabled={isSubmitting}
-                  className="bg-mainBlueColor text-white font-bold
-                  w-full md:w-3/4 flex self-end justify-center  rounded-lg
+                  variant="contained"
+                  className="text-white font-bold
+                  w-full md:w-3/4 flex place-self-end justify-end  rounded-lg
                   py-4 mt-4 tracking-wider md:py-2"
                 >
                   Add account
-                </button>
+                </Button>
               </div>
             </div>
           </form>

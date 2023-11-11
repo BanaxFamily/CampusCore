@@ -9,7 +9,7 @@ import { TableCell, TableRow } from "@mui/material";
 
 export default function TableBodyUser(props) {
   return (
-    <TableRow>
+    <TableRow className="hover:bg-slate-200">
       <TableCell className={props.className}>{props.index}</TableCell>
       <TableCell className={props.className}>{props.user.idno}</TableCell>
       <TableCell className={props.className}>{props.user.username}</TableCell>
