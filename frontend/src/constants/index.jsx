@@ -63,25 +63,32 @@ export const adminLinks = [
   {
     id: "repository",
     link: "manage/repository",
-    title: "Manage repository",
-    icon: <LuGraduationCap size={20} />,
-  },
-  {
-    id: "profile",
-    link: "manage/profile",
-    title: "Manage profile",
+    title: " repository",
     icon: <LuGraduationCap size={20} />,
   },
   {
     id: "profile",
     link: "manage/course",
-    title: "Manage course",
+    title: "Course management",
+    icon: <LuGraduationCap size={20} />,
+  },
+  {
+    id: "profile",
+    link: "manage/profile",
+    title: "Manage Profile",
     icon: <LuGraduationCap size={20} />,
   },
   {
     id: "repository",
     link: "/manage/user",
     title: "Manage users",
+    icon: <AiOutlineHome size={20} />,
+  },
+
+  {
+    id: "repository",
+    link: "/faculty/course/loads",
+    title: "Faculty course loads",
     icon: <AiOutlineHome size={20} />,
   },
   {

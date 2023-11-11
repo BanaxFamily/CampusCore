@@ -19,7 +19,7 @@ namespace CampusCore.API.Controllers
        
         // /api/auth/add
         [HttpPost("add")]
-        public async Task<IActionResult> UserAddAsync(UserAddViewModel model)
+        public async Task<IActionResult> UserAddAsync([FromBody] UserAddViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -61,7 +61,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync(UserDeleteViewModel model)
+        public async Task<IActionResult> DeleteAsync([FromBody] UserDeleteViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace CampusCore.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateAsync(UserUpdateViewModel model)
+        public async Task<IActionResult> UpdateAsync([FromBody]UserUpdateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -89,12 +89,12 @@ namespace CampusCore.API.Controllers
 
                 return BadRequest(result);
             }
-            return BadRequest("Some properties are not valid for delete"); //status code: 400
+            return BadRequest("Some properties are not valid for update"); //status code: 400
         }
 
         // /api/auth/login
         [HttpPost ("login")]
-        public async Task<IActionResult> LoginAsync(UserLoginViewModel model)
+        public async Task<IActionResult> LoginAsync([FromBody] UserLoginViewModel model)
         {
             if (ModelState.IsValid) 
             {

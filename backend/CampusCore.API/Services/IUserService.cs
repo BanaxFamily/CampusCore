@@ -200,9 +200,9 @@ public class UserService : IUserService
                     {
                         Id = user.Id,
                         Username = user.UserName,
-                        HashedPassword = user.PasswordHash,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
+                        Email = user.Email,
                         Status = user.Status,
                         Role = string.Join(", ", roles)
                 });
@@ -347,25 +347,37 @@ public class UserService : IUserService
         try
         {
             var user = await _userManager.FindByIdAsync(model.Id);
+            var userRole = await _userManager.GetRolesAsync(user);
 
             if (user == null)
             {
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
+
                     Message = "user not found",
                     Errors = new List<string> { "user with the specified ID does not exist" }
+
                 };
             }
 
             // Update the user properties from the model
             
+
             user.Idno = model.Idno;
             user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Status = model.Status;
+
+
+            if (userRole.Contains(model.Role))
+            {
+                await _userManager.RemoveFromRoleAsync(user, userRole[0]);
+                await _userManager.AddToRoleAsync(user, model.Role);
+            }
+            
 
             // Save changes to the database
             var result = await _userManager.UpdateAsync(user);

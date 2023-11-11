@@ -100,13 +100,13 @@ namespace CampusCore.Shared
 
     public class UserUpdateViewModel
     {
-        [Required]
-        public string Id;
 
         [RequiredIf("Role != Admin", ErrorMessage = "Enter Id number")]
         [MaxLength(10)]
         [MinLength(8, ErrorMessage = "Minimum of 8 characters")]
         public string Idno;
+
+        public string Id { get; set; }
 
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address")]
@@ -116,14 +116,6 @@ namespace CampusCore.Shared
         [MaxLength(50)]
         [MinLength(4)]
         public string Username { get; set; }
-
-        [Required]
-        [MinLength(6, ErrorMessage = "Password must not be less than 6 characters")]
-        [MaxLength(30, ErrorMessage = "Password must not be more than 30 characters")]
-        public string Password { get; set; }
-        [Required]
-        [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
-        public string RePassword { get; set; }
 
         [Required]
         [MaxLength(60)]
@@ -147,7 +139,7 @@ namespace CampusCore.Shared
     public class UserGetByRoleViewModel
     {
         [Required]
-        [AssertThat("Contains('Admin', Role) || Contains('Dean', Role) || Contains('Faculty', Role) || Contains('Student', Role) || Contains('PRC', Role)")]
+        //[AssertThat("Contains('Admin', Role) || Contains('Dean', Role) || Contains('Faculty', Role) || Contains('Student', Role) || Contains('PRC', Role)")]
         public string Role { get; set; }
     }
 
@@ -155,9 +147,9 @@ namespace CampusCore.Shared
     {
         public string Id { get; set; }
         public string Username { get; set; }    
-        public string HashedPassword { get; set; }
         public string FirstName { get; set;}
         public string LastName { get; set;}
+        public string Email { get; set; }
         public string Status { get; set; }
         public string Role { get; set; }
 
