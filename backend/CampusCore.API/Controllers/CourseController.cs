@@ -19,7 +19,7 @@ namespace CampusCore.API.Controllers
 
             // /api/course/create
             [HttpPost("create")]
-            [Authorize(Roles = "Admin")]
+            //[Authorize(Roles = "Admin")]
             public async Task<IActionResult> CreateAsync(CourseAddViewModel model)
             {
                 if (ModelState.IsValid)
@@ -37,11 +37,26 @@ namespace CampusCore.API.Controllers
             // /api/course/viewList
             //insert method here
             [HttpGet("viewList")]
-            public async Task<IActionResult> ViewListAsync(CourseListViewModel model)
+            public async Task<IActionResult> ViewListAsync()
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _courseService.ViewCourseListAsync(model);
+                    var result = await _courseService.ViewCourseListAsync();
+
+                    if (result.IsSuccess)
+                        return Ok(result); //Status code: 200
+
+                    return BadRequest(result);
+                }
+                return BadRequest("Some properties are not valid"); //status code: 400
+            }
+            //api/course/search
+            [HttpPost("search")]
+            public async Task<IActionResult> SearchAsync(CourseSearchViewModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _courseService.SearchCourseAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -52,8 +67,8 @@ namespace CampusCore.API.Controllers
             }
 
             [HttpDelete("delete")]
-            [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
+            //  [Authorize(Roles = "Admin")]
+            public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
             {
                 if (ModelState.IsValid)
                 {
@@ -68,10 +83,10 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid for delete"); //status code: 400
             }
 
-            // /api/course/update
+                // /api/course/update
             [HttpPut("update")]
-            [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateAsync([FromBody] CourseUpdateViewModel model)
+            //[Authorize(Roles = "Admin")]
+            public async Task<IActionResult> UpdateAsync([FromBody] CourseUpdateViewModel model)
             {
                 if (ModelState.IsValid)
                 {

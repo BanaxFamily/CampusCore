@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { Navigate } from "react-router-dom";
+import { Navigate, redirect } from "react-router-dom";
 import campusCoreImg from "../../assets/CAMPUSCORE.png";
 import * as UserApi from "../../network/user_api";
 import Footer from "./Footer";
@@ -19,16 +19,12 @@ const Login = () => {
     return <Navigate to="/" replace={true} />;
   }
   async function onSubmit(credentials) {
-    const user = await UserApi.signIn(credentials);
-    if (user.status === 200) {
-      const data = await user.json();
-      const token = data.message; // Adjust this to match your backend response structure
-
-      // Store the JWT token in localStorage
-      localStorage.setItem('token', token);
+    const response = await UserApi.signIn(credentials);
+    if ( response.isSuccess === true) {
+      localStorage.setItem('token', response.token);
+      redirect("/home")
     } else {
-      // Handle login failure, e.g., show an error message
-      console.error("Login failed.");
+      alert(`Error: ${response.status}`);
     }
   }
 

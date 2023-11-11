@@ -30,6 +30,8 @@ namespace CampusCore.API.Models
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<AnnouncementComment> AnnouncementComments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<PublicResearchRepository> ResearchRepository { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -150,7 +152,7 @@ namespace CampusCore.API.Models
                 .WithMany()
                 .HasForeignKey(n => n.UserId);
             builder.Entity<PublicResearchRepository>()
-                .HasOne(prr => prr.SubmissionList)
+                .HasOne(prr => prr.Submission)
                 .WithMany()
                 .HasForeignKey(prr => prr.SubmissionId);
 

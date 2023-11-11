@@ -177,16 +177,11 @@ namespace CampusCore.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OfferedCourseId");
 
                     b.HasIndex("StudentId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("CourseEnrollments");
                 });
@@ -409,7 +404,7 @@ namespace CampusCore.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubmissionId")
+                    b.Property<int?>("SubmissionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -423,7 +418,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("SubmissionId");
 
-                    b.ToTable("PublicResearchRepository");
+                    b.ToTable("ResearchRepository");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.StudentGroup", b =>
@@ -441,16 +436,11 @@ namespace CampusCore.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
                     b.HasIndex("StudentId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("StudentGroups");
                 });
@@ -466,12 +456,6 @@ namespace CampusCore.API.Migrations
                     b.Property<DateTime>("DateApproved")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeliverableId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OfferedCourseId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StudentGroupId")
                         .HasColumnType("int");
 
@@ -480,10 +464,6 @@ namespace CampusCore.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DeliverableId");
-
-                    b.HasIndex("OfferedCourseId");
 
                     b.HasIndex("StudentGroupId");
 
@@ -515,9 +495,7 @@ namespace CampusCore.API.Migrations
                     b.ToTable("SubmissionIssues");
                 });
 
-
             modelBuilder.Entity("CampusCore.API.Models.SubmissionVersion", b =>
-
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -525,23 +503,19 @@ namespace CampusCore.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-
                     b.Property<int>("SubmissionId")
                         .HasColumnType("int");
-
 
                     b.Property<int>("VersionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-
                     b.HasIndex("SubmissionId");
 
                     b.HasIndex("VersionId");
 
                     b.ToTable("SubmissionVersions");
-
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>
@@ -804,13 +778,15 @@ namespace CampusCore.API.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Idno")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -914,10 +890,6 @@ namespace CampusCore.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CampusCore.API.Models.User", null)
-                        .WithMany("Enrollments")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("OfferedCourse");
 
                     b.Navigation("Student");
@@ -1003,13 +975,11 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.PublicResearchRepository", b =>
                 {
-                    b.HasOne("CampusCore.API.Models.SubmissionList", "SubmissionList")
+                    b.HasOne("CampusCore.API.Models.Submission", "Submission")
                         .WithMany()
-                        .HasForeignKey("SubmissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubmissionId");
 
-                    b.Navigation("SubmissionList");
+                    b.Navigation("Submission");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.StudentGroup", b =>
@@ -1026,10 +996,6 @@ namespace CampusCore.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CampusCore.API.Models.User", null)
-                        .WithMany("AdvisoreeGroups")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Group");
 
                     b.Navigation("Student");
@@ -1037,18 +1003,6 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.Submission", b =>
                 {
-                    b.HasOne("CampusCore.API.Models.Deliverable", "Deliverable")
-                        .WithMany()
-                        .HasForeignKey("DeliverableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CampusCore.API.Models.OfferedCourse", "OfferedCourse")
-                        .WithMany()
-                        .HasForeignKey("OfferedCourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CampusCore.API.Models.Group", "StudentGroup")
                         .WithMany()
                         .HasForeignKey("StudentGroupId")
@@ -1060,10 +1014,6 @@ namespace CampusCore.API.Migrations
                         .HasForeignKey("SubmitterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Deliverable");
-
-                    b.Navigation("OfferedCourse");
 
                     b.Navigation("StudentGroup");
 
@@ -1177,13 +1127,6 @@ namespace CampusCore.API.Migrations
                         .HasForeignKey("StudentGroupId");
 
                     b.Navigation("StudentGroup");
-                });
-
-            modelBuilder.Entity("CampusCore.API.Models.User", b =>
-                {
-                    b.Navigation("AdvisoreeGroups");
-
-                    b.Navigation("Enrollments");
                 });
 #pragma warning restore 612, 618
         }

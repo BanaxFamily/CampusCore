@@ -1,24 +1,27 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CampusCore.API.Services
 {
     public interface ICourseEnrollmentService
     {
         Task<ResponseManager> CreateCourseEnrollmentAsync(CourseEnrollmentAddViewModel model);
-        Task<ResponseManager> ViewCourseEnrollmentListAsync(CourseEnrollmentListViewModel model);
-        Task<ResponseManager> UpdateCourseEnrollmentAsync(CourseEnrollmentUpdateViewModel model);
+        Task<ResponseManager> ViewCourseEnrollmentAsync(string role, string studentId);
         Task<ResponseManager> DeleteCourseEnrollmentAsync(CourseEnrollmentDeleteViewModel model);
     }
 
     public class CourseEnrollmentService : ICourseEnrollmentService
     {
         private AppDbContext _context;
+
         public CourseEnrollmentService(AppDbContext context)
         {
             _context = context;
         }
+
         public async Task<ResponseManager> CreateCourseEnrollmentAsync(CourseEnrollmentAddViewModel model)
         {
             if (model == null)
@@ -103,64 +106,13 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> UpdateCourseEnrollmentAsync(CourseEnrollmentUpdateViewModel model)
+        
+
+        public async Task<ResponseManager> ViewCourseEnrollmentAsync(string role, string studentId)
         {
-            try
-            {
-                var courseEnrollment = await _context.CourseEnrollments.FindAsync(model.Id);
+            
 
-                if (courseEnrollment == null)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "Course not found",
-                        Errors = new List<string> { "Course with the specified ID does not exist" }
-                    };
-                }
-
-                // Update the course properties from the model
-                courseEnrollment.OfferedCourseId = model.OfferedCourseId;
-                courseEnrollment.StudentId = model.StudentId;
-
-                // Save changes to the database
-                var result = await _context.SaveChangesAsync();
-
-                if (result > 0)
-                {
-                    return new ResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "enrolled course updated successfully"
-                    };
-                }
-                else
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "enrolled course update failed",
-                        Errors = new List<string> { "Error occurred while updating the enrolled course" }
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ErrorResponseManager
-                {
-                    IsSuccess = false,
-                    Message = "An error occurred while updating the enrolled course",
-                    Errors = new List<string> { ex.Message }
-                };
-            }
-        }
-
-        public async Task<ResponseManager> ViewCourseEnrollmentListAsync(CourseEnrollmentListViewModel model)
-        {
-            string searchKey = model.SearchKey;
-            string studentId = model.StudentId;
-
-            if (string.IsNullOrEmpty(model.SearchKey) || string.IsNullOrWhiteSpace(model.SearchKey))
+            if(role == "Student")
             {
                 try
                 {
@@ -189,19 +141,14 @@ namespace CampusCore.API.Services
             {
                 try
                 {
-
-                    var searchResults = await _context.CourseEnrollments
-                        .Include(ce => ce.OfferedCourse)
-                        .Where(oc => EF.Functions.Like(oc.OfferedCourse.Course.Name, $"%{model.SearchKey}%"))
-                        .ToListAsync();
-
-
+                    var result = await _context.CourseEnrollments
+                                 .ToListAsync();
 
                     return new DataResponseManager
                     {
                         IsSuccess = true,
-                        Message = "enrolled course retrieved successfully",
-                        Data = searchResults
+                        Message = "Courses and students retrieved successfully",
+                        Data = result
                     };
                 }
                 catch (Exception ex)
@@ -209,12 +156,14 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "An error occurred while fetching enrolled course",
+                        Message = "An error occurred while fetching enrolled courses",
                         Errors = new List<string> { ex.Message }
                     };
                 }
             }
+            
+        }
 
-        }   
+       
     }
 }
