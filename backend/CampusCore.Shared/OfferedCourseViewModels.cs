@@ -19,7 +19,7 @@ namespace CampusCore.Shared
             First,
             Second,
             Summer
-    }
+        }
     }
 
     public class OfferedCourseUpdateViewModel
@@ -55,7 +55,30 @@ namespace CampusCore.Shared
     {
         public int Id { get; set; }
     }
+    public class OfferedCourseGetByIdModel
+    {
+        public int Id { get; set; }
+    }
+
+    public class OfferedCourseBySem
+    {
+        public string Sem { get; set; }
+        public int AcadYear { get; set; }
+        public enum Semester
+        {
+            First,
+            Second,
+            Summer
+        }
+    }
+
+    public class OfferedCourseByFacultyModel
+    {
+        public string Sem { get; set; }
+        public int AcadYear { get; set; }
+        public string FacultyId { get; set; }
+    }
 
 
-    
+
 }

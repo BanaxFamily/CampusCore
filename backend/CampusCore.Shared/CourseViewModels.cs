@@ -34,6 +34,12 @@ namespace CampusCore.Shared
     {
         public int Id { get; set; }
     }
+    
+    public class GetByIdModel
+    {
+        public int Id { get; set; }
+    }
+
 
     public class CourseUpdateViewModel
     {

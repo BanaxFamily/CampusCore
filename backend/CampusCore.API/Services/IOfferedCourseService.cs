@@ -8,8 +8,10 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateOfferedCourseAsync(OfferedCourseAddViewModel model);
         Task<ResponseManager> ViewOfferedCourseListAsync();
-        Task<ResponseManager> DeleteOfferedCourseAsync(OfferedCourseDeleteModel model); // New method to delete a course
+        Task<ResponseManager> DeleteOfferedCourseAsync(OfferedCourseDeleteModel model); 
         Task<ResponseManager> UpdateOfferedCourseAsync(OfferedCourseUpdateViewModel model);
+        Task<ResponseManager> ViewOfferedCourseBySemAsync(OfferedCourseBySem model);
+        Task<ResponseManager> OfferedCourseGetByIdAsync(OfferedCourseGetByIdModel model);
     }
 
     public class OfferedCourseService : IOfferedCourseService
@@ -186,87 +188,81 @@ namespace CampusCore.API.Services
                 };
             }
         }
+        public async Task<ResponseManager> ViewOfferedCourseBySemAsync(OfferedCourseBySem model)
+        {
+            try
+            {
+                var result = await _context.OfferedCourses
+                                            .Where(oc => oc.Sem == model.Sem && oc.AcadYear == model.AcadYear)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"Offered courses for {model.Sem} {model.AcadYear} retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching offered courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+        public async Task<ResponseManager> ViewOfferedCourseByFacultyAsync(OfferedCourseByFacultyModel model)
+        {
+            try
+            {
+                var result = await _context.OfferedCourses
+                                            .Where(oc => oc.Sem == model.Sem && oc.AcadYear == model.AcadYear && oc.FacultyId == model.FacultyId)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"Offered courses for {model.Sem} {model.AcadYear} retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching offered courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+        public async Task<ResponseManager> OfferedCourseGetByIdAsync(OfferedCourseGetByIdModel model)
+        {
+            try
+            {
+                var result = await _context.OfferedCourses.FindAsync(model.Id);
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"Offered course retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching offered courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
         
-        //public async Task<ResponseManager> SearchOfferedCourseListAsync(OfferedCourseSearchViewModel model)
-        //{
-        //    string searchKey = model.SearchKey;
-        //    string searchCategory = model.SearchCategory;
-
-        //    if (string.IsNullOrEmpty(model.SearchKey) || string.IsNullOrWhiteSpace(model.SearchKey))
-        //    {
-        //        try
-        //        {
-        //            var result = await _context.OfferedCourses.ToListAsync();
-
-        //            return new DataResponseManager
-        //            {
-        //                IsSuccess = true,
-        //                Message = "Offered courses retrieved successfully",
-        //                Data = result
-        //            };
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return new ErrorResponseManager
-        //            {
-        //                IsSuccess = false,
-        //                Message = "An error occurred while fetching offered courses",
-        //                Errors = new List<string> { ex.Message }
-        //            };
-        //        }
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            List<OfferedCourse> searchResults;
-
-        //            if (searchCategory == "Course")
-        //            {
-        //                searchResults = await _context.OfferedCourses
-        //                    .Include(oc => oc.Course)
-        //                    .Where(oc => EF.Functions.Like(oc.Course.Name, $"%{model.SearchKey}%"))
-        //                    .ToListAsync();
-        //            }
-        //            else if (searchCategory == "Faculty")
-        //            {
-        //                searchResults = await _context.OfferedCourses
-        //                    .Include(oc => oc.FacultyAssigned)
-        //                    .Where(oc => EF.Functions.Like(oc.FacultyAssigned.FirstName, $"%{model.SearchKey}%") ||
-        //                                 EF.Functions.Like(oc.FacultyAssigned.LastName, $"%{model.SearchKey}%"))
-        //                    .ToListAsync();
-        //            }
-        //            else
-        //            {
-        //                // Handle an unexpected search category
-        //                return new ErrorResponseManager
-        //                {
-        //                    IsSuccess = false,
-        //                    Message = "An error occurred while fetching offered courses",
-        //                    Errors = new List<string> { "Unexpected search category" }
-        //                };
-        //            }
-
-        //            return new DataResponseManager
-        //            {
-        //                IsSuccess = true,
-        //                Message = "Offered courses retrieved successfully",
-        //                Data = searchResults
-        //            };
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return new ErrorResponseManager
-        //            {
-        //                IsSuccess = false,
-        //                Message = "An error occurred while fetching offered courses",
-        //                Errors = new List<string> { ex.Message }
-        //            };
-        //        }
-        //    }
-
-            // Add a default return statement or throw an exception here.
-        //}
+        
     
 
     }
