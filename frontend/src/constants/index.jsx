@@ -40,15 +40,21 @@ export const studentLinks = [
     icon: <AiOutlineIssuesClose />,
   },
   {
-    id: "setting",
+    id: "issues",
     link: "/issues",
     title: "Issues",
     icon: <AiOutlineSetting />,
   },
   {
-    id: "setting",
-    link: "/timatable",
+    id: "timetable",
+    link: "/timetable",
     title: "Timetable",
+    icon: <AiOutlineSetting />,
+  },
+  {
+    id: "setting",
+    link: "/settings",
+    title: "Settings",
     icon: <AiOutlineSetting />,
   },
 ];
@@ -63,7 +69,7 @@ export const adminLinks = [
   {
     id: "repository",
     link: "manage/repository",
-    title: " repository",
+    title: "Repository",
     icon: <LuGraduationCap size={20} />,
   },
   {

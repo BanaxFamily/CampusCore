@@ -1,3 +1,4 @@
+import { TextField, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { BsArrowBarLeft } from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -57,151 +58,142 @@ export default function Edit() {
         <div className="shadow-md">
           <div className="p-2">
             <form action="" onSubmit={handleSubmit(updateConfirmation)}>
-              <div className="flex flex-col sm:flex-row sm:gap-1">
-                <div className="w-full flex-col sm:flex sm:w-1/2 justify-start md:gap-[3px]">
-                  <div className="flex flex-col w-full mt-1">
-                    <label
-                      className="text-[18px] md:text-[15px] font-[200]"
-                      htmlFor="roles"
-                    >
-                      Type of user
-                    </label>
-                    <select
-                      id="roles"
-                      name="role"
-                      {...register("role", { required: "select one option" })}
-                      className="w-full text-sm md:text-[12px] border-0 rounded-md bg-gray-300 py-2 md:py-2 px-4 "
-                    >
-                      <option disabled value="" className="text-gray-300">
-                        --Choose user type
-                      </option>
-                      <option value="Admin">Admin</option>
-                      <option value="Faculty">Faculty</option>
-                      <option value="PRC">PRC</option>
-                      <option value="Dean">Dean</option>
-                      <option value="Student">Student</option>
-                    </select>
-                  </div>
-                  <div className="flex flex-col w-full ">
-                    <label
-                      className="text-[18px] md:text-[15px] font-[200]"
-                      htmlFor="status"
-                    >
-                      User status
-                    </label>
-                    <select
-                      id="status"
-                      name="status"
-                      {...register("status", { required: "select one option" })}
-                      className="w-full text-sm md:text-[12px] border-0 rounded-md bg-gray-300 py-2 md:py-2 px-4 "
-                    >
-                      <option disabled value="" className="text-gray-300">
-                        --Choose user type
-                      </option>
-                      <option value="active">Active</option>
-                      <option value="in-active">In-active</option>
-                    </select>
-                  </div>
+            <div className="flex flex-col sm:flex-row sm:gap-1">
+              <div className="w-full flex-col sm:flex sm:w-1/2 justify-start md:gap-[3px]">
 
-                  <label
-                    className="text-[18px] md:text-[15px] font-[200]"
-                    htmlFor="firstname"
+
+                <TextField
+                  id="outline-idno"
+                  name="idno"
+                  label="ID #"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
+                  {...register("idno", { required: true })}
+                />
+                <div className="flex flex-col w-full mt-1">
+                  <TextField
+                    id="filled-userType"
+                    select
+                    label="User type"
+                    // defaultValue="  "
+                    SelectProps={{
+                      native: true,
+                    }}
+                    helperText="Please select a type of user"
+                    variant="filled"
+                    name="role"
+                    {...register("role", { required: "select one option" })}
                   >
-                    Firstname
-                  </label>
-                  <input
-                    className=" bg-gray-300 rounded-lg w-full mr-2 py-2 px-4 md:py-1"
-                    type="text"
-                    name="firstname"
-                    placeholder="Paul"
-                    id="firstName"
-                    {...register("firstName", { required: true })}
-                  />
-                  <label
-                    className="text-[18px] md:text-[15px] font-[200]"
-                    htmlFor="lastname"
+                    <option value=""></option>
+                    <option value="Admin">Admin</option>
+                    <option value="Faculty">Faculty</option>
+                    <option value="PRC">PRC</option>
+                    <option value="Dean">Dean</option>
+                    <option value="Student">Student</option>
+                  </TextField>
+                </div>
+                <div className="flex flex-col w-full ">
+
+                  <TextField
+                    id="filled-status"
+                    select
+                    label="Status"
+                    // defaultValue=""
+                    SelectProps={{
+                      native: true,
+                    }}
+
+                    helperText="Please select if user is active or not"
+                    variant="filled"
+                    name="status"
+                    {...register("status", { required: "select one option" })}
                   >
-                    Lastname
-                  </label>
-                  <input
-                    className=" bg-gray-300 rounded-lg w-full mr-2 py-2 px-4 md:py-1"
-                    type="text"
-                    name="lastname"
-                    placeholder="Ebara"
-                    id="lastName"
-                    {...register("lastName", { required: true })}
-                  />
+
+                    <option value=""></option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </TextField>
                 </div>
 
-                <div className="w-full sm:w-1/2 flex flex-col gap-[3px]">
-                  <label
-                    className="text-[18px] md:text-[15px] font-[200]"
-                    htmlFor="username"
-                  >
-                    Username
-                  </label>
-                  <input
-                    className=" w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
-                    type="username"
-                    name="username"
-                    placeholder="xxxxxxx"
-                    id="username"
-                    {...register("username", { required: true })}
-                  />
-                  <label
-                    className="text-[18px] md:text-[15px] font-[200]"
-                    htmlFor="email"
-                  >
-                    Email address
-                  </label>
-                  <input
-                    className=" w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
-                    type="email"
-                    name="email"
-                    placeholder="juan@gmail.com"
-                    id="email"
-                    {...register("email", { required: true })}
-                  />
+                <TextField
+                  id="outline-firstname"
+                  name="firstName"
+                  label="Firstname"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
 
-                  <label
-                    className="text-[18px] md:text-[15px] font-[200]"
-                    htmlFor="password"
-                  >
-                    Password
-                  </label>
-                  <input
-                    className="w-full bg-gray-300 rounded-lg  mr-2 py-2 px-4 md:py-1"
-                    type="password"
-                    name="password"
-                    placeholder="***********"
-                    id="password"
-                    {...register("password", { required: true })}
-                  />
+                  {...register("firstName", { required: true })}
+                />
 
-                  <label
-                    className="text-[18px]  md:text-[15px] font-[200]"
-                    htmlFor="rePassword"
-                  >
-                    Confirm password
-                  </label>
-                  <input
-                    className="w-full bg-gray-300 rounded-lg mr-2 py-2 px-4 md:py-1"
-                    type="password"
-                    name="rePassword"
-                    placeholder="juan@gmail.com"
-                    id="rePassword"
-                    {...register("rePassword", { required: true })}
-                  />
-                </div>
+                <TextField
+                  id="outline-lastName"
+                  name="lastName"
+                  label="Lastname"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
+                  {...register("lastName", { required: true })}
+                />
               </div>
 
-              <button
-                disabled={isSubmitting}
-                className="bg-mainBlueColor text-white font-bold
-                w-full rounded-lg py-4 mt-4 tracking-wider md:py-2"
-              >
-                Add account
-              </button>
+              <div className="w-full sm:w-1/2 flex flex-col gap-[4px]">
+
+
+                <TextField
+                  id="outline-username"
+                  name="username"
+                  label="Username"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
+                  {...register("username", { required: true })}
+                />
+
+                <TextField
+                  id="outline-email"
+                  name="email"
+                  label="Email"
+                  variant="filled"
+                  // value={selectedItem.id || ''}
+
+                  {...register("email", { required: true })}
+                />
+
+
+                <TextField
+                  id="outline-password"
+                  name="password"
+                  label="Password"
+                  variant="filled"
+                  type="password"
+                  // value={selectedItem.id || ''}
+
+                  {...register("password", { required: true })}
+                />
+
+
+                <TextField
+                  id="outline-confirmPass"
+                  name="rePassword"
+                  label="Confirm password"
+                  variant="filled"
+                  type="password"
+                  // value={selectedItem.id || ''}
+
+                  {...register("rePassword", { required: true })}
+                />
+                <Button
+                  disabled={isSubmitting}
+                  variant="contained"
+                  className="text-white font-bold
+                  w-full md:w-3/4 flex place-self-end justify-end  rounded-lg
+                  py-4 mt-4 tracking-wider md:py-2"
+                >
+                  Add account
+                </Button>
+              </div>
+            </div>
             </form>
           </div>
         </div>

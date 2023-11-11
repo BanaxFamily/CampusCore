@@ -1,15 +1,20 @@
 /* eslint-disable react/prop-types */
+import { TableCell, TableRow } from "@mui/material";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { FaPencil } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
 
 export default function TableBodyCourse(props) {
   return (
-    <tr>
-      <td className={props.className}>{props.index}</td>
-      <td className={props.className}>{props.course.name}</td>
-      <td className={props.className}>{props.course.description}</td>
-      <td className="pt-2">
+    <TableRow
+      key={props.index}
+      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      className="hover:bg-slate-200"
+    >
+      <TableCell>{props.index}</TableCell>
+      <TableCell>{props.course.name}</TableCell>
+      <TableCell>{props.course.description}</TableCell>
+      <TableCell>
         {props.course.status === "open" ? (
           <form action="">
             <button>
@@ -23,8 +28,8 @@ export default function TableBodyCourse(props) {
             </button>
           </form>
         )}
-      </td>
-      <td>
+      </TableCell>
+      <TableCell>
         <div className="flex items-center justify-center">
           <button
             className="text-sm flex self-center text-green-500 uppercase px-
@@ -33,23 +38,23 @@ export default function TableBodyCourse(props) {
             <FaPencil size={20} onClick={props.openModalUpdate} />
           </button>
         </div>
-      </td>
-      <td>
+      </TableCell>
+      <TableCell>
         <div className="flex items-center justify-center">
           <button
             className="text-sm flex self-center text-red-500 uppercase px-
           hover:text-red-900 hover:cursor-pointer"
           >
             <MdDeleteForever
-              size={25}
+              size={20}
               onClick={(e) => {
-                props.onDeleteUserCliked(props.course.id);
+                props.onDeleteCourseClicked(props.course);
                 e.stopPropagation();
               }}
             />
           </button>
         </div>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 }
