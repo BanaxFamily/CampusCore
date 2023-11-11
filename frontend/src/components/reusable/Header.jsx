@@ -1,12 +1,10 @@
 /* eslint-disable react/prop-types */
 // import React from 'react'
 import { useState } from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { MdOutlineClose } from "react-icons/md";
 import logoImg from "../../assets/CAMPUSCORE.png";
-import Route from "./Route";
+import TemporaryDrawer from "./Drawer";
 export const Header = () => {
-  const [mobileMenu, setMobileMenu] = useState(false);
+  // const [mobileMenu, setMobileMenu] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [userName, setUserName] = useState("Maria Ty");
@@ -17,34 +15,14 @@ export const Header = () => {
     // Add logout logic here
   };
 
-  const openMobileMenu = () => {
-    setMobileMenu(!mobileMenu);
-  };
-
   return (
     <nav className="sticky top-0 bg-white shadow-xl pb-2 z-50">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className=" absolute md:hidden inset-y-0 left-0 flex items-center ">
-            {/* <!-- Mobile menu button--> */}
-            <button
-              onClick={openMobileMenu}
-              type="button"
-              className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 focus:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-              aria-controls="mobile-menu"
-              aria-expanded="false"
-            >
-              <span className="absolute -inset-0.5"></span>
-              <span className="sr-only">Open main menu</span>
-              {mobileMenu ? (
-                <MdOutlineClose />
-              ) : (
-                <GiHamburgerMenu color="gray" />
-              )}
-            </button>
+            <TemporaryDrawer/>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-center md:justify-start">
-            {/* <div className="flex flex-1 items-center justify-center "> */}
             <div className="flex flex-col flex-shrink-0 items-center md:items-start">
               <img
                 className="h-14 w-auto"
@@ -57,17 +35,7 @@ export const Header = () => {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {/* <span className="text-[12px] tracking-wide mr-2">Hi, User</span> */}
-            {/* <button
-              onClick={handleLogout}
-              type="button"
-              className="relative rounded-full bg-white p-1 text-gray-400 hover:bg-mainBlueColor hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-            >
-              <span className="absolute -inset-1.5"></span>
-              <AiOutlineCaretDown />
-            </button> */}
-
-            {/* <!-- Profile dropdown --> */}
+            
             <div className="relative ml-3">
               <div>
                 <button
@@ -92,19 +60,23 @@ export const Header = () => {
         </div>
       </div>
 
-      {mobileMenu && (
+      {/* {mobileMenu && (
         <div
-          className="fixed w-full h-screen flex flex-col items-center py-20
-                    bg-white/90 z-30
+          className=" w-full h-screen flex flex-col
+                    bg-white/90 fixed
                 "
         >
-          <Route
-            setProfileOpen={openMobileMenu}
-            userType="admin"
-            className="w-3/4 bg-mainBlueColor flex items-center justify-center"
-          />
+          <div className="bg-mainBlueColor w-1/2 h-full">
+            <div className="mt-16">
+              <Route
+                onClose={() => setMobileMenu(false)}
+                userType="admin"
+                className="w-3/4 flex items-center justify-center"
+              />
+            </div>
+          </div>
         </div>
-      )}
+      )} */}
 
       {isProfileOpen && (
         <div

@@ -11,11 +11,10 @@ const SideNav = (props) => {
         onClick={props.onDismiss}
         to={props.link}
         key={props.id}
-        className={`flex flex-row justify-start gap-6 w-full md:gap-6 group-hover:text-paleRed text-white`}
+        className={`flex flex-row gap-6 w-full md:gap-6 group-hover:text-paleRed text-white`}
       >
-        {props.icon}
-
-        <span className="text-2xl sm:text-lg md:text-sm lg:text-sm text-center tracking-wide">
+        <span className=" flex flex-row gap-6 text-[14px] sm:text-lg md:text-sm lg:text-sm justify-start tracking-wide">
+          {props.icon}
           {props.title}
         </span>
       </NavLink>

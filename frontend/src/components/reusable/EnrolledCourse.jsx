@@ -6,8 +6,8 @@ export default function EnrolledCourse(props) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {props.subject.map((course, index) => (
-        <div key={index} className=" mx-2 group cursor-pointer rounded-md ">
-          <div className="px-8 flex flex-col gap-2 py-4 shadow-md shadow-gray-400 group-hover:shadow-md group-hover:shadow-blue-700" >
+        <div key={index} className=" mx-2 group cursor-pointer ">
+          <div className="px-4 flex flex-col gap-2 pt-3 pb-8 shadow-md rounded-md shadow-gray-400 group-hover:shadow-md group-hover:shadow-blue-700" >
             <h3 className="tracking-wide font-semibold uppercase">
               {course}
             </h3>
