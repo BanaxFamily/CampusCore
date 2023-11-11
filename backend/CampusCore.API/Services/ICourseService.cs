@@ -9,6 +9,8 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model);
         Task<ResponseManager> ViewCourseListAsync();
+        Task<ResponseManager> ViewCourseListOpenAsync();
+        Task<ResponseManager> CourseGetByIdAsync(GetByIdModel model);
         Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model); 
         Task<ResponseManager> UpdateCourseAsync(CourseUpdateViewModel model);
         Task<ResponseManager> SearchCourseAsync(CourseSearchViewModel model);
@@ -120,14 +122,67 @@ namespace CampusCore.API.Services
                     };
                 }
         }
-           
-                
-            
 
-            // Add a default return statement or throw an exception here.
-        
+        public async Task<ResponseManager> ViewCourseListOpenAsync()
+        {
 
-    
+
+            try
+            {
+                var result = await _context.Courses
+                                           .Where(c => c.Status == "Open")
+                                           .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Courses retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+
+        public async Task<ResponseManager> CourseGetByIdAsync(GetByIdModel model)
+        {
+
+
+            try
+            {
+                var result = await _context.Courses.FindAsync(model.Id);
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Courses retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+
+        // Add a default return statement or throw an exception here.
+
+
+
 
         public async Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model)
         {
