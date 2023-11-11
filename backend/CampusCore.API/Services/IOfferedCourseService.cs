@@ -169,7 +169,10 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.OfferedCourses.ToListAsync();
+                var result = await _context.OfferedCourses
+                                            .Include(oc => oc.Course)
+                                            .Include(oc => oc.FacultyAssigned)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
@@ -194,6 +197,8 @@ namespace CampusCore.API.Services
             {
                 var result = await _context.OfferedCourses
                                             .Where(oc => oc.Sem == model.Sem && oc.AcadYear == model.AcadYear)
+                                            .Include(oc => oc.Course)
+                                            .Include(oc => oc.FacultyAssigned)
                                             .ToListAsync();
 
                 return new DataResponseManager
@@ -219,6 +224,7 @@ namespace CampusCore.API.Services
             {
                 var result = await _context.OfferedCourses
                                             .Where(oc => oc.Sem == model.Sem && oc.AcadYear == model.AcadYear && oc.FacultyId == model.FacultyId)
+                                            
                                             .ToListAsync();
 
                 return new DataResponseManager
@@ -242,7 +248,11 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.OfferedCourses.FindAsync(model.Id);
+                var result = await _context.OfferedCourses
+                                            .Include(oc => oc.Course)
+                                            .Include(oc => oc.FacultyAssigned)
+                                            .Where(oc => oc.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {

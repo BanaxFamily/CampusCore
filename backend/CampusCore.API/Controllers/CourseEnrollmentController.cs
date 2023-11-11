@@ -35,16 +35,14 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        // /api/course/viewList
-        //insert method here
-        [HttpGet("viewList")]
-        [Authorize(Roles = "Admin,Dean,Faculty,Student")]
-        public async Task<IActionResult> ViewListAsync()
+        // /api/course/create
+        [HttpPost("courseEnrolled")]
+        //[Authorize(Roles = "Student")]
+        public async Task<IActionResult> ViewCourseEnrolledAsync(GetEnrolledCourseViewModel model)
         {
-            var role = User.FindFirstValue(ClaimTypes.Role);
             if (ModelState.IsValid)
             {
-                var result = await _courseEnrollmentService.ViewCourseEnrollmentAsync(role,User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var result = await _courseEnrollmentService.GetAllCourseEnrolled(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -53,6 +51,22 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+        [HttpPost("enrolledStudents")]
+        //[Authorize(Roles = "Admin,Dean,Faculty")]
+        public async Task<IActionResult> GetEnrolledStudents(GetEnrolledStudentsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _courseEnrollmentService.GetEnrolledStudents(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
 
         [HttpDelete("delete")]
         [Authorize(Roles = "Admin,Dean")]
