@@ -56,7 +56,7 @@ namespace CampusCore.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _courseService.ViewCourseListAsync();
+                var result = await _courseService.ViewCourseListOpenAsync();
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200

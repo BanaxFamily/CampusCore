@@ -53,7 +53,7 @@ namespace CampusCore.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _issueService.ViewIssueListAsync();
+                var result = await _issueService.ViewIssueListOpenAsync();
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200

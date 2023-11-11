@@ -132,7 +132,7 @@ namespace CampusCore.API.Services
             try
             {
                 var result = await _context.Issues
-                                           .Where(c => c.Status == "Open")
+                                           .Where(i => i.Status == "Open")
                                            .ToListAsync();
 
                 return new DataResponseManager
