@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 const SideNav = (props) => {
   return (
     <div
-      className={`${props.classNames}  flex items-center shadow-gray-400 mb-2 p-2 rounded-full hover:scale-110 ease-in duration-300 group`}
+      className={`${props.classNames}  flex items-center shadow-gray-400 mb-2 p-2 rounded-full hover:scale-90 ease-in duration-300 group`}
     >
       <NavLink
         onClick={props.onDismiss}

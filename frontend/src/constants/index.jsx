@@ -1,11 +1,4 @@
-import { LuGraduationCap } from "react-icons/lu";
-import {
-  AiOutlineFileSearch,
-  AiOutlineIssuesClose,
-  AiOutlineSetting,
-  AiOutlineHome,
-} from "react-icons/ai";
-import { RiGitRepositoryCommitsLine } from "react-icons/ri";
+import { Book, CalendarMonth, DeveloperBoard, Groups, Home, LocalPostOffice, People, Person, Report, Settings, Storage, SyncProblem } from "@mui/icons-material";
 import { BiRightArrowAlt } from "react-icons/bi";
 
 export const studentLinks = [
@@ -13,49 +6,49 @@ export const studentLinks = [
     id: "home",
     link: "/",
     title: "Home",
-    icon: <AiOutlineHome />,
+    icon: <Home/>
   },
   {
     id: "profile",
     link: "/manage/profile",
     title: "Manage profile",
-    icon: <LuGraduationCap />,
+    icon: <Person />,
   },
   {
     id: "research",
     link: "/research",
     title: "Research repository",
-    icon: <AiOutlineFileSearch />,
+    icon: <Storage />,
   },
   {
     id: "course",
     link: "/course",
     title: "Courses",
-    icon: <RiGitRepositoryCommitsLine />,
+    icon: <Book />,
   },
   {
     id: "deliverable",
     link: "/deliverable",
     title: "Deliverables",
-    icon: <AiOutlineIssuesClose />,
+    icon: <DeveloperBoard />,
   },
   {
     id: "issues",
     link: "/issues",
     title: "Issues",
-    icon: <AiOutlineSetting />,
+    icon: <SyncProblem />,
   },
   {
     id: "timetable",
     link: "/timetable",
     title: "Timetable",
-    icon: <AiOutlineSetting />,
+    icon: <CalendarMonth />,
   },
   {
     id: "setting",
     link: "/settings",
     title: "Settings",
-    icon: <AiOutlineSetting />,
+    icon: <Settings />,
   },
 ];
 
@@ -64,44 +57,50 @@ export const adminLinks = [
     id: "home",
     link: "/",
     title: "Home",
-    icon: <AiOutlineHome size={20} />,
+    icon: <Home />,
   },
   {
     id: "repository",
     link: "manage/repository",
     title: "Repository",
-    icon: <LuGraduationCap size={20} />,
+    icon: <Storage />,
   },
   {
     id: "profile",
     link: "manage/course",
     title: "Course management",
-    icon: <LuGraduationCap size={20} />,
+    icon: <Book />,
   },
   {
     id: "profile",
     link: "manage/profile",
     title: "Manage Profile",
-    icon: <LuGraduationCap size={20} />,
+    icon: <Person />,
   },
   {
     id: "repository",
     link: "/manage/user",
     title: "Manage users",
-    icon: <AiOutlineHome size={20} />,
+    icon: <People />,
   },
 
   {
     id: "repository",
     link: "/faculty/course/loads",
     title: "Faculty course loads",
-    icon: <AiOutlineHome size={20} />,
+    icon: <LocalPostOffice />,
   },
   {
     id: "users",
     link: "/reports",
     title: "Generate reports",
-    icon: <LuGraduationCap size={20} />,
+    icon: <Report />,
+  },
+  {
+    id: "setting",
+    link: "/settings",
+    title: "Settings",
+    icon: <Settings />,
   },
 ];
 
@@ -125,5 +124,39 @@ export const userManagementPath = [
     link: "/manage/user/add",
     title: "Add new user",
     icon: <BiRightArrowAlt />,
+  },
+];
+
+export const deanLink = [
+  {
+    id: "home",
+    link: "/",
+    title: "Home",
+    icon: <Home />,
+  },
+  {
+    id: "course",
+    link: "/courses",
+    title: "Courses",
+    icon: <Book />,
+  },
+  {
+    id: "profile",
+    link: "/deliverable-management",
+    title: "Deliverable management",
+    icon: <DeveloperBoard />,
+  },
+
+  {
+    id: "groups",
+    link: "/student-groups",
+    title: "Manage student groups",
+    icon: <Groups />,
+  },
+  {
+    id: "setting",
+    link: "/settings",
+    title: "Settings",
+    icon: <Settings/>,
   },
 ];

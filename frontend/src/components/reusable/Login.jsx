@@ -1,28 +1,34 @@
 // import { useState } from 'react'
+import { jwtDecode } from "jwt-decode";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { Navigate, redirect } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import campusCoreImg from "../../assets/CAMPUSCORE.png";
 import * as UserApi from "../../network/user_api";
 import Footer from "./Footer";
 
-const Login = () => {
+const Login = ({isLoginSuccessful}) => {
   // eslint-disable-next-line no-unused-vars
-  const userType = 'admin'
+  // WHEN USER AUTH AND ACCESSES THE LOGIN COMPONENT REDIRECTED TO PRIVATE ROUTE BUT ROUTES HAS GONE NEED
+  // TO BE FIXED 
+  const navigate = useNavigate()
+  // const [role, setRole] = useState("")
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
 
-  if (localStorage.getItem('token')) {
-    return <Navigate to="/" replace={true} />;
+  if (localStorage.getItem('role')) {
+    return <Navigate to="/home" replace="true"/>
   }
   async function onSubmit(credentials) {
     const response = await UserApi.signIn(credentials);
-    if ( response.isSuccess === true) {
+    if (response.isSuccess === true) {
       localStorage.setItem('token', response.token);
-      redirect("/home")
+      const decoded_token = jwtDecode(localStorage.getItem('token'))
+      isLoginSuccessful(decoded_token)
+      navigate("/home")
     } else {
       alert(`Error: ${response.status}`);
     }

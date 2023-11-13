@@ -17,7 +17,6 @@ export default function AddModalUser(props) {
 
   async function onSubmit(credentials) {
     const response = await UserApi.addUser(credentials);
-    console.log(credentials)
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {

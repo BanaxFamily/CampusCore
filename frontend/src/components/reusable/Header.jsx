@@ -3,6 +3,7 @@
 import { useState } from "react";
 import logoImg from "../../assets/CAMPUSCORE.png";
 import TemporaryDrawer from "./Drawer";
+import Logout from "./Logout";
 export const Header = () => {
   // const [mobileMenu, setMobileMenu] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
@@ -38,7 +39,7 @@ export const Header = () => {
             
             <div className="relative ml-3">
               <div>
-                <button
+                {/* <button
                   type="button"
                   className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   id="user-menu-button"
@@ -53,30 +54,15 @@ export const Header = () => {
                     src={logoImg}
                     alt={userName}
                   />
-                </button>
+                </button> */}
+                <Logout />
+
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* {mobileMenu && (
-        <div
-          className=" w-full h-screen flex flex-col
-                    bg-white/90 fixed
-                "
-        >
-          <div className="bg-mainBlueColor w-1/2 h-full">
-            <div className="mt-16">
-              <Route
-                onClose={() => setMobileMenu(false)}
-                userType="admin"
-                className="w-3/4 flex items-center justify-center"
-              />
-            </div>
-          </div>
-        </div>
-      )} */}
 
       {isProfileOpen && (
         <div
