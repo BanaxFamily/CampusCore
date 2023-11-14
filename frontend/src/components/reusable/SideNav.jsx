@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const SideNav = (props) => {
   return (
     <div
       className={`${props.classNames}  flex items-center shadow-gray-400 mb-2 p-2 rounded-full hover:scale-90 ease-in duration-300 group`}
     >
-      <NavLink
+      <Link
         onClick={props.onDismiss}
         to={props.link}
         key={props.id}
@@ -17,7 +17,7 @@ const SideNav = (props) => {
           {props.icon}
           {props.title}
         </span>
-      </NavLink>
+      </Link>
     </div>
   );
 };
