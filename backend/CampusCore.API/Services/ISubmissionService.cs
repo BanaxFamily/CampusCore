@@ -92,6 +92,8 @@ namespace CampusCore.API.Services
             try
             {
                 var submission = await _context.Submissions.FindAsync(model.Id);
+                var cds = await _context.CourseDeliverableSubmissions
+                                        .FirstAsync(cds => cds.SubmissionId == model.Id);
 
                 if (submission == null)
                 {
@@ -103,6 +105,7 @@ namespace CampusCore.API.Services
                     };
                 }
 
+                _context.CourseDeliverableSubmissions.Remove(cds);
                 _context.Submissions.Remove(submission);
                 var result = await _context.SaveChangesAsync();
 
