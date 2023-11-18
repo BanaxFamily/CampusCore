@@ -29,6 +29,9 @@ namespace CampusCore.API.Models
         public int CourseId { get; set; }
         public Course Course { get; set; }
 
+        // does it need deans approval?
+        public bool IsNeedDeansApproval { get; set; }
+
 
     }
 }

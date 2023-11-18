@@ -12,6 +12,9 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateOfferedCourseAsync(OfferedCourseUpdateViewModel model);
         Task<ResponseManager> ViewOfferedCourseBySemAsync(OfferedCourseBySem model);
         Task<ResponseManager> OfferedCourseGetByIdAsync(OfferedCourseGetByIdModel model);
+        Task<ResponseManager> OfferedCourseGetNeedDeansApprovalAsync();
+
+
     }
 
     public class OfferedCourseService : IOfferedCourseService
@@ -33,7 +36,8 @@ namespace CampusCore.API.Services
                 AcadYear = model.AcadYear,
                 Schedule = model.Schedule,
                 FacultyId = model.FacultyId,
-                CourseId = model.CourseId
+                CourseId = model.CourseId,
+                IsNeedDeansApproval = model.IsNeedDeansApproval,
 
             };
 
@@ -132,6 +136,7 @@ namespace CampusCore.API.Services
                 offeredCourse.Schedule = model.Schedule;
                 offeredCourse.FacultyId = model.FacultyId;
                 offeredCourse.CourseId = model.CourseId;
+                offeredCourse.IsNeedDeansApproval = model.IsNeedDeansApproval;
 
                 // Save changes to the database
                 var result = await _context.SaveChangesAsync();
@@ -205,6 +210,33 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = true,
                     Message = $"Offered courses for {model.Sem} {model.AcadYear} retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching offered courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+        public async Task<ResponseManager> OfferedCourseGetNeedDeansApprovalAsync()
+        {
+            try
+            {
+                var result = await _context.OfferedCourses
+                                            .Where(oc => oc.IsNeedDeansApproval == true)
+                                            .Include(oc => oc.Course)
+                                            .Include(oc => oc.FacultyAssigned)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"Offered courses retrieved successfully",
                     Data = result
                 };
             }

@@ -20,6 +20,7 @@ namespace CampusCore.Shared
             Second,
             Summer
         }
+        public bool IsNeedDeansApproval { get; set; }
     }
 
     public class OfferedCourseUpdateViewModel
@@ -37,6 +38,7 @@ namespace CampusCore.Shared
             Second,
             Summer
         }
+        public bool IsNeedDeansApproval { get; set; }
     }
 
     public class OfferedCourseSearchViewModel
@@ -49,7 +51,21 @@ namespace CampusCore.Shared
             Course,
             Faculty
         }
+        public bool IsNeedDeansApproval { get; set; }
     }
+
+    //public class OfferedCourseGetNeedDeansApprovalModel
+    //{
+    //    public string Sem { get; set; }
+    //    public int AcadYear { get; set; }
+    //    public enum Semester
+    //    {
+    //        First,
+    //        Second,
+    //        Summer
+    //    }
+    //    public bool IsNeedDeansApproval { get; set; }
+    //}
 
     public class OfferedCourseDeleteModel
     {
@@ -77,6 +93,7 @@ namespace CampusCore.Shared
         public string Sem { get; set; }
         public int AcadYear { get; set; }
         public string FacultyId { get; set; }
+        public bool IsNeedDeansApproval { get; set; }
     }
 
 
