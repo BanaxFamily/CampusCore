@@ -11,11 +11,11 @@ namespace CampusCore.API.Controllers
     {
         
        
-            private IDeliverableServices _deliverableService;
+            private IDeliverableServices deliverableService;
 
             public DeliverableController(IDeliverableServices deliverableService)
             {
-                _deliverableService = deliverableService;
+                deliverableService = deliverableService;
             }
 
             // /api/deliverable/create
@@ -25,7 +25,7 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _deliverableService.CreateDeliverableAsync(model);
+                    var result = await deliverableService.CreateDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -38,12 +38,12 @@ namespace CampusCore.API.Controllers
             // /api/deliverable/viewList
             //insert method here
             [HttpGet("viewList")]
-        [Authorize(Roles = "Dean,Faculty")]
+        //[Authorize(Roles = "Dean,Faculty")]
         public async Task<IActionResult> ViewListAsync()
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _deliverableService.ViewDeliverableAsync();
+                    var result = await deliverableService.ViewDeliverableAsync();
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -53,13 +53,13 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
         //api/deliverable/search
-        [Authorize(Roles = "Dean,Faculty")]
+       // [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("search")]
             public async Task<IActionResult> SearchAsync(DeliverableSearchViewModel model)
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _deliverableService.SearchDeliverableAsync(model);
+                    var result = await deliverableService.SearchDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -70,13 +70,13 @@ namespace CampusCore.API.Controllers
             }
 
             [HttpDelete("delete")]
-            [Authorize(Roles = "Dean")]
-            public async Task<IActionResult> DeleteAsync(DeliverableDeleteViewModel model)
+           // [Authorize(Roles = "Dean")]
+            public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
             {
                 if (ModelState.IsValid)
                 {
 
-                    var result = await _deliverableService.DeleteDeliverableAsync(model);
+                    var result = await deliverableService.DeleteDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -93,7 +93,24 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _deliverableService.UpdateDeliverableAsync(model);
+                    var result = await deliverableService.UpdateDeliverableAsync(model);
+
+                    if (result.IsSuccess)
+                        return Ok(result); // Status code: 200
+
+                    return BadRequest(result);
+                }
+                return BadRequest("Some properties are not valid for update"); // Status code: 400
+            }
+
+            // /api/Deliverable/getById
+            [HttpPut("getById")]
+            [Authorize(Roles = "Dean")]
+            public async Task<IActionResult> GetByIdAsync([FromBody] IntIdViewModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await deliverableService.DeliverableGetByIdAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); // Status code: 200
@@ -104,6 +121,6 @@ namespace CampusCore.API.Controllers
             }
 
 
-        }
+    }
     
 }
