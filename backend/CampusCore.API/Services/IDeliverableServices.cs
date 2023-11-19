@@ -9,8 +9,10 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateDeliverableAsync(DeliverableAddViewModel model);
         Task<ResponseManager> ViewDeliverableAsync();
         Task<ResponseManager> UpdateDeliverableAsync(DeliverableUpdateViewModel model);
-        Task<ResponseManager> DeleteDeliverableAsync(DeliverableDeleteViewModel model);
+        Task<ResponseManager> DeleteDeliverableAsync(IntIdViewModel model);
         Task<ResponseManager> SearchDeliverableAsync(DeliverableSearchViewModel model);
+        Task<ResponseManager> DeliverableGetByIdAsync(IntIdViewModel model);
+
     }
 
     public class DeliverableService : IDeliverableServices
@@ -59,7 +61,7 @@ namespace CampusCore.API.Services
 
         }
 
-        public async Task<ResponseManager> DeleteDeliverableAsync(DeliverableDeleteViewModel model)
+        public async Task<ResponseManager> DeleteDeliverableAsync(IntIdViewModel model)
         {
             try
             {
@@ -107,6 +109,40 @@ namespace CampusCore.API.Services
             }
         }
 
+        public async Task<ResponseManager> DeliverableGetByIdAsync(IntIdViewModel model)
+        {
+            try
+            {
+                var deliverable = await _context.Deliverables.FindAsync(model.Id);
+
+                if(deliverable != null)
+                {
+                    return new DataResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Deliverables retrieved successfully",
+                        Data = deliverable
+                    };
+                }
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "No deliverable with specified id",
+                    Data = deliverable
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching deliverables",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+            
+        }
+
         public async Task<ResponseManager> SearchDeliverableAsync(DeliverableSearchViewModel model)
         {
             string searchKey = model.SearchKey;
@@ -118,7 +154,15 @@ namespace CampusCore.API.Services
                     .Where(oc => EF.Functions.Like(oc.Name, $"%{model.SearchKey}%"))
                     .ToListAsync();
 
-
+                if(searchResults.Count > 0)
+                {
+                    return new DataResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "No deliverables found",
+                        Data = searchResults
+                    };
+                }
 
                 return new DataResponseManager
                 {
@@ -198,10 +242,19 @@ namespace CampusCore.API.Services
             {
                 var result = await _context.Deliverables.ToListAsync();
 
+                if(result.Count >0)
+                {
+                    return new DataResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Deliverables retrieved successfully",
+                        Data = result
+                    };
+                }
                 return new DataResponseManager
                 {
                     IsSuccess = true,
-                    Message = "Deliverables retrieved successfully",
+                    Message = "No deliverables found",
                     Data = result
                 };
             }

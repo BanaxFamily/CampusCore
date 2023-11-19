@@ -21,11 +21,7 @@ namespace CampusCore.Shared
         public string Instruction { get; set; }
 
     }
-    public class DeliverableDeleteViewModel
-    {
-        public int Id { get; set; }
-
-    }
+    
     public class DeliverableUpdateViewModel
     {
         public int Id { get; set; }

@@ -8,7 +8,7 @@ namespace CampusCore.API.Services
     public interface IIssueService
     {
         Task<ResponseManager> CreateIssueAsync(IssueAddViewModel model);
-        Task<ResponseManager> ViewIssueListAsync();
+        Task<ResponseManager> ViewIssueListAsync(IntIdViewModel model);
         Task<ResponseManager> ViewIssueListOpenAsync();
         Task<ResponseManager> IssueGetByIdAsync(GetByIdModel model);
         Task<ResponseManager> DeleteIssueAsync(IssueDeleteModel model);
@@ -99,13 +99,16 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> ViewIssueListAsync()
+        public async Task<ResponseManager> ViewIssueListAsync(IntIdViewModel model)
         {
-
+            var submissionId = model.Id;
 
             try
             {
-                var result = await _context.Issues.ToListAsync();
+                var result = await _context.SubmissionIssues
+                                            .Where(si => si.SubmissionId == submissionId)
+                                            .Select(si=> si.Issue)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
