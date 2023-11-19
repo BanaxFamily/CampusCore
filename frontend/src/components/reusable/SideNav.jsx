@@ -14,7 +14,7 @@ const SideNav = (props) => {
         activeclassname="active"
         className={`flex flex-row gap-6 w-full md:gap-6 hover:text-paleRed text-black`}
       >
-        <span className=" flex flex-row gap-6 text-md lg:text-lg justify-start  leading-3">
+        <span className=" flex flex-row gap-6 text-sm md:text-sm lg:text-md justify-start  leading-3">
           {props.icon}
           {props.title}
         </span>

@@ -12,11 +12,11 @@ export default function View() {
     return (
         <>
             <BackNav>
-                <Link to="/courses/submission" className="text-blue-400 underline underline-offset-1 pr-2">
+                <Link to="/courses/submission" className="text-blue-400 underline underline-offset-3 pr-2">
                     <ArrowLeftSharp className="text-blue-400" />
                     Submission
                 </Link>
-                <NavLink activeclassname="active" className="text-blue-400 underline underline-offset-1 pr-2">
+                <NavLink activeclassname="active" className="text-blue-400 underline underline-offset-3 pr-2">
                     <ArrowLeftSharp className="text-blue-400" />
                     View
                 </NavLink>
@@ -26,9 +26,9 @@ export default function View() {
                 <DashBoardHeading classname="!py-6" desc="For approval file" title="" />
 
                 <Stack className="mt-2">
-                    <Typography variant="h5" component="h1" className="text-center">Final Version</Typography>
+                    <Typography variant="h6" component="h1" className="text-center">Final Version</Typography>
                 </Stack>
-                <div className="w-full h-[700px]">
+                <div className="w-full h-[650px]">
                     <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
                         <Viewer fileUrl={sampleFile} />
                     </Worker>

@@ -35,7 +35,7 @@ const ProtectedContainer = (props) => {
                     className={`  flex items-center shadow-gray-400 mb-2 p-2 rounded-full  ease-in duration-300 group`}
                   >
                     <NavLink to={'/logout'} onClick={logOutUser} className={'flex flex-row gap-6 w-full md:gap-6 group-hover:text-paleRed text-black'}>
-                      <span className=" flex flex-row gap-6 text-[14px] md:text-md lg:text-lg justify-start tracking-wide">
+                      <span className=" flex flex-row gap-6 text-sm md:text-md lg:text-lg justify-start tracking-wide">
                         <Logout />
                         Logout
                       </span>

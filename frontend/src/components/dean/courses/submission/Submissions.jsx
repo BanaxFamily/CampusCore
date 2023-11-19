@@ -1,4 +1,4 @@
-import { Button, Stack } from "@mui/material";
+import { Button, Divider, Stack } from "@mui/material";
 import { useState } from "react";
 import Approved from "./Approved";
 import BackNav from "./BackNav";
@@ -10,22 +10,22 @@ export default function Submissions() {
   return (
     <>
       <BackNav>
-        <Link to="/courses" className="text-blue-400 underline underline-offset-1 pr-2">
+        <Link to="/courses" className="text-blue-400 underline underline-offset-4 pr-2">
           <ArrowLeftSharp className="text-blue-400" />
             Courses
         </Link>
-        <NavLink activeclassname="active" className="text-blue-400 underline underline-offset-1 pr-2">
+        <NavLink activeclassname="active" className="text-blue-400 underline underline-offset-4 pr-2">
           <ArrowLeftSharp className="text-blue-400" />
             Submission
         </NavLink>
       </BackNav>
 
-      <Stack className="shadow-md mt-10 py-4 px-1" spacing={1} direction="row">
+      <Stack className="mt-10 py-4 px-1" spacing={1} direction="row">
         <Button variant={`${showApproved ? 'contained':'outlined'}`} onClick={() => setShowApproved(!showApproved)} className="h-12">For Review</Button>
         {/* <Divider orientation="vertical" variant="middle" flexItem sx={{border: 1, color: "GrayText"}}/> */}
         <Button variant="outlined">Approved</Button>
       </Stack>
-
+      <Divider/>
       {
         showApproved && <div className="mt-8"><Approved /></div>
       }
