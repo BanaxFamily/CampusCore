@@ -70,6 +70,7 @@ builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
 builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
+builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 
 
 var app = builder.Build();

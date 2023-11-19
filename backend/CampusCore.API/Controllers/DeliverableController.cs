@@ -11,11 +11,11 @@ namespace CampusCore.API.Controllers
     {
         
        
-            private IDeliverableServices deliverableService;
+            private IDeliverableServices _deliverableService;
 
             public DeliverableController(IDeliverableServices deliverableService)
             {
-                deliverableService = deliverableService;
+                _deliverableService = deliverableService;
             }
 
             // /api/deliverable/create
@@ -25,7 +25,7 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await deliverableService.CreateDeliverableAsync(model);
+                    var result = await _deliverableService.CreateDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -43,7 +43,7 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await deliverableService.ViewDeliverableAsync();
+                    var result = await _deliverableService.ViewDeliverableAsync();
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -59,7 +59,7 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await deliverableService.SearchDeliverableAsync(model);
+                    var result = await _deliverableService.SearchDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -76,7 +76,7 @@ namespace CampusCore.API.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    var result = await deliverableService.DeleteDeliverableAsync(model);
+                    var result = await _deliverableService.DeleteDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); //Status code: 200
@@ -93,7 +93,7 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await deliverableService.UpdateDeliverableAsync(model);
+                    var result = await _deliverableService.UpdateDeliverableAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); // Status code: 200
@@ -110,7 +110,7 @@ namespace CampusCore.API.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await deliverableService.DeliverableGetByIdAsync(model);
+                    var result = await _deliverableService.DeliverableGetByIdAsync(model);
 
                     if (result.IsSuccess)
                         return Ok(result); // Status code: 200
