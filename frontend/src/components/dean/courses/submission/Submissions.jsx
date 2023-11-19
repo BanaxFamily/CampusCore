@@ -10,12 +10,12 @@ export default function Submissions() {
   return (
     <>
       <BackNav>
-        <Link to="/courses" className="text-blue-400 underline underline-offset-4 pr-2">
-          <ArrowLeftSharp className="text-blue-400" />
+        <Link to="/courses" className="text-gray-400 underline font-semibold underline-offset-4 pr-2">
+          <ArrowLeftSharp className="text-gray-400" />
             Courses
         </Link>
-        <NavLink activeclassname="active" className="text-blue-400 underline underline-offset-4 pr-2">
-          <ArrowLeftSharp className="text-blue-400" />
+        <NavLink activeclassname="active" className="text-gray-400 underline font-semibold underline-offset-4 pr-2">
+          <ArrowLeftSharp className="text-gray-400" />
             Submission
         </NavLink>
       </BackNav>
