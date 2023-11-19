@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineFolderAdd } from "react-icons/ai";
@@ -48,18 +48,17 @@ export default function CourseWrapper({ courses }) {
     <WrapperLayout>
       <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
         <div className="flex ">
-          <div className="bg-blue-600 px-4 py-2 rounded-md group hover:bg-blue-400">
-            <span
-              className="text-sm flex items-center gap-1 text-white uppercase px-
-                group-hover:text-slate-300  hover:cursor-pointer"
+          <div className="py-2 rounded-md group">
+            <Button
+              onClick={() => setModalAMddCourse(true)}
+              variant="outlined"
+              className="mr-2 text-[15px] font-semibold hover:text-black"
             >
-              {" "}
               Add
               <AiOutlineFolderAdd
                 size={20}
-                onClick={() => setModalAMddCourse(true)}
               />
-            </span>
+            </Button>
           </div>
         </div>
         <span className="flex text-black ">
@@ -83,18 +82,18 @@ export default function CourseWrapper({ courses }) {
         </form>
       </div>
       <div className="overflow-auto border shadow-md h-[30rem] shadow-gray-500 rounded-sm">
-      <DynamicTable>
-        <TableHead>
-          <TableRow className="uppercase">
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell colSpan={2} align="center">action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {searchKey ? (
+        <DynamicTable>
+          <TableHead>
+            <TableRow className="uppercase">
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell colSpan={2} align="center">action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {searchKey ? (
               filteredCourse.length ? (
                 filteredCourse.map((course, index) => {
                   count++;
@@ -133,9 +132,9 @@ export default function CourseWrapper({ courses }) {
                 );
               })
             )}
-        </TableBody>
+          </TableBody>
         </DynamicTable>
-        
+
       </div>
       {/* </div> */}
 

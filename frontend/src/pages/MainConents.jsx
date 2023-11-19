@@ -7,9 +7,6 @@ import { useAuth } from '../utils/AuthContext'
 export default function MainContents() {
   const {user} = useAuth()
 
-  // if (!localStorage.getItem('role')) {
-  //   return <Navigate to="/login" replace={true}/>
-  // }
   return (
     user ? <ProtectedContainer component={<Main/>}/> : <Navigate to={'/login'} />
   )

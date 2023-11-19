@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import AddOfferedCourse from "./AddOfferedCourse";
 import * as CourseApi from "../../../network/course_api"
 import * as OfferedCourse from "../../../network/offeredCourse_api"
-import { TextField, Button, Divider } from "@mui/material";
+import { TextField, Button, Divider, Stack } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 
@@ -50,10 +50,10 @@ export default function CourseLoadWrapper() {
     <WrapperLayout>
       <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
         <div className="flex justify-between w-full">
-          <div className="flex flex-col gap-1">
+          <Stack direction="row" className="gap-2">
 
             <form action="" onSubmit={handleSubmit(sortBySemAndYear)} className="flex gap-1">
-              <div className="flex flex-col gap-1">
+              <Stack direction="row" className="gap-2">
                 <div className="flex gap-1">
 
 
@@ -65,7 +65,7 @@ export default function CourseLoadWrapper() {
                         marginTop: "-4px", // Adjust the vertical alignment of the label
                       },
                       "& .MuiInputBase-root": {
-                        height: 30,
+                        height: 35,
                       }
                     }}
                     id="filled-sem"
@@ -75,6 +75,7 @@ export default function CourseLoadWrapper() {
                       native: true,
                     }}
                     required
+                    variant="filled"
                     name="sem"
                     {...register("sem", { required: "select one option" })}
                   >
@@ -90,20 +91,21 @@ export default function CourseLoadWrapper() {
                         marginTop: "-4px", // Adjust the vertical alignment of the label
                       },
                       "& .MuiInputBase-root": {
-                        height: 30,
+                        height: 35,
                       }
                     }}
                     required
                     id="outline-year"
                     name="acadYear"
                     label="Year"
+                    variant="filled"
                     {...register("acadYear", { required: "this si required" })}
 
                   />
 
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="h-7 w-full flex self-end hover:text-black" variant="outlined"> Search</Button>
-              </div>
+                <Button type="submit" disabled={isSubmitting} className="w-full flex self-end hover:text-black" variant="outlined"> Search</Button>
+              </Stack>
 
             </form>
 
@@ -115,12 +117,12 @@ export default function CourseLoadWrapper() {
                 setSortedCourse(allOfferedCourseData);
               }}
               variant="outlined"
-              className="mr-2 flex w-full  h-7 self-end text-[15px] font-semibold hover:text-black"
+              className="mr-2 flex w-full  self-end text-[15px] font-semibold hover:text-black"
             >
               view all
             </Button>
 
-          </div>
+          </Stack>
           <div className=" flex flex-col gap-1 justify-center items-center  ">
             <Button
               onClick={() => {

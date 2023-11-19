@@ -1,10 +1,13 @@
-import { CircularProgress, Typography } from "@mui/material";
+import { Refresh } from "@mui/icons-material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as OfferedCourse from "../../../network/offeredCourse_api";
-import CardCourses from "../../reusable/CardCourses";
+import CardCourses from "./CardCourses";
 
 
 export default function Wrapper() {
+  const navigate = useNavigate()
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -25,6 +28,10 @@ export default function Wrapper() {
     }
     getOfferedCourses()
   }, [])
+
+  const refresh = () => {
+    navigate(0);
+  }
   return (
     <>
       {loading ? (
@@ -33,9 +40,15 @@ export default function Wrapper() {
         </div>
       ) : error ? (
         <div className="flex justify-center items-center h-[50vh]">
-          <Typography variant="p" color="error">
-            {error}
-          </Typography>
+          <div className="flex flex-col justify-center items-center">
+            <Button onClick={refresh} >
+              <Refresh
+                style={{ color: 'red' }} />
+            </Button>
+            <Typography variant="p" color="error" className="text-[12px]">
+              {error}
+            </Typography>
+          </div>
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

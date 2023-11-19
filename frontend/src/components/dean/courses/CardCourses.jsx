@@ -1,11 +1,12 @@
-import { Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
+import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 export default function CardCourses({ data }) {
 
   return (
 
     data.map((item, index) => (
-      <div className='shadow-md hover:border rounded-md hover:border-red-400 shadow-red-400' key={index} >
+      <div className='shadow-md rounded-md hover:shadow-gray-800 shadow-gray-300' key={index} >
 
         <Card sx={{ maxWidth: 'auto' , width: '100%', margin: 'auto'}} >
           <CardActionArea>
@@ -19,9 +20,9 @@ export default function CardCourses({ data }) {
             </CardContent>
           </CardActionArea>
           <CardActions sx={{justifyContent: 'flex-end'}}>
-            <Button size="small" color="primary" className='hover:text-gray-400'>
+            <Link to={`submission`} size="small" color="primary" className=' text-blue-300 hover:text-mainBlueColor'>
               Open
-            </Button>
+            </Link>
           </CardActions>
         </Card>
       </div>

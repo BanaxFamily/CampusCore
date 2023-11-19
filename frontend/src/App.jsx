@@ -27,21 +27,32 @@ import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
 import SampleLogout from "./components/reusable/SampleLogout";
-// import React from "react";
-// import { LinearProgress } from "@mui/material";
-import { NotAccessible } from "@mui/icons-material";
 import DeanCourses from "./components/dean/courses/DeanCourses";
+import DeanSetting from "./components/dean/settings/DeanSetting";
+import Submission from "./components/dean/courses/submission/Submissions"
+import CourseLayout from "./components/dean/courses/CourseLayout";
+import View from "./components/dean/courses/submission/View";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-// const LazyDeanCourse = React.lazy(() => import("./components/dean/courses/DeanCourses"))
 
 export default function App() {
-  // const userRole = localStorage.getItem('role')
   const { userRole } = useAuth()
+
+  const theme = createTheme({
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 640, // Adjusted value for small screens
+        md: 768, // Adjusted value for medium screens
+        lg: 1024, // Adjusted value for large screens
+        xl: 1200, // Adjusted value for extra-large screens
+      },
+    },
+  });
 
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-
         <Route path="/login" element={<Login />} />
 
         <Route element={<MainContents />}>
@@ -70,13 +81,12 @@ export default function App() {
           {userRole === "Dean" && (
             <>
               <Route path={`/deliverable-management`} element={<DeanDeliverables />} />
-              <Route path={`/courses`} element={
-                // <React.Suspense fallback={<LinearProgress />}>
-                <DeanCourses />
-                // </React.Suspense>
-              }
-                errorElement={<p>Oops! Something Went Wrong <NotAccessible /></p>}
-              />
+              <Route path={`/courses/*`} element={<CourseLayout />}>
+                <Route index element={<DeanCourses />} />
+                <Route path={`submission`} element={<Submission />} />
+                <Route path={`submission/view/file/:id`} element={<View />} />
+              </Route>
+              <Route path={`/settings`} element={<DeanSetting />} />
             </>
           )}
           <Route path="/logout" element={<SampleLogout />} />
@@ -88,6 +98,9 @@ export default function App() {
   );
 
   return (
-    <RouterProvider router={router} />
+    <ThemeProvider theme={theme}>
+
+      <RouterProvider router={router} />
+    </ThemeProvider>
   );
 }
