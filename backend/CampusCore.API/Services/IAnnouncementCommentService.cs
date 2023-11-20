@@ -9,7 +9,7 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateAnnouncementCommentAsync(AnnouncementCommentAddViewModel model);
         Task<ResponseManager> ViewAnnouncementCommentListAsync(); // new method to get AnnouncementComment
-        Task<ResponseManager> DeleteAnnouncementCommentAsync(AnnouncementCommentDeleteModel model); // New method to delete a AnnouncementComment
+        Task<ResponseManager> DeleteAnnouncementCommentAsync(IntIdViewModel model); // New method to delete a AnnouncementComment
         Task<ResponseManager> UpdateAnnouncementCommentAsync(AnnouncementCommentUpdateViewModel model);
         //Task<ResponseManager> UpdateAnnouncementCommentAsync(model);
 
@@ -94,7 +94,7 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> DeleteAnnouncementCommentAsync(AnnouncementCommentDeleteModel model)
+        public async Task<ResponseManager> DeleteAnnouncementCommentAsync(IntIdViewModel model)
         {
             try
             {
