@@ -8,7 +8,7 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateAnnouncementAsync(AnnouncementAddViewModel model);
         Task<ResponseManager> ViewAnnouncementListAsync(); // new method to get Announcement
-        Task<ResponseManager> DeleteAnnouncementAsync(AnnouncementDeleteModel model); // New method to delete a Announcement
+        Task<ResponseManager> DeleteAnnouncementAsync(IntIdViewModel model); // New method to delete a Announcement
         Task<ResponseManager> UpdateAnnouncementAsync(AnnouncementUpdateViewModel model);
         //Task<ResponseManager> GetByIdAnnouncementAsync(int id);
         Task<ResponseManager> GetByIdAnnouncementAsync(IntIdViewModel model);
@@ -119,7 +119,7 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> DeleteAnnouncementAsync(AnnouncementDeleteModel model)
+        public async Task<ResponseManager> DeleteAnnouncementAsync(IntIdViewModel model)
         {
             try
             {

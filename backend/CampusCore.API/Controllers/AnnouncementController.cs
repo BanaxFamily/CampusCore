@@ -65,7 +65,7 @@ namespace CampusCore.API.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync(AnnouncementDeleteModel model)
+        public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
