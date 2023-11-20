@@ -8,9 +8,10 @@ namespace CampusCore.API.Services
     public interface IAnnouncementCommentService
     {
         Task<ResponseManager> CreateAnnouncementCommentAsync(AnnouncementCommentAddViewModel model);
-        Task<ResponseManager> ViewAnnouncementCommentListAsync(AnnouncementCommentListViewModel model); // new method to get AnnouncementComment
+        Task<ResponseManager> ViewAnnouncementCommentListAsync(); // new method to get AnnouncementComment
         Task<ResponseManager> DeleteAnnouncementCommentAsync(AnnouncementCommentDeleteModel model); // New method to delete a AnnouncementComment
         Task<ResponseManager> UpdateAnnouncementCommentAsync(AnnouncementCommentUpdateViewModel model);
+        //Task<ResponseManager> UpdateAnnouncementCommentAsync(model);
 
     }
 
@@ -44,7 +45,7 @@ namespace CampusCore.API.Services
             {
                 return new ResponseManager
                 {
-                    Message = "User created successfully!",
+                    Message = "Comment for the announcement created successfully!",
                     IsSuccess = true
                 };
 
@@ -54,9 +55,9 @@ namespace CampusCore.API.Services
 
             return new ErrorResponseManager
             {
-                Message = "Announcement Comment is not created",
+                Message = "Comment for the announcement was not created",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding Announcement Comment in DB" }
+                Errors = new List<string>() { "Error adding comment for the announcement in the Database" }
             };
 
 
@@ -65,60 +66,27 @@ namespace CampusCore.API.Services
 
         }
 
-        public async Task<ResponseManager> ViewAnnouncementCommentListAsync(AnnouncementCommentListViewModel model)
+        public async Task<ResponseManager> ViewAnnouncementCommentListAsync()
         {
-            string searchKey = model.SearchAnnouncementComment;
-
-            if (string.IsNullOrEmpty(model.SearchAnnouncementComment) || string.IsNullOrWhiteSpace(model.SearchAnnouncementComment))
+            try
             {
-                try
-                {
-                    var result = await _context.AnnouncementComments.ToListAsync();
+                var result = await _context.AnnouncementComments.ToListAsync();
 
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Announcement Comment retrieved successfully",
-                        Data = result
-                    };
-                }
-                catch (Exception ex)
+                return new DataResponseManager
                 {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching announcement comment",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+                    IsSuccess = true,
+                    Message = "Announcement Comments retrieved successfully",
+                    Data = result
+                };
             }
-            else
+            catch (Exception ex)
             {
-                try
+                return new ErrorResponseManager
                 {
-
-                    var searchResults = await _context.AnnouncementComments
-                        .Where(oc => EF.Functions.Like(oc.Content, $"%{model.SearchAnnouncementComment}%"))
-                        .ToListAsync();
-
-
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Announcement comment retrieved successfully",
-                        Data = searchResults
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching announcement comments",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching announcement comments",
+                    Errors = new List<string> { ex.Message }
+                };
             }
 
             // Add a default return statement or throw an exception here.
@@ -137,8 +105,8 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "Announcement comment not found",
-                        Errors = new List<string> { "Announcement comment with the specified ID does not exist" }
+                        Message = "The comment for the announcement was not found",
+                        Errors = new List<string> { "The comment for the announcement with the specified ID does not exist" }
                     };
                 }
 
@@ -150,7 +118,7 @@ namespace CampusCore.API.Services
                     return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "Announcement comment deleted successfully"
+                        Message = "Comment for the announcement deleted successfully"
                     };
                 }
                 else
@@ -159,7 +127,7 @@ namespace CampusCore.API.Services
                     {
                         IsSuccess = false,
                         Message = "Announcement comment deletion failed",
-                        Errors = new List<string> { "Error occurred while deleting the announcement comment" }
+                        Errors = new List<string> { "Error occurred while deleting the comment for the announcement" }
                     };
                 }
             }
@@ -168,7 +136,7 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while deleting the announcement comment",
+                    Message = "An error occurred while deleting the comment for the announcement",
                     Errors = new List<string> { ex.Message }
                 };
             }
@@ -185,8 +153,8 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "Announcement comment not found",
-                        Errors = new List<string> { "Announcement comment with the specified ID does not exist" }
+                        Message = "Comment for the announcement was not found",
+                        Errors = new List<string> { "Comment for the announcement with the specified ID does not exist" }
                     };
                 }
 
@@ -205,7 +173,7 @@ namespace CampusCore.API.Services
                     return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "Announcement comment updated successfully"
+                        Message = "Comment for the announcement updated successfully"
                     };
                 }
                 else
@@ -214,7 +182,7 @@ namespace CampusCore.API.Services
                     {
                         IsSuccess = false,
                         Message = "Announcement comment update failed",
-                        Errors = new List<string> { "Error occurred while updating the announcement comment" }
+                        Errors = new List<string> { "Error occurred while updating the comment for the announcement" }
                     };
                 }
             }
@@ -223,7 +191,7 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while updating the announcement comment",
+                    Message = "An error occurred while updating the comment for the announcement",
                     Errors = new List<string> { ex.Message }
                 };
             }
