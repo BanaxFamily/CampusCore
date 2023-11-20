@@ -10,10 +10,10 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateIssueAsync(IssueAddViewModel model);
         Task<ResponseManager> ViewIssueListAsync();
         Task<ResponseManager> ViewIssueListOpenAsync();
-        Task<ResponseManager> IssueGetByIdAsync(GetByIdModel model);
-        Task<ResponseManager> DeleteIssueAsync(IssueDeleteModel model);
+        Task<ResponseManager> IssueGetByIdAsync(IntIdViewModel model);
+        Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateIssueAsync(IssueUpdateViewModel model);
-        Task<ResponseManager> SearchIssueAsync(IssueSearchViewModel model);
+        Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model);
 
     }
 
@@ -60,7 +60,7 @@ namespace CampusCore.API.Services
             {
                 Message = "Issue is not created",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding issue in DB" }
+                Errors = new List<string>() { "Error adding issue in the database" }
             };
 
 
@@ -68,15 +68,15 @@ namespace CampusCore.API.Services
 
 
         }
-        public async Task<ResponseManager> SearchIssueAsync(IssueSearchViewModel model)
+        public async Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model)
         {
-            string searchKey = model.SearchIssue;
+            string searchKey = model.SearchKey;
 
             try
             {
 
                 var searchResults = await _context.Issues
-                    .Where(oc => EF.Functions.Like(oc.Name, $"%{model.SearchIssue}%"))
+                    .Where(oc => EF.Functions.Like(oc.Name, $"%{model.SearchKey}%"))
                     .ToListAsync();
 
 
@@ -104,9 +104,7 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.SubmissionIssues
-                                    .Select(si => si.Issue)
-                                    .ToListAsync();
+                var result = await _context.Issues.ToListAsync();
 
                 return new DataResponseManager
                 {
@@ -155,7 +153,7 @@ namespace CampusCore.API.Services
         }
 
 
-        public async Task<ResponseManager> IssueGetByIdAsync(GetByIdModel model)
+        public async Task<ResponseManager> IssueGetByIdAsync(IntIdViewModel model)
         {
 
 
@@ -187,7 +185,7 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> DeleteIssueAsync(IssueDeleteModel model)
+        public async Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model)
         {
             try
             {
