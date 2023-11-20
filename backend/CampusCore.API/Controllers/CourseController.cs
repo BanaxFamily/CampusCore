@@ -68,7 +68,7 @@ namespace CampusCore.API.Controllers
 
         //api/course/search
         [HttpPost("search")]
-            public async Task<IActionResult> SearchAsync(CourseSearchViewModel model)
+            public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
             {
                 if (ModelState.IsValid)
                 {

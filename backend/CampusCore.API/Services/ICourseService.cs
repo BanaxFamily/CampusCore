@@ -13,7 +13,8 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CourseGetByIdAsync(GetByIdModel model);
         Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model); 
         Task<ResponseManager> UpdateCourseAsync(CourseUpdateViewModel model);
-        Task<ResponseManager> SearchCourseAsync(CourseSearchViewModel model);
+        //Task<ResponseManager> SearchCourseAsync(CourseSearchViewModel model);
+        Task<ResponseManager> SearchCourseAsync(StringSearchViewModel model);
 
     }
 
@@ -66,7 +67,7 @@ namespace CampusCore.API.Services
            
 
         }
-        public async Task<ResponseManager> SearchCourseAsync(CourseSearchViewModel model)
+        public async Task<ResponseManager> SearchCourseAsync(StringSearchViewModel model)
         {
             string searchKey = model.SearchKey;
 

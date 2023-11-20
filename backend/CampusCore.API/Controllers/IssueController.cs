@@ -17,17 +17,6 @@ namespace CampusCore.API.Controllers
 
         // /api/Issue/create
         [HttpPost("add")]
-        public async Task<IActionResult> CreateAsync(IssueAddViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _issueService.CreateIssueAsync(model);
-
-                if (result.IsSuccess)
-                    return Ok(result); //Status code: 200
-
-                return BadRequest(result);
-            }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
@@ -51,6 +40,17 @@ namespace CampusCore.API.Controllers
         [HttpGet("getAllOpen")]
         public async Task<IActionResult> ViewListOpenAsync()
         {
+        public async Task<IActionResult> CreateAsync(IssueAddViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _issueService.CreateIssueAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
             if (ModelState.IsValid)
             {
                 var result = await _issueService.ViewIssueListOpenAsync();
