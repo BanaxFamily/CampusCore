@@ -1,17 +1,25 @@
 // eslint-disable-next-line no-unused-vars
 import {
+  Navigate,
   Route,
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements
 } from "react-router-dom";
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import ManageCourse from "./components/administrator//course-layout/ManageCourse";
 import ManageRepo from "./components/administrator/ManageRepo";
 import CourseLoad from "./components/administrator/courseloads/CourseLoad";
 import GenerateReport from "./components/administrator/report/GenerateReport";
 import ManageUsers from "./components/administrator/user-wrapper/ManageUsers";
+import CourseLayout from "./components/dean/courses/CourseLayout";
+import DeanCourses from "./components/dean/courses/DeanCourses";
+import Submission from "./components/dean/courses/submission/Submissions";
+import View from "./components/dean/courses/submission/View";
 import DeanDeliverables from "./components/dean/deliverables/DeanDeliverables";
+import Deliverables from "./components/dean/deliverables/Deliverables";
+import DeanSetting from "./components/dean/settings/DeanSetting";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
@@ -26,13 +34,6 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
-import SampleLogout from "./components/reusable/SampleLogout";
-import DeanCourses from "./components/dean/courses/DeanCourses";
-import DeanSetting from "./components/dean/settings/DeanSetting";
-import Submission from "./components/dean/courses/submission/Submissions"
-import CourseLayout from "./components/dean/courses/CourseLayout";
-import View from "./components/dean/courses/submission/View";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 
 export default function App() {
@@ -54,7 +55,6 @@ export default function App() {
     createRoutesFromElements(
       <Route>
         <Route path="/login" element={<Login />} />
-
         <Route element={<MainContents />}>
           <Route path={`/`} element={<Home />} />
           <Route path={`/home`} element={<Home />} />
@@ -80,7 +80,10 @@ export default function App() {
           )}
           {userRole === "Dean" && (
             <>
-              <Route path={`/deliverable-management`} element={<DeanDeliverables />} />
+              <Route path={`/deliverable-management/*`} element={<CourseLayout />}>
+                <Route index element={<DeanDeliverables />} />
+                <Route path=":courseName/deliverables/:courseId?" element={<Deliverables />} />
+              </Route>
               <Route path={`/courses/*`} element={<CourseLayout />}>
                 <Route index element={<DeanCourses />} />
                 <Route path={`submission`} element={<Submission />} />
@@ -89,7 +92,7 @@ export default function App() {
               <Route path={`/settings`} element={<DeanSetting />} />
             </>
           )}
-          <Route path="/logout" element={<SampleLogout />} />
+          <Route path="/logout" element={<Navigate to="/login" />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

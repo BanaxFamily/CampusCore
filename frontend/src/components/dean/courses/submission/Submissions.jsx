@@ -1,7 +1,7 @@
 import { Button, Divider, Stack } from "@mui/material";
 import { useState } from "react";
 import Approved from "./Approved";
-import BackNav from "./BackNav";
+import BackNav from "../../../reusable/BackNav";
 import { Link, NavLink } from "react-router-dom";
 import { ArrowLeftSharp } from "@mui/icons-material";
 

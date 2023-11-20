@@ -5,7 +5,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { Link, NavLink } from "react-router-dom";
 import sampleFile from '../../../../documents/sample.pdf';
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
-import BackNav from "./BackNav";
+import BackNav from "../../../reusable/BackNav";
 
 
 export default function View() {

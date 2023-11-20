@@ -101,10 +101,7 @@ namespace CampusCore.Shared
     public class UserUpdateViewModel
     {
 
-        [RequiredIf("Role != Role.", ErrorMessage = "Enter Id number")]
-        [MaxLength(10)]
-        [MinLength(8, ErrorMessage = "Minimum of 8 characters")]
-        public string Idno;
+        
 
         public string Id { get; set; }
 

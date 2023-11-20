@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack, TextField, Typography } from "@mui/material";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
 import Settings from "../../reusable/Settings";
 
@@ -8,24 +8,57 @@ export default function DeanSetting() {
       <DashBoardHeading title="Profile" desc="" />
 
       <Settings>
-        <div className="w-full md:w-[60%] shadow-md">
+        <div className="w-full pb-4 md:w-[60%] shadow-md">
           <div className="px-4 py-6">
-            <Typography variant="h5" component="h1"> User Details </Typography>
+            <Typography variant="subtitle1" component="h1"> User Details </Typography>
           </div>
           <form action="">
-            <Stack direction="row" className="p-2">
-              <Stack className=" w-1/4 md:w-1/3" spacing={{ xs: 3.5, md: 4.5, lg: 2.3 }}>
-                <label className="text-sm md:text-md lg:text-lg text-gray-600">ID no#</label>
-                <label className="text-sm md:text-md lg:text-lg text-gray-600">Firstname</label>
-                <label className="text-sm md:text-md lg:text-lg text-gray-600">Lastname</label>
-                <label className="text-sm md:text-md lg:text-lg text-gray-600">Email</label>
+            <Stack className="px-4" spacing={1} sx={{ width: '100%' }} >
+              <Stack className=" w-full items-center" direction="row" spacing={{ xs: 3.5, md: 4.5, lg: 2.3 }}>
+                <Typography variant="subtitle2" component="h1" className="w-32"> User Details </Typography>
+                <TextField
+                  id="comment"
+                  placeholder="static value"
+                  margin="dense"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                />
               </Stack>
-              <Stack className=" flex-grow text-sm md:text-md lg:text-lg" spacing={1} >
-                <input type="text" className="px-4 py-2 md:py-3 lg:py-1 border-b-2 focus:border-blue-400 focus:outline-none" placeholder="static value here"/>
-                <input type="text" className="px-4 py-2 md:py-3 lg:py-1 border-b-2 focus:border-blue-400 focus:outline-none" placeholder="static value here"/>
-                <input type="text" className="px-4 py-2 md:py-3 lg:py-1 border-b-2 focus:border-blue-400 focus:outline-none" placeholder="static value here"/>
-                <input type="text" className="px-4 py-2 md:py-3 lg:py-1 border-b-2 focus:border-blue-400 focus:outline-none" placeholder="static value here"/>
+              <Stack className=" w-full items-center" direction="row" spacing={{ xs: 3.5, md: 4.5, lg: 2.3 }}>
+                <Typography variant="subtitle2" component="h1" className="w-32"> User Details </Typography>
+                <TextField
+                  id="comment"
+                  placeholder="static value"
+                  margin="dense"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                />
               </Stack>
+              <Stack className=" w-full items-center" direction="row" spacing={{ xs: 3.5, md: 4.5, lg: 2.3 }}>
+                <Typography variant="subtitle2" component="h1" className="w-32"> User Details </Typography>
+                <TextField
+                  id="comment"
+                  placeholder="static value"
+                  margin="dense"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                />
+              </Stack>
+              <Stack className=" w-full items-center" direction="row" spacing={{ xs: 3.5, md: 4.5, lg: 2.3 }}>
+                <Typography variant="subtitle2" component="h1" className="w-32"> User Details </Typography>
+                <TextField
+                  id="comment"
+                  placeholder="static value"
+                  margin="dense"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                />
+              </Stack>
+
             </Stack>
           </form>
 

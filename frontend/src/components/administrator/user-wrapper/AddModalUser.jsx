@@ -42,8 +42,10 @@ export default function AddModalUser(props) {
     } catch (error) {
       console.error('An unexpected error occurred:', error);
       setError('An unexpected error occurred. Please check your inputs.');
-    }finally{
-      setError(null)
+    } finally {
+      setTimeout(() => {
+        setError(null)
+      }, 3000);
     }
   }
 
@@ -55,17 +57,17 @@ export default function AddModalUser(props) {
       {
         error && <Alert severity="error">{error}!</Alert>
       }
-      <div className="w-full border">
+      <div className="w-full">
         <div className="p-2">
           <form action="" onSubmit={handleSubmit(onSubmit)} >
             <div className="flex flex-col sm:flex-row sm:gap-1">
               <div className="w-full flex-col sm:flex sm:w-1/2 justify-start md:gap-[3px]">
-                <div className="flex flex-col w-full mt-1">
+                <div className="flex flex-col w-full">
                   <TextField
                     id="filled-userType"
                     select
                     label="User type"
-                    // defaultValue="  "
+                    size="small"
                     SelectProps={{
                       native: true,
                     }}
@@ -88,6 +90,8 @@ export default function AddModalUser(props) {
                   name="idno"
                   label="ID #"
                   variant="filled"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("idno", { required: true })}
@@ -98,6 +102,8 @@ export default function AddModalUser(props) {
                   name="firstName"
                   label="Firstname"
                   variant="filled"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("firstName", { required: true })}
@@ -108,6 +114,8 @@ export default function AddModalUser(props) {
                   name="lastName"
                   label="Lastname"
                   variant="filled"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("lastName", { required: true })}
@@ -118,6 +126,8 @@ export default function AddModalUser(props) {
                   name="username"
                   label="Username"
                   variant="filled"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("username", { required: true })}
@@ -131,6 +141,8 @@ export default function AddModalUser(props) {
                     id="filled-status"
                     select
                     label="Status"
+                    size="small"
+
                     // defaultValue=""
                     SelectProps={{
                       native: true,
@@ -154,6 +166,8 @@ export default function AddModalUser(props) {
                   name="email"
                   label="Email"
                   variant="filled"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("email", { required: true })}
@@ -166,6 +180,8 @@ export default function AddModalUser(props) {
                   label="Password"
                   variant="filled"
                   type="password"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("password", { required: true })}
@@ -177,6 +193,7 @@ export default function AddModalUser(props) {
                   name="rePassword"
                   label="Confirm password"
                   variant="filled"
+                  size="small"
                   type="password"
                   // value={selectedItem.id || ''}
 

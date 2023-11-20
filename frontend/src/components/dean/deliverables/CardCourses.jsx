@@ -1,8 +1,9 @@
 import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { useAuth } from '../../../utils/AuthContext'
 
 export default function CardCourses({ data }) {
-
+  const {setCourseName} = useAuth()
   return (
 
     data.map((item, index) => (
@@ -12,17 +13,17 @@ export default function CardCourses({ data }) {
           <CardActionArea>
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
-                {item.course.name}
+                {item.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {item.course.description}
+                {item.description}
               </Typography>
             </CardContent>
           </CardActionArea>
           <CardActions sx={{justifyContent: 'flex-end'}}>
-            <Link to={`submission`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
+            <NavLink to={`${item.name}/deliverables/${item.id}`} onClick={() => setCourseName(item.name)} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
               Open
-            </Link>
+            </NavLink>
           </CardActions>
         </Card>
       </div>

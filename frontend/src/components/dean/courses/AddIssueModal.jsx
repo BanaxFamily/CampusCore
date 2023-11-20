@@ -22,18 +22,26 @@ export default function AddIssueModal(props) {
                     <Typography variant="p">DEAN USER FULL NAME</Typography>
                 </Stack>
 
-                {/* <div className="my-4">
-                    <textarea className="w-full px-4 py-2" name="issuecomment" id="issuecomment" cols="30" rows="10">
-                        ISSUE COMMENT HERE
-                    </textarea>
-                </div> */}
-
-                <div>
-                    <Stack direction="row" spacing={1} className="w-full flex items-center">
-                        <input className="w-full"/>
-                        <Button variant="outlined"><Send className="-rotate-12"/></Button>
-                    </Stack>
+                <div className="my-4 border h-32" >
+                    APPEND ISSUE HERE
                 </div>
+
+                <Stack direction="row" spacing={1} className="w-full flex items-center">
+                    <TextField
+                        id="comment"
+                        label="Comment"
+                        placeholder="Issue"
+                        margin="dense"
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                    />
+                    <Button variant="outlined"><Send className="-rotate-12" /></Button>
+                </Stack>
+                <Stack direction="row" className="w-full flex justify-end gap-1 mt-8">
+                    <p className="text-md text-gray-500">Issue resolved?</p>
+                    <Button variant="outlined" size="small" className="!border-paleRed !text-paleRed">Close issue</Button>
+                </Stack>
             </div>
         </Modal>
     )

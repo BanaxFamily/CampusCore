@@ -1,14 +1,16 @@
 /* eslint-disable react/prop-types */
-import { TextField, Button } from "@mui/material";
+import { Alert, Button, TextField } from "@mui/material";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import Modal from "../Modal";
 import * as UserApi from "../../../network/user_api";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
+import Modal from "../Modal";
 
 export default function UpdateModal(props) {
   const { user } = props;
-  const navigate = useNavigate();
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(null)
+  // const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -17,15 +19,37 @@ export default function UpdateModal(props) {
   } = useForm();
 
   async function onSubmit(credentials) {
-    const response = await UserApi.updateUser(credentials);
-    if (response.status) {
-      alert(`Error: ${response.status}`);
-      console.log(response);
-      console.log(credentials);
-    } else {
-      alert("User updated successfully!");
-      reset();
-      navigate(0);
+
+    try {
+      const response = await UserApi.updateUser(credentials);
+      if (response.isSuccess) {
+        setSuccess("User updated successfully!");
+        reset();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        // Check if there are multiple errors
+        // Extract values from errors
+        const errorValues = Object.values(data.errors)
+          .reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+        // Set the error state with values
+        setError(errorValues.join(', '));
+        // console.error('Error : ', [...data.errors]);
+        // setError(data.errors[0]);
+        return;
+      }
+
+
+    } catch (error) {
+      console.error('An unexpected error occurred:', error);
+      setError('An unexpected error occurred. Please check your inputs.');
+    } finally {
+      setTimeout(() => {
+        setError(null)
+        setSuccess(null);
+      }, 3000);
     }
   }
 
@@ -42,6 +66,8 @@ export default function UpdateModal(props) {
       onDismiss={props.onClose}
       heading={<DashBoardHeading title="Update user" desc="" />}
     >
+      {error && <Alert severity="error">{error}!</Alert>}
+      {success && <Alert severity="success">{success}!</Alert>}
       <div className="shadow-md">
         <div className="p-2">
           <form action="" onSubmit={handleSubmit(confirmUpdate)}>

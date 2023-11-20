@@ -11,24 +11,39 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState(false)
     const [userRole, setUserRole] = useState(null)
+    const [error, setError] = useState(null)
+    const [courseName, setCourseName] = useState(null)
 
     useEffect(() => {
         checkUserStatus()
         setLoading(false)
     }, [])
-    console.log(userRole)
 
     const loginUser = async (userInfo) => {
         try {
             setLoading(true)
             const response = await UserApi.signIn(userInfo);
-            const decodedToken = jwtDecode(response.token)
-            localStorage.setItem('token', response.token)//Using local storage for the meantime
-            setUserRole(decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"])
-            setUser(decodedToken)
-            console.log(decodedToken)
-            // console.log(response)
+            if (response.isSuccess) {
+                // setSuccess("User updated successfully!");
+                const decodedToken = jwtDecode(response.token)
+                localStorage.setItem('token', response.token)//Using local storage for the meantime
+                setUserRole(decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"])
+                setUser(decodedToken)
+                return;
+              }
 
+            if (!response.ok) {
+                const data = await response.json();
+                // Check if there are multiple errors
+                // Extract values from errors
+                const errorValues = Object.values(data.errors)
+                .reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+                // Set the error state with values
+                setError(errorValues.join(', '));
+                // console.error('Error : ', [...data.errors]);
+                // setError(data.errors[0]);
+                return;
+              }
 
         } catch (error) {
             console.error(error)
@@ -53,6 +68,7 @@ export const AuthProvider = ({ children }) => {
                 setUser(decodedToken);
                 setUserRole(decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"])
             }
+
         } catch (error) {
             console.error(error)
         }
@@ -60,7 +76,11 @@ export const AuthProvider = ({ children }) => {
     }
 
     const contextData = {
+        error,
         user,
+        courseName,
+        setCourseName,
+        setError,
         userRole,
         setLoading,
         loginUser,
