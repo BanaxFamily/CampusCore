@@ -11,7 +11,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> ViewCourseListAsync();
         Task<ResponseManager> ViewCourseListOpenAsync();
         Task<ResponseManager> CourseGetByIdAsync(IntIdViewModel model);
-        Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model); 
+        Task<ResponseManager> DeleteCourseAsync(IntIdViewModel model); 
         Task<ResponseManager> UpdateCourseAsync(CourseUpdateViewModel model);
         Task<ResponseManager> SearchCourseAsync(StringSearchViewModel model);
 
@@ -184,7 +184,7 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model)
+        public async Task<ResponseManager> DeleteCourseAsync(IntIdViewModel model)
         {
             try
             {
