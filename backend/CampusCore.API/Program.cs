@@ -60,7 +60,7 @@ builder.Services.AddAuthentication(auth =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
-//builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
+builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
 builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
@@ -70,6 +70,7 @@ builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
 builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
+builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 
 
 var app = builder.Build();
