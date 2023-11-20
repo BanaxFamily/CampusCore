@@ -10,10 +10,9 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateCourseAsync(CourseAddViewModel model);
         Task<ResponseManager> ViewCourseListAsync();
         Task<ResponseManager> ViewCourseListOpenAsync();
-        Task<ResponseManager> CourseGetByIdAsync(GetByIdModel model);
+        Task<ResponseManager> CourseGetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> DeleteCourseAsync(CourseDeleteModel model); 
         Task<ResponseManager> UpdateCourseAsync(CourseUpdateViewModel model);
-        //Task<ResponseManager> SearchCourseAsync(CourseSearchViewModel model);
         Task<ResponseManager> SearchCourseAsync(StringSearchViewModel model);
 
     }
@@ -47,7 +46,7 @@ namespace CampusCore.API.Services
                 {
                     return new ResponseManager
                     {
-                        Message = "User created successfully!",
+                        Message = "Course created successfully!",
                         IsSuccess = true
                     };
 
@@ -59,7 +58,7 @@ namespace CampusCore.API.Services
                 {
                     Message = "Course is not created",
                     IsSuccess = false,
-                    Errors = new List<string>() { "Error updating adding course in DB" }
+                    Errors = new List<string>() { "Error adding course in the database" }
                 };
             
 
@@ -92,7 +91,7 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching searched courses",
+                    Message = "An error occurred while fetching courses",
                     Errors = new List<string> { ex.Message }
                 };
             }
@@ -153,7 +152,7 @@ namespace CampusCore.API.Services
         }
 
 
-        public async Task<ResponseManager> CourseGetByIdAsync(GetByIdModel model)
+        public async Task<ResponseManager> CourseGetByIdAsync(IntIdViewModel model)
         {
 
 

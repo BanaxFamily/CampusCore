@@ -85,7 +85,7 @@ namespace CampusCore.API.Controllers
 
         //api/course/search
         [HttpPost("getById")]
-        public async Task<IActionResult> CourseGetByIdAsync(GetByIdModel model)
+        public async Task<IActionResult> CourseGetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
