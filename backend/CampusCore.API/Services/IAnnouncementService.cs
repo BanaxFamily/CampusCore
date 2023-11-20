@@ -10,7 +10,8 @@ namespace CampusCore.API.Services
         Task<ResponseManager> ViewAnnouncementListAsync(); // new method to get Announcement
         Task<ResponseManager> DeleteAnnouncementAsync(AnnouncementDeleteModel model); // New method to delete a Announcement
         Task<ResponseManager> UpdateAnnouncementAsync(AnnouncementUpdateViewModel model);
-        Task<ResponseManager> GetByIdAnnouncementAsync(int id);
+        //Task<ResponseManager> GetByIdAnnouncementAsync(int id);
+        Task<ResponseManager> GetByIdAnnouncementAsync(IntIdViewModel model);
 
     }
 
@@ -45,7 +46,7 @@ namespace CampusCore.API.Services
             {
                 return new ResponseManager
                 {
-                    Message = "User created successfully!",
+                    Message = "Announcement created successfully!",
                     IsSuccess = true
                 };
 
@@ -57,7 +58,7 @@ namespace CampusCore.API.Services
             {
                 Message = "Announcement is not created",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding announcement in DB" }
+                Errors = new List<string>() { "Error adding announcement in the Database" }
             };
 
 
@@ -75,7 +76,7 @@ namespace CampusCore.API.Services
                 return new DataResponseManager
                 {
                     IsSuccess = true,
-                    Message = " announcements retrieved successfully",
+                    Message = "Announcements retrieved successfully",
                     Data = result
                 };
             }
@@ -84,7 +85,7 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching  announcements",
+                    Message = "An error occurred while fetching announcements",
                     Errors = new List<string> { ex.Message }
                 };
             }
@@ -92,11 +93,11 @@ namespace CampusCore.API.Services
             // Add a default return statement or throw an exception here.
         }
 
-        public async Task<ResponseManager> GetByIdAnnouncementAsync(int id)
+        public async Task<ResponseManager> GetByIdAnnouncementAsync(IntIdViewModel model)
         {
             try
             {
-                var result = await _context.Announcements.FindAsync(id);
+                var result = await _context.Announcements.FindAsync(model.Id);
 
                 return new DataResponseManager
                 {

@@ -33,11 +33,11 @@ namespace CampusCore.API.Controllers
         }
         //api/announcement/getById
         [HttpPost("getById")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> GetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _announcementService.GetByIdAnnouncementAsync(id);
+                var result = await _announcementService.GetByIdAnnouncementAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
