@@ -18,8 +18,8 @@ export const Header = () => {
   };
 
   return (
-    //  max-w-screen-2xl	 
-    <nav className="sticky top-0 shadow-md pb-2 z-50 antialiased text-slate-500 dark:text-slate-400 bg-gray-50">
+    //  max-w-screen-2xl
+    <nav className="fixed w-full top-0 shadow-md pb-2 z-50 antialiased text-slate-500 dark:text-slate-400 bg-gray-50">
       <div className="mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className=" absolute md:hidden inset-y-0 left-0 flex items-center ">
