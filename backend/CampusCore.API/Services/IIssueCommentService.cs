@@ -73,6 +73,8 @@ namespace CampusCore.API.Services
 
                 var searchResults = await _context.IssueComments
                     .Where(oc => EF.Functions.Like(oc.CommentText, $"%{model.SearchKey}%"))
+                    .Include(ic => ic.Issue)
+                    .Include(ic => ic.User)
                     .ToListAsync();
 
 
@@ -101,7 +103,10 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.IssueComments.ToListAsync();
+                var result = await _context.IssueComments
+                                            .Include(ic => ic.Issue)
+                                            .Include(ic => ic.User)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
@@ -126,7 +131,11 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.IssueComments.FindAsync(model.Id);
+                var result = await _context.IssueComments
+                                            .Include (ic => ic.Issue)
+                                            .Include(ic => ic.User)
+                                            .Where(ic => ic.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
