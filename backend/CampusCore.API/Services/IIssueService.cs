@@ -20,6 +20,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> IssueGetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateIssueAsync(IssueUpdateViewModel model);
+        Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model); 
 
 
     }
@@ -96,6 +97,37 @@ namespace CampusCore.API.Services
 
 
         }
+        public async Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model)
+        {
+            string searchKey = model.SearchKey;
+
+            try
+            {
+
+                var searchResults = await _context.Issues
+                    .Where(oc => EF.Functions.Like(oc.Name, $"%{searchKey}%"))
+                    .ToListAsync();
+
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Searched issues retrieved successfully",
+                    Data = searchResults
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching searched issues",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
 
         public async Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model)
         {
@@ -385,9 +417,6 @@ namespace CampusCore.API.Services
             }
         }
 
-
-
-        
 
 
         public async Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model)
