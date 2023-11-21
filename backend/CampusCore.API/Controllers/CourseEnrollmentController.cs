@@ -70,7 +70,7 @@ namespace CampusCore.API.Controllers
 
         [HttpDelete("delete")]
         [Authorize(Roles = "Admin,Dean")]
-        public async Task<IActionResult> DeleteAsync(CourseEnrollmentDeleteViewModel model)
+        public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {

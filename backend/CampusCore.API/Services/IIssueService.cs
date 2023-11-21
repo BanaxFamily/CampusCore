@@ -8,12 +8,20 @@ namespace CampusCore.API.Services
     public interface IIssueService
     {
         Task<ResponseManager> CreateIssueAsync(IssueAddViewModel model);
+
+        Task<ResponseManager> ViewIssueListAsync();
+        Task<ResponseManager> ViewIssueListOpenAsync();
+        Task<ResponseManager> IssueGetByIdAsync(IntIdViewModel model);
+        Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model);
+        Task<ResponseManager> UpdateIssueAsync(IssueUpdateViewModel model);
+        Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model);
         Task<ResponseManager> GetAllByUserAsync(IssueGetAllModel model); //get issue that concerns a user (can be student or faculty, the one who needs to resolve the issue) not the one who opened the issue
         Task<ResponseManager> GetAllBySubmissionAsync(IssueGetAllModel model);
         Task<ResponseManager> IssueGetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateIssueAsync(IssueUpdateViewModel model);
         Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model); 
+
 
     }
 
@@ -81,7 +89,7 @@ namespace CampusCore.API.Services
             {
                 Message = "Issue is not created",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding issue in DB" }
+                Errors = new List<string>() { "Error adding issue in the database" }
             };
 
 
@@ -120,19 +128,14 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllBySubmissionAsync(IssueGetAllModel model)
-        {
-            var submissionId = model.SubmissionId;
 
-            if(model.Filter == "open")
-            {
-                try
-                {
-                    var result = await _context.SubmissionIssues
-                                                .Where(si => si.SubmissionId == submissionId)
-                                                .Select(si => si.Issue)
-                                                .Where(i=> i.Status == "open")
-                                                .ToListAsync();
+        public async Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model)
+        {
+            string searchKey = model.SearchKey;
+           try{
+            var searchResults = await _context.Issues
+                    .Where(oc => EF.Functions.Like(oc.Name, $"%{model.SearchKey}%"))
+                    .ToListAsync();
 
                     return new DataResponseManager
                     {
@@ -151,6 +154,38 @@ namespace CampusCore.API.Services
                     };
                 }
             }
+
+        public async Task<ResponseManager> GetAllBySubmissionAsync(IssueGetAllModel model)
+        {
+            var submissionId = model.SubmissionId;
+
+            if(model.Filter == "open")
+            {
+                try
+                {
+                    var result = await _context.SubmissionIssues
+                                                .Where(si => si.SubmissionId == submissionId)
+                                                .Select(si => si.Issue)
+                                                .Where(i=> i.Status == "open")
+                                                .ToListAsync();
+                     return new DataResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Issues retrieved successfully",
+                        Data = result
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "An error occurred while fetching issues",
+                        Errors = new List<string> { ex.Message }
+                    };
+                }
+            }
+
             if (model.Filter == "close")
             {
                 try
@@ -206,95 +241,124 @@ namespace CampusCore.API.Services
             }
             
         }
-
         public async Task<ResponseManager> GetAllByUserAsync(IssueGetAllModel model)
+{
+    var userId = model.UserId;
+    var userGroupID = _context.StudentGroups
+                              .Where(sg => sg.StudentId == userId)
+                              .Select(sg=> sg.GroupId)
+                              .FirstOrDefault();
+
+    if (model.Filter == "open")
+    {
+        try
+        {
+            var result = await _context.SubmissionIssues
+                                        .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
+                                        .Select(si => si.Issue)
+                                        .Where(i => i.Status == "open")
+                                        .ToListAsync();
+
+            return new DataResponseManager
+            {
+                IsSuccess = true,
+                Message = "Issues retrieved successfully",
+                Data = result
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while fetching issues",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+    if (model.Filter == "close")
+    {
+        try
+        {
+            var result = await _context.SubmissionIssues
+                                        .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
+                                        .Select(si => si.Issue)
+                                        .Where(i => i.Status == "closed")
+                                        .ToListAsync();
+
+            return new DataResponseManager
+            {
+                IsSuccess = true,
+                Message = "Issues retrieved successfully",
+                Data = result
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while fetching issues",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+    else
+    {
+        try
+        {
+            var result = await _context.SubmissionIssues
+                                        .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
+                                        .Select(si => si.Issue)
+                                        .ToListAsync();
+
+            return new DataResponseManager
+            {
+                IsSuccess = true,
+                Message = "Issues retrieved successfully",
+                Data = result
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while fetching issues",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+
+}
+
+
+        public async Task<ResponseManager> ViewIssueListAsync()
         {
             var userId = model.UserId;
             var userGroupID = _context.StudentGroups
                                       .Where(sg => sg.StudentId == userId)
                                       .Select(sg=> sg.GroupId)
                                       .FirstOrDefault();
-
-            if (model.Filter == "open")
-            {
-                try
+             try{
+             
+                var result = await _context.Issues.ToListAsync();
+                return new DataResponseManager
                 {
-                    var result = await _context.SubmissionIssues
-                                                .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
-                                                .Select(si => si.Issue)
-                                                .Where(i => i.Status == "open")
-                                                .ToListAsync();
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Issues retrieved successfully",
-                        Data = result
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching issues",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
-            }
-            if (model.Filter == "close")
-            {
-                try
-                {
-                    var result = await _context.SubmissionIssues
-                                                .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
-                                                .Select(si => si.Issue)
-                                                .Where(i => i.Status == "closed")
-                                                .ToListAsync();
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Issues retrieved successfully",
-                        Data = result
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching issues",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
-            }
-            else
-            {
-                try
-                {
-                    var result = await _context.SubmissionIssues
-                                                .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
-                                                .Select(si => si.Issue)
-                                                .ToListAsync();
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Issues retrieved successfully",
-                        Data = result
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching issues",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
-            }
+                    IsSuccess = true,
+                    Message = "Issues retrieved successfully",
+                    Data = result
+                };
+              }
+              catch (Exception ex)
+              {
+                  return new ErrorResponseManager
+                  {
+                      IsSuccess = false,
+                      Message = "An error occurred while fetching Issues",
+                      Errors = new List<string> { ex.Message }
+                  };
+              }
 
         }
 

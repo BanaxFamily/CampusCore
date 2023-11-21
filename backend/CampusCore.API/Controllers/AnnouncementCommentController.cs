@@ -35,11 +35,11 @@ namespace CampusCore.API.Controllers
         // /api/announcementComment/viewList
         //insert method here
         [HttpGet("viewList")]
-        public async Task<IActionResult> ViewListAsync(AnnouncementCommentListViewModel model)
+        public async Task<IActionResult> ViewListAsync()
         {
             if (ModelState.IsValid)
             {
-                var result = await _announcementCommentService.ViewAnnouncementCommentListAsync(model);
+                var result = await _announcementCommentService.ViewAnnouncementCommentListAsync();
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -50,7 +50,7 @@ namespace CampusCore.API.Controllers
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync(AnnouncementCommentDeleteModel model)
+        public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {

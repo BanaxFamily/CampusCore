@@ -11,7 +11,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateCourseEnrollmentAsync(CourseEnrollmentAddViewModel model);
         Task<ResponseManager> GetAllCourseEnrolled(GetEnrolledCourseViewModel model);
         Task<ResponseManager> GetEnrolledStudents(GetEnrolledStudentsViewModel model);
-        Task<ResponseManager> DeleteCourseEnrollmentAsync(CourseEnrollmentDeleteViewModel model);
+        Task<ResponseManager> DeleteCourseEnrollmentAsync(IntIdViewModel model);
     }
 
     public class CourseEnrollmentService : ICourseEnrollmentService
@@ -42,7 +42,7 @@ namespace CampusCore.API.Services
             {
                 return new ResponseManager
                 {
-                    Message = "enrolled course added successfully!",
+                    Message = "Enrolled course added successfully!",
                     IsSuccess = true
                 };
 
@@ -52,13 +52,13 @@ namespace CampusCore.API.Services
 
             return new ErrorResponseManager
             {
-                Message = "Course enrollemnt is not added",
+                Message = "Failed to add Course Enrollment",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding enrolled course in DB" }
+                Errors = new List<string>() { "Error adding enrolled course in the Database" }
             };
         }
 
-        public async Task<ResponseManager> DeleteCourseEnrollmentAsync(CourseEnrollmentDeleteViewModel model)
+        public async Task<ResponseManager> DeleteCourseEnrollmentAsync(IntIdViewModel model)
         {
             try
             {
@@ -69,8 +69,8 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "enrolled course not found",
-                        Errors = new List<string> { "enrolled course with the specified ID does not exist" }
+                        Message = "Enrolled course not found",
+                        Errors = new List<string> { "Enrolled course with the specified ID does not exist" }
                     };
                 }
 
@@ -82,7 +82,7 @@ namespace CampusCore.API.Services
                     return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "enrolled course deleted successfully"
+                        Message = "Enrolled course deleted successfully"
                     };
                 }
                 else
@@ -90,7 +90,7 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "enrolled course deletion failed",
+                        Message = "Enrolled course deletion failed",
                         Errors = new List<string> { "Error occurred while deleting the enrolled course" }
                     };
                 }
