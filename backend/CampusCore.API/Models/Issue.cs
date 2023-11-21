@@ -6,7 +6,7 @@ namespace CampusCore.API.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } //just allow "open" or "closed"
         public DateTime DateOpened { get; set; }
         public DateTime? DateClosed { get; set; }
 

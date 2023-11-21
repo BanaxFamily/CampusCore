@@ -17,7 +17,7 @@ namespace CampusCore.API.Models
         //reviewer / adviser
 
         [ForeignKey("UserId")]
-        public string AdviserId { get; set; }
-        public User Adviser { get; set; }
+        public string? AdviserId { get; set; }
+        public User? Adviser { get; set; }
     }
 }
