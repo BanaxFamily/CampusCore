@@ -8,10 +8,10 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateOfferedCourseAsync(OfferedCourseAddViewModel model);
         Task<ResponseManager> ViewOfferedCourseListAsync();
-        Task<ResponseManager> DeleteOfferedCourseAsync(OfferedCourseDeleteModel model); 
+        Task<ResponseManager> DeleteOfferedCourseAsync(IntIdViewModel model); 
         Task<ResponseManager> UpdateOfferedCourseAsync(OfferedCourseUpdateViewModel model);
         Task<ResponseManager> ViewOfferedCourseBySemAsync(OfferedCourseBySem model);
-        Task<ResponseManager> OfferedCourseGetByIdAsync(OfferedCourseGetByIdModel model);
+        Task<ResponseManager> OfferedCourseGetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> OfferedCourseGetNeedDeansApprovalAsync();
 
 
@@ -66,7 +66,7 @@ namespace CampusCore.API.Services
 
         }
 
-        public async Task<ResponseManager> DeleteOfferedCourseAsync(OfferedCourseDeleteModel model)
+        public async Task<ResponseManager> DeleteOfferedCourseAsync(IntIdViewModel model)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace CampusCore.API.Services
                 };
             }
         }
-        public async Task<ResponseManager> OfferedCourseGetByIdAsync(OfferedCourseGetByIdModel model)
+        public async Task<ResponseManager> OfferedCourseGetByIdAsync(IntIdViewModel model)
         {
             try
             {
