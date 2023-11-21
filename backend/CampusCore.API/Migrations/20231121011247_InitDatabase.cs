@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CampusCore.API.Migrations
 {
-    public partial class InitRedo : Migration
+    public partial class InitDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,15 +39,18 @@ namespace CampusCore.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubmissionIssues",
+                name: "Deliverables",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Instruction = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubmissionIssues", x => x.Id);
+                    table.PrimaryKey("PK_Deliverables", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -67,28 +70,6 @@ namespace CampusCore.API.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Deliverables",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Instruction = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Deliverables", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Deliverables_Courses_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -146,9 +127,10 @@ namespace CampusCore.API.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Idno = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StudentGroupId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -196,11 +178,10 @@ namespace CampusCore.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CourseDeliverableId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateOpened = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateClosed = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOpened = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateClosed = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -211,13 +192,30 @@ namespace CampusCore.API.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Issues_Courses_CourseDeliverableId",
-                        column: x => x.CourseDeliverableId,
-                        principalTable: "Courses",
+                        name: "FK_Notifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,7 +228,8 @@ namespace CampusCore.API.Migrations
                     AcadYear = table.Column<int>(type: "int", nullable: false),
                     Schedule = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FacultyId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CourseId = table.Column<int>(type: "int", nullable: false)
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    IsNeedDeansApproval = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -239,12 +238,14 @@ namespace CampusCore.API.Migrations
                         name: "FK_OfferedCourses_AspNetUsers_FacultyId",
                         column: x => x.FacultyId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_OfferedCourses_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -264,7 +265,7 @@ namespace CampusCore.API.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -285,11 +286,41 @@ namespace CampusCore.API.Migrations
                         name: "FK_IssueComments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_IssueComments_Issues_IssueId",
                         column: x => x.IssueId,
                         principalTable: "Issues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Announcements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OfferedCourseId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Announcements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Announcements_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Announcements_OfferedCourses_OfferedCourseId",
+                        column: x => x.OfferedCourseId,
+                        principalTable: "OfferedCourses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -325,29 +356,30 @@ namespace CampusCore.API.Migrations
                 name: "CourseEnrollments",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     OfferedCourseId = table.Column<int>(type: "int", nullable: false),
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseEnrollments", x => new { x.OfferedCourseId, x.StudentId });
+                    table.PrimaryKey("PK_CourseEnrollments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CourseEnrollments_AspNetUsers_StudentId",
                         column: x => x.StudentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                   
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CourseEnrollments_OfferedCourses_OfferedCourseId",
                         column: x => x.OfferedCourseId,
                         principalTable: "OfferedCourses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Group",
+                name: "Groups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -355,21 +387,48 @@ namespace CampusCore.API.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OfferedCourseId = table.Column<int>(type: "int", nullable: false),
-                    AdviserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    AdviserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Group", x => x.Id);
+                    table.PrimaryKey("PK_Groups", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Group_AspNetUsers_AdviserId",
+                        name: "FK_Groups_AspNetUsers_AdviserId",
                         column: x => x.AdviserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Group_OfferedCourses_OfferedCourseId",
+                        name: "FK_Groups_OfferedCourses_OfferedCourseId",
                         column: x => x.OfferedCourseId,
                         principalTable: "OfferedCourses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnnouncementComments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AnnouncementId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnnouncementComments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnnouncementComments_Announcements_AnnouncementId",
+                        column: x => x.AnnouncementId,
+                        principalTable: "Announcements",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnnouncementComments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -381,7 +440,7 @@ namespace CampusCore.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -391,14 +450,145 @@ namespace CampusCore.API.Migrations
                         column: x => x.StudentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StudentGroups_Group_GroupId",
+                        name: "FK_StudentGroups_Groups_GroupId",
                         column: x => x.GroupId,
-                        principalTable: "Group",
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Submissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DAFaculty = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DADean = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DAPRC = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Version = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateSubmitted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubmitterId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Submissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Submissions_AspNetUsers_SubmitterId",
+                        column: x => x.SubmitterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Submissions_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CourseDeliverableSubmissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CourseDeliverableId = table.Column<int>(type: "int", nullable: false),
+                    SubmissionId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseDeliverableSubmissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseDeliverableSubmissions_CourseDeliverables_CourseDeliverableId",
+                        column: x => x.CourseDeliverableId,
+                        principalTable: "CourseDeliverables",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseDeliverableSubmissions_Submissions_SubmissionId",
+                        column: x => x.SubmissionId,
+                        principalTable: "Submissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ResearchRepository",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Authors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubmissionId = table.Column<int>(type: "int", nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateUploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateApproved = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ViewCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ResearchRepository", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ResearchRepository_Submissions_SubmissionId",
+                        column: x => x.SubmissionId,
+                        principalTable: "Submissions",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubmissionIssues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubmissionId = table.Column<int>(type: "int", nullable: false),
+                    IssueId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubmissionIssues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubmissionIssues_Issues_IssueId",
+                        column: x => x.IssueId,
+                        principalTable: "Issues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SubmissionIssues_Submissions_SubmissionId",
+                        column: x => x.SubmissionId,
+                        principalTable: "Submissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AnnouncementComments_AnnouncementId",
+                table: "AnnouncementComments",
+                column: "AnnouncementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AnnouncementComments_UserId",
+                table: "AnnouncementComments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Announcements_OfferedCourseId",
+                table: "Announcements",
+                column: "OfferedCourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Announcements_UserId",
+                table: "Announcements",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -455,25 +645,33 @@ namespace CampusCore.API.Migrations
                 column: "OfferedCourseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CourseDeliverableSubmissions_CourseDeliverableId",
+                table: "CourseDeliverableSubmissions",
+                column: "CourseDeliverableId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseDeliverableSubmissions_SubmissionId",
+                table: "CourseDeliverableSubmissions",
+                column: "SubmissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseEnrollments_OfferedCourseId",
+                table: "CourseEnrollments",
+                column: "OfferedCourseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CourseEnrollments_StudentId",
                 table: "CourseEnrollments",
                 column: "StudentId");
 
-           
-
             migrationBuilder.CreateIndex(
-                name: "IX_Deliverables_CourseId",
-                table: "Deliverables",
-                column: "CourseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Group_AdviserId",
-                table: "Group",
+                name: "IX_Groups_AdviserId",
+                table: "Groups",
                 column: "AdviserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Group_OfferedCourseId",
-                table: "Group",
+                name: "IX_Groups_OfferedCourseId",
+                table: "Groups",
                 column: "OfferedCourseId");
 
             migrationBuilder.CreateIndex(
@@ -487,13 +685,13 @@ namespace CampusCore.API.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Issues_CourseDeliverableId",
-                table: "Issues",
-                column: "CourseDeliverableId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Issues_UserId",
                 table: "Issues",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -507,6 +705,11 @@ namespace CampusCore.API.Migrations
                 column: "FacultyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ResearchRepository_SubmissionId",
+                table: "ResearchRepository",
+                column: "SubmissionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StudentGroups_GroupId",
                 table: "StudentGroups",
                 column: "GroupId");
@@ -516,7 +719,25 @@ namespace CampusCore.API.Migrations
                 table: "StudentGroups",
                 column: "StudentId");
 
-            
+            migrationBuilder.CreateIndex(
+                name: "IX_SubmissionIssues_IssueId",
+                table: "SubmissionIssues",
+                column: "IssueId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubmissionIssues_SubmissionId",
+                table: "SubmissionIssues",
+                column: "SubmissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Submissions_GroupId",
+                table: "Submissions",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Submissions_SubmitterId",
+                table: "Submissions",
+                column: "SubmitterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLogs_UserId",
@@ -558,8 +779,15 @@ namespace CampusCore.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_Groups_OfferedCourses_OfferedCourseId",
+                table: "Groups");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUsers_StudentGroups_StudentGroupId",
                 table: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "AnnouncementComments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -577,7 +805,7 @@ namespace CampusCore.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CourseDeliverables");
+                name: "CourseDeliverableSubmissions");
 
             migrationBuilder.DropTable(
                 name: "CourseEnrollments");
@@ -586,34 +814,49 @@ namespace CampusCore.API.Migrations
                 name: "IssueComments");
 
             migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "ResearchRepository");
+
+            migrationBuilder.DropTable(
                 name: "SubmissionIssues");
 
             migrationBuilder.DropTable(
                 name: "UserLogs");
 
             migrationBuilder.DropTable(
+                name: "Announcements");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Deliverables");
+                name: "CourseDeliverables");
 
             migrationBuilder.DropTable(
                 name: "Issues");
 
             migrationBuilder.DropTable(
-                name: "StudentGroups");
+                name: "Submissions");
 
             migrationBuilder.DropTable(
-                name: "Group");
+                name: "Deliverables");
 
             migrationBuilder.DropTable(
                 name: "OfferedCourses");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Courses");
 
             migrationBuilder.DropTable(
-                name: "Courses");
+                name: "StudentGroups");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

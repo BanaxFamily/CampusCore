@@ -1,4 +1,4 @@
-﻿using CampusCore.API.Migrations;
+﻿
 using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
