@@ -1,26 +1,30 @@
-import { ArrowLeftSharp, ZoomIn, ZoomOut } from "@mui/icons-material";
+import { ZoomIn, ZoomOut } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/material";
 import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { Link, NavLink } from "react-router-dom";
 import sampleFile from '../../../../documents/sample.pdf';
-import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import BackNav from "../../../reusable/BackNav";
+import BreadCrumb from "../../../reusable/BreadCrumb";
+import DashBoardHeading from "../../../reusable/DashBoardHeading";
 
 
 export default function View() {
+    const breadCrumbUrl = [
+        {
+            url: '../',
+            name: 'Submissions',
+        },
+        {
+            name: `File View`
+        }
+    ]
     return (
         <>
-            <BackNav>
-                <Link to="/courses/submission" className="text-slate-600 underline underline-offset-3 pr-2">
-                    <ArrowLeftSharp className="text-slate-600" />
-                    Submission
-                </Link>
-                <NavLink activeclassname="active" className="text-slate-600 underline underline-offset-3 pr-2">
-                    <ArrowLeftSharp className="text-slate-600" />
-                    View
-                </NavLink>
-            </BackNav>
+            <Stack>
+                <BackNav>
+                    <BreadCrumb data={breadCrumbUrl}/>
+                </BackNav>
+            </Stack>
             <div className="mt-4">
 
                 <DashBoardHeading classname="!py-6" desc="For approval file" title="" />

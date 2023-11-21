@@ -15,6 +15,7 @@ export default function Approved() {
           </TableRow>
         </TableHead>
         <TableBody>
+          <TableRow>
             <TableCell>Dummy</TableCell>
             <TableCell>Dummy</TableCell>
             <TableCell>Dummy</TableCell>
@@ -23,6 +24,7 @@ export default function Approved() {
                 View
               </Link>
             </TableCell>
+          </TableRow>
         </TableBody>
       </DynamicTable>
     </>
