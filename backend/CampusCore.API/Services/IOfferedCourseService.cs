@@ -61,7 +61,7 @@ namespace CampusCore.API.Services
             {
                 Message = "Offered Course is not added",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding offered course in DB" }
+                Errors = new List<string>() { "Error adding offered course in DB" }
             };
 
         }
