@@ -4,80 +4,118 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CampusCore.API.Services
 {
-    
+
 
     public interface ISubmissionService
     {
         Task<ResponseManager> CreateAsync(SubmissionAddViewModel model);
-        Task<ResponseManager> GetAllByCourseAsync(IntIdViewModel model);
+        Task<ResponseManager> GetAllByCourseDeliverableAsync(IntIdViewModel model);
         Task<ResponseManager> GetAllByStudentAsync(StringIdViewModel model);
         Task<ResponseManager> GetByIdAsync(IntIdViewModel model);
-        //Task<ResponseManager> SearchNameAsync(StringSearchViewModel model);
+        Task<ResponseManager> SearchNameAsync(StringSearchViewModel model);
         Task<ResponseManager> DeleteAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateAsync(SubmissionUpdateViewModel model);
         Task<ResponseManager> GetUnapproved(IntIdViewModel model);
         Task<ResponseManager> GetApprovedFaculty(IntIdViewModel model);
         Task<ResponseManager> GetApprovedDean(IntIdViewModel model);
         Task<ResponseManager> GetApprovedPRC(IntIdViewModel model);
+        Task<ResponseManager> Approve(SubmissionApproveViewModel model);
+
+
 
     }
 
     public class SubmissionService : ISubmissionService
     {
         private AppDbContext _context;
+        private string _uploadPath;
 
         public SubmissionService(AppDbContext context)
         {
             _context = context;
+
+            // Get the root directory of your application
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+
+            // Combine it with the 'Uploads' directory
+            _uploadPath = Path.Combine(basePath, "Uploads");
+
+            // Check if the directory exists; create it if not
+            if (!Directory.Exists(_uploadPath))
+            {
+                Directory.CreateDirectory(_uploadPath);
+            }
         }
         public async Task<ResponseManager> CreateAsync(SubmissionAddViewModel model)
         {
+            
             if (model == null)
                 throw new NullReferenceException("Submission Model is null");
-            
-            
-            var submission = new Submission
-            {
-                Title = model.Title,
-                SubmitterId = model.SubmitterId,
-                GroupId = model.GroupId
-            };
 
-
-            _context.Submissions.Add(submission);
-            var resultS = await _context.SaveChangesAsync();
-
-            var cds = new CourseDeliverableSubmission()
+            var subCount = _context.CourseDeliverableSubmissions
+                                   .Where(cds => cds.CourseDeliverableId == model.ForCourseDeliverable)
+                                   .Count();
+            if (model.File != null && model.File.Length > 0)
             {
-                CourseDeliverableId = model.ForCourseDeliverable,
-                SubmissionId = submission.Id
-                
-            };
-            _context.CourseDeliverableSubmissions.Add(cds);
-            
-            var resultCds = await _context.SaveChangesAsync();
-            if (resultS > 0)
-            {
-                if(resultCds > 0)
-                {
-                    return new ResponseManager
-                    {
-                        Message = "Submission added successfully!",
-                        IsSuccess = true
-                    };
-                }
-                else
-                {
-                    return new ErrorResponseManager
-                    {
-                        Message = "Submission is not added",
-                        IsSuccess = false,
-                        Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
-                    };
-                }
                 
 
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
+                var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.File.CopyToAsync(fileStream);
+                }
+
+                var submission = new Submission
+                {
+                    Title = model.Title,
+                    SubmitterId = model.SubmitterId,
+                    GroupId = model.GroupId,
+                    Version = $"Version {subCount}",
+                    Status = model.Status,
+                    DateSubmitted = DateTime.Now,
+                    FilePath = filePath
+
+                };
+
+
+                _context.Submissions.Add(submission);
+                var resultS = await _context.SaveChangesAsync();
+
+                var cds = new CourseDeliverableSubmission()
+                {
+                    CourseDeliverableId = model.ForCourseDeliverable,
+                    SubmissionId = submission.Id
+
+                };
+                _context.CourseDeliverableSubmissions.Add(cds);
+
+                var resultCds = await _context.SaveChangesAsync();
+                if (resultS > 0)
+                {
+                    if (resultCds > 0)
+                    {
+                        return new ResponseManager
+                        {
+                            Message = "Submission added successfully!",
+                            IsSuccess = true
+                        };
+                    }
+                    else
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "Submission is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
+                        };
+                    }
+
+
+                }
             }
+                
 
             return new ErrorResponseManager
             {
@@ -147,10 +185,10 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.Group)
                                                 .Where(cds => cds.SubmitterId == studentId)
                                                 .ToListAsync();
-                
+
                 try
                 {
-                    
+
 
                     List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
@@ -165,24 +203,22 @@ namespace CampusCore.API.Services
                                                         .Include(cds => cds.Submission)
                                                         .Include(cds => cds.CourseDeliverable)
                                                         .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                        .Where(cd=> cd.Submission.GroupId == item.GroupId || cd.Submission.SubmitterId == item.SubmitterId)
+                                                        .Where(cd => cd.Submission.GroupId == item.GroupId || cd.Submission.SubmitterId == item.SubmitterId)
                                                         .First();
                         var coursedeliverable = cdsBySubmission.CourseDeliverable.Deliverable.Name;
 
-                        bool facultyA = false, deanA = false, prcA = false;
 
-                        if (item.DAFaculty != null)
+                        var filePath = item.FilePath;
+
+                        // Open the file stream
+                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                        // Create an IFormFile instance
+                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
                         {
-                            facultyA = true;
-                        }
-                        if (item.DADean != null)
-                        {
-                            deanA = true;
-                        }
-                        if (item.DAPRC != null)
-                        {
-                            prcA = true;
-                        }
+                            Headers = new HeaderDictionary(),
+                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                        };
 
                         var submission = new SubmissionGetAllViewModel()
                         {
@@ -192,12 +228,13 @@ namespace CampusCore.API.Services
                             GroupName = item.Group.Name,
                             ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
-                            ApprovedFaculty = facultyA,
-                            ApprovedDean = deanA,
-                            ApprovedPRC = prcA,
+                            Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
-                            DAPRC = item.DAPRC
+                            DAPRC = item.DAPRC,
+                            File = formFile,
+                            Version = item.Version,
+                            DateSubmitted = item.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -230,21 +267,21 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllByCourseAsync(IntIdViewModel model)
+        public async Task<ResponseManager> GetAllByCourseDeliverableAsync(IntIdViewModel model)
         {
-            var courseId = model.Id;
+            var courseDeliverableId = model.Id;
             try
             {
-                
+
                 var submissionsByCourse = await _context.CourseDeliverableSubmissions
                                                 .Include(cds => cds.Submission)
                                                 .Include(cds => cds.Submission.Group)
                                                 .Include(cds => cds.Submission.Submitter)
                                                 .Include(cds => cds.CourseDeliverable)
                                                 .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.CourseDeliverable.OfferedCourse.Id == courseId)
+                                                .Where(cds => cds.CourseDeliverableId == courseDeliverableId)
                                                 .ToListAsync();
-                
+
                 try
                 {
                     var results = submissionsByCourse.Select(cds => cds.Submission);
@@ -260,20 +297,17 @@ namespace CampusCore.API.Services
 
                         var coursedeliverable = submissionsByCourse.First().CourseDeliverable.Deliverable.Name;
 
-                        bool facultyA = false, deanA = false, prcA = false;
+                        var filePath = item.FilePath;
 
-                        if (item.DAFaculty != null)
+                        // Open the file stream
+                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                        // Create an IFormFile instance
+                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
                         {
-                            facultyA = true;
-                        }
-                        if (item.DADean != null)
-                        {
-                            deanA = true;
-                        }
-                        if (item.DAPRC != null)
-                        {
-                            prcA = true;
-                        }
+                            Headers = new HeaderDictionary(),
+                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                        };
 
                         var submission = new SubmissionGetAllViewModel()
                         {
@@ -283,12 +317,13 @@ namespace CampusCore.API.Services
                             GroupName = item.Group.Name,
                             ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
-                            ApprovedFaculty = facultyA,
-                            ApprovedDean = deanA,
-                            ApprovedPRC = prcA,
+                            Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
-                            DAPRC = item.DAPRC
+                            DAPRC = item.DAPRC,
+                            File = formFile,
+                            Version = item.Version,
+                            DateSubmitted = item.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -332,7 +367,7 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.Submission.Submitter)
                                                 .Include(cds => cds.CourseDeliverable)
                                                 .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.Id == model.Id)
+                                                .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
                 var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
@@ -348,20 +383,17 @@ namespace CampusCore.API.Services
                                                     .Where(sg => sg.Id == item.GroupId)
                                                     .ToListAsync();
 
-                        bool facultyA = false, deanA = false, prcA = false;
+                        var filePath = item.FilePath;
 
-                        if (item.DAFaculty != null)
+                        // Open the file stream
+                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                        // Create an IFormFile instance
+                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
                         {
-                            facultyA = true;
-                        }
-                        if (item.DADean != null)
-                        {
-                            deanA = true;
-                        }
-                        if (item.DAPRC != null)
-                        {
-                            prcA = true;
-                        }
+                            Headers = new HeaderDictionary(),
+                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                        };
 
                         var submission = new SubmissionGetAllViewModel()
                         {
@@ -371,12 +403,13 @@ namespace CampusCore.API.Services
                             GroupName = item.Group.Name,
                             ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
-                            ApprovedFaculty = facultyA,
-                            ApprovedDean = deanA,
-                            ApprovedPRC = prcA,
+                            Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
-                            DAPRC = item.DAPRC
+                            DAPRC = item.DAPRC,
+                            File = formFile,
+                            Version = item.Version,
+                            DateSubmitted = item.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -408,7 +441,7 @@ namespace CampusCore.API.Services
                 };
             }
 
-            
+
         }
 
         public async Task<ResponseManager> GetApprovedFaculty(IntIdViewModel model)
@@ -422,7 +455,7 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.Submission.Submitter)
                                                 .Include(cds => cds.CourseDeliverable)
                                                 .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.Id == model.Id)
+                                                .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
                 var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
@@ -438,20 +471,17 @@ namespace CampusCore.API.Services
                                                     .Where(sg => sg.Id == item.GroupId)
                                                     .ToListAsync();
 
-                        bool facultyA = false, deanA = false, prcA = false;
+                        var filePath = item.FilePath;
 
-                        if (item.DAFaculty != null)
+                        // Open the file stream
+                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                        // Create an IFormFile instance
+                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
                         {
-                            facultyA = true;
-                        }
-                        if (item.DADean != null)
-                        {
-                            deanA = true;
-                        }
-                        if (item.DAPRC != null)
-                        {
-                            prcA = true;
-                        }
+                            Headers = new HeaderDictionary(),
+                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                        };
 
                         var submission = new SubmissionGetAllViewModel()
                         {
@@ -461,12 +491,13 @@ namespace CampusCore.API.Services
                             GroupName = item.Group.Name,
                             ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
-                            ApprovedFaculty = facultyA,
-                            ApprovedDean = deanA,
-                            ApprovedPRC = prcA,
+                            Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
-                            DAPRC = item.DAPRC
+                            DAPRC = item.DAPRC,
+                            File = formFile,
+                            Version = item.Version,
+                            DateSubmitted = item.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -510,13 +541,13 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.Submission.Submitter)
                                                 .Include(cds => cds.CourseDeliverable)
                                                 .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.Id == model.Id)
+                                                .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
                 var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
                 {
                     var results = submissionsByCD.Select(cds => cds.Submission)
-                                                 .Where(s => s.DAFaculty != null && s.DADean != null && s.DAPRC !=null);
+                                                 .Where(s => s.DAFaculty != null && s.DADean != null && s.DAPRC != null);
 
                     List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
@@ -526,20 +557,17 @@ namespace CampusCore.API.Services
                                                     .Where(sg => sg.Id == item.GroupId)
                                                     .ToListAsync();
 
-                        bool facultyA = false, deanA = false, prcA = false;
+                        var filePath = item.FilePath;
 
-                        if (item.DAFaculty != null)
+                        // Open the file stream
+                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                        // Create an IFormFile instance
+                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
                         {
-                            facultyA = true;
-                        }
-                        if (item.DADean != null)
-                        {
-                            deanA = true;
-                        }
-                        if (item.DAPRC != null)
-                        {
-                            prcA = true;
-                        }
+                            Headers = new HeaderDictionary(),
+                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                        };
 
                         var submission = new SubmissionGetAllViewModel()
                         {
@@ -549,12 +577,13 @@ namespace CampusCore.API.Services
                             GroupName = item.Group.Name,
                             ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
-                            ApprovedFaculty = facultyA,
-                            ApprovedDean = deanA,
-                            ApprovedPRC = prcA,
+                            Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
-                            DAPRC = item.DAPRC
+                            DAPRC = item.DAPRC,
+                            File = formFile,
+                            Version = item.Version,
+                            DateSubmitted = item.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -593,10 +622,10 @@ namespace CampusCore.API.Services
             {
                 var item = await _context.Submissions.FindAsync(model.Id);
 
-                
-                    var members = await _context.StudentGroups
-                                                .Where(sg => sg.Id == item.GroupId)
-                                                .ToListAsync();
+
+                var members = await _context.StudentGroups
+                                            .Where(sg => sg.Id == item.GroupId)
+                                            .ToListAsync();
                 try
                 {
                     var coursedeliverable = _context.CourseDeliverableSubmissions
@@ -604,20 +633,17 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.CourseDeliverable.Deliverable) //include these to access deliverable name
                                                 .Where(cds => cds.SubmissionId == model.Id)
                                                 .First();
-                    bool facultyA = false, deanA = false, prcA = false;
+                    var filePath = item.FilePath;
 
-                    if (item.DAFaculty != null)
+                    // Open the file stream
+                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                    // Create an IFormFile instance
+                    var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
                     {
-                        facultyA = true;
-                    }
-                    if (item.DADean != null)
-                    {
-                        deanA = true;
-                    }
-                    if (item.DAPRC != null)
-                    {
-                        prcA = true;
-                    }
+                        Headers = new HeaderDictionary(),
+                        ContentType = "application/octet-stream" // Set the content type based on your file type
+                    };
 
                     var data = new SubmissionGetAllViewModel()
                     {
@@ -627,13 +653,14 @@ namespace CampusCore.API.Services
                         GroupName = item.Group.Name,
                         ForCourseDeliverable = coursedeliverable.CourseDeliverable.Deliverable.Name,
                         Title = item.Title,
-                        ApprovedFaculty = facultyA,
-                        ApprovedDean = deanA,
-                        ApprovedPRC = prcA,
+                        Status = item.Status,
                         DAFaculty = item.DAFaculty,
                         DADean = item.DADean,
-                        DAPRC = item.DAPRC
-                    }; ;
+                        DAPRC = item.DAPRC,
+                        File = formFile,
+                        Version = item.Version,
+                        DateSubmitted = item.DateSubmitted
+                    };
 
 
                     return new DataResponseManager
@@ -653,18 +680,18 @@ namespace CampusCore.API.Services
                     };
                 }
             }
-                catch (Exception ex)
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
                 {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submission with specified id. No assigned course deliverable.",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching submission with specified id. No assigned course deliverable.",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
 
 
-                
+
         }
 
         public async Task<ResponseManager> GetUnapproved(IntIdViewModel model)
@@ -677,8 +704,7 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.Submission.Group)
                                                 .Include(cds => cds.Submission.Submitter)
                                                 .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.Id == model.Id)
+                                                .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
                 var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
@@ -694,20 +720,17 @@ namespace CampusCore.API.Services
                                                     .Where(sg => sg.Id == item.GroupId)
                                                     .ToListAsync();
 
-                        bool facultyA = false, deanA = false, prcA = false;
+                        var filePath = item.FilePath;
 
-                        if (item.DAFaculty != null)
+                        // Open the file stream
+                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                        // Create an IFormFile instance
+                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
                         {
-                            facultyA = true;
-                        }
-                        if (item.DADean != null)
-                        {
-                            deanA = true;
-                        }
-                        if (item.DAPRC != null)
-                        {
-                            prcA = true;
-                        }
+                            Headers = new HeaderDictionary(),
+                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                        };
 
                         var submission = new SubmissionGetAllViewModel()
                         {
@@ -717,12 +740,13 @@ namespace CampusCore.API.Services
                             GroupName = item.Group.Name,
                             ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
-                            ApprovedFaculty = facultyA,
-                            ApprovedDean = deanA,
-                            ApprovedPRC = prcA,
+                            Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
-                            DAPRC = item.DAPRC
+                            DAPRC = item.DAPRC,
+                            File = formFile,
+                            Version = item.Version,
+                            DateSubmitted = item.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -762,8 +786,180 @@ namespace CampusCore.API.Services
 
 
             var submission = await _context.Submissions.FindAsync(model.Id);
-           
+
             submission.Title = model.Title;
+
+            _context.Submissions.Update(submission);
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return new ResponseManager
+                {
+                    Message = "Submission updated successfully!",
+                    IsSuccess = true
+                };
+
+            }
+
+            return new ErrorResponseManager
+            {
+                Message = "Submission is not updated",
+                IsSuccess = false,
+                Errors = new List<string>() { "Error updating submission in DB" }
+            };
+        }
+
+        public async Task<ResponseManager> GetLatestVersion(IntIdViewModel model)
+        {
+            try
+            {
+
+                var item = _context.CourseDeliverableSubmissions
+                                      .Where(cds => cds.CourseDeliverableId == model.Id)
+                                      .OrderByDescending(s => s.Submission.DateSubmitted)
+                                      .Select(cds => cds.Submission)
+                                      .FirstOrDefault();
+                if (item == null)
+                {
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "There is no latest submission",
+                        Errors = new List<string> { "No latest submission in DB" }
+                    };
+                }
+
+                var members = await _context.StudentGroups
+                                                    .Where(sg => sg.Id == item.GroupId)
+                                                    .ToListAsync();
+                try
+                {
+                    var coursedeliverable = _context.CourseDeliverableSubmissions
+                                                .Include(cds => cds.CourseDeliverable)
+                                                .Include(cds => cds.CourseDeliverable.Deliverable) //include these to access deliverable name
+                                                .Where(cds => cds.SubmissionId == model.Id)
+                                                .First();
+                    var filePath = item.FilePath;
+
+                    // Open the file stream
+                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
+                    // Create an IFormFile instance
+                    var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
+                    {
+                        Headers = new HeaderDictionary(),
+                        ContentType = "application/octet-stream" // Set the content type based on your file type
+                    };
+
+                    var data = new SubmissionGetAllViewModel()
+                    {
+                        Id = item.Id,
+                        Submitter = item.Submitter.FullName,
+                        Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
+                        GroupName = item.Group.Name,
+                        ForCourseDeliverable = coursedeliverable.CourseDeliverable.Deliverable.Name,
+                        Title = item.Title,
+                        Status = item.Status,
+                        DAFaculty = item.DAFaculty,
+                        DADean = item.DADean,
+                        DAPRC = item.DAPRC,
+                        File = formFile,
+                        Version = item.Version,
+                        DateSubmitted = item.DateSubmitted
+                    };
+
+
+                    return new DataResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Submission with specified id retrieved successfully",
+                        Data = data
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "An error occurred while fetching submission with specified id",
+                        Errors = new List<string> { ex.Message }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching submission with specified id. No assigned course deliverable.",
+                    Errors = new List<string> { ex.Message
+                    }
+                };
+            }
+        }
+
+
+        public async Task<ResponseManager> SearchNameAsync(StringSearchViewModel model)
+        {
+            string searchKey = model.SearchKey;
+
+            try
+            {
+
+                var searchResults = await _context.CourseDeliverableSubmissions
+                                                .Include(cds => cds.Submission)
+                                                .Include(cds => cds.Submission.Group)
+                                                .Include(cds => cds.Submission.Submitter)
+                                                .Include(cds => cds.CourseDeliverable)
+                                                .Where(oc => EF.Functions.Like(oc.Submission.Title, $"%{model.SearchKey}%"))
+                                                .ToListAsync();
+
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Searched courses retrieved successfully",
+                    Data = searchResults
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching searched courses",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> Approve(SubmissionApproveViewModel model)
+        {
+            if (model == null)
+                throw new NullReferenceException("Submission Model is null");
+
+
+            var submission = await _context.Submissions.FindAsync(model.Id);
+
+            switch (model.Role)
+            {
+                case "Faculty":
+                    submission.DAFaculty = DateTime.Now;
+                    submission.Status = "Faculty Level Approved";
+                    break;
+                case "Dean":
+                    submission.DADean = DateTime.Now;
+                    submission.Status = "Dean Level Approved";
+                    break;
+                case "PRC":
+                    submission.DAPRC = DateTime.Now;
+                    submission.Status = "PRC Level Approved";
+                    break;
+                default:
+                    break;
+            }
 
             _context.Submissions.Update(submission);
             var result = await _context.SaveChangesAsync();

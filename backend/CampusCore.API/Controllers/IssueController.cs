@@ -15,7 +15,7 @@ namespace CampusCore.API.Controllers
             _issueService = issueService;
         }
 
-        // /api/Issue/create
+        // /api/issue/create
         [HttpPost("add")]
         public async Task<IActionResult> CreateAsync(IssueAddViewModel model)
         {
@@ -31,14 +31,14 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        // /api/Issue/viewList
+        // /api/issue/getAllBySubmission
         //insert method here
-        [HttpGet("viewList")]
-        public async Task<IActionResult> ViewListAsync()
+        [HttpPost("getAllBySubmission")]
+        public async Task<IActionResult> GetAllBySubmission(IssueGetAllModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _issueService.ViewIssueListAsync();
+                var result = await _issueService.GetAllBySubmissionAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -48,28 +48,14 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        [HttpGet("getAllOpen")]
-        public async Task<IActionResult> ViewListOpenAsync()
+        // /api/issue/getAllByUser
+        //insert method here
+        [HttpPost("getAllByUser")]
+        public async Task<IActionResult> GetAllByUser(IssueGetAllModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _issueService.ViewIssueListOpenAsync();
-
-                if (result.IsSuccess)
-                    return Ok(result); //Status code: 200
-
-                return BadRequest(result);
-            }
-            return BadRequest("Some properties are not valid"); //status code: 400
-        }
-
-        //api/Issue/search
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchAsync(IssueSearchViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _issueService.SearchIssueAsync(model);
+                var result = await _issueService.GetAllByUserAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -80,9 +66,27 @@ namespace CampusCore.API.Controllers
         }
 
 
-        //api/Issue/search
+
+        ////api/Issue/search
+        //[HttpPost("search")]
+        //public async Task<IActionResult> SearchAsync(IssueSearchViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var result = await _issueService.SearchIssueAsync(model);
+
+        //        if (result.IsSuccess)
+        //            return Ok(result); //Status code: 200
+
+        //        return BadRequest(result);
+        //    }
+        //    return BadRequest("Some properties are not valid"); //status code: 400
+        //}
+
+
+        //api/issue/getById
         [HttpPost("getById")]
-        public async Task<IActionResult> IssueGetByIdAsync(GetByIdModel model)
+        public async Task<IActionResult> IssueGetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -98,7 +102,7 @@ namespace CampusCore.API.Controllers
 
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync(IssueDeleteModel model)
+        public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -113,7 +117,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for delete"); //status code: 400
         }
 
-        // /api/Issue/update
+        // /api/issue/update
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] IssueUpdateViewModel model)
         {

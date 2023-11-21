@@ -8,18 +8,22 @@ namespace CampusCore.API.Models
         public int Id { get; set; }
 
         //use these to check if this submission is already approved by faculty, dean or PRC...if null then not approved yet.
-        public DateTime? DAFaculty { get; set; } = null;
-        public DateTime? DADean { get; set; } = null;
-        public DateTime? DAPRC { get; set; } = null;
+        public DateTime? DAFaculty { get; set; } = null;//
+        public DateTime? DADean { get; set; } = null;//
+        public DateTime? DAPRC { get; set; } = null;//
 
-        public string Title { get; set; }
+        public string Title { get; set; }//
+        public string Version { get; set; } //set title by getting how many versions are there in a submission then +1
+        public string Status { get; set; }//
+        public DateTime DateSubmitted { get; set; }
+        public string FilePath { get; set; }
 
 
         [ForeignKey("UserId")]
         public string SubmitterId { get; set; } // foreign key from UserTable
         public User Submitter { get; set; } // navigation property
 
-        public int GroupId { get; set; } // foreign key from GroupTable
+        public int? GroupId { get; set; } // foreign key from GroupTable
         public Group Group { get; set; } // Nativation Property
 
         
