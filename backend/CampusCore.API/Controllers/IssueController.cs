@@ -65,23 +65,15 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
+        //api/Issue/search
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _issueService.SearchIssueAsync(model);
 
 
-        ////api/Issue/search
-        //[HttpPost("search")]
-        //public async Task<IActionResult> SearchAsync(IssueSearchViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _issueService.SearchIssueAsync(model);
-
-        //        if (result.IsSuccess)
-        //            return Ok(result); //Status code: 200
-
-        //        return BadRequest(result);
-        //    }
-        //    return BadRequest("Some properties are not valid"); //status code: 400
-        //}
 
 
         //api/issue/getById
