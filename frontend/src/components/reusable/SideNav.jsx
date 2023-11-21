@@ -5,15 +5,16 @@ import { NavLink } from "react-router-dom";
 const SideNav = (props) => {
   return (
     <div
-      className={`${props.classNames}  flex items-center shadow-gray-400 mb-2 p-2 rounded-full hover:scale-110 ease-in duration-300 group`}
+      className={`${props.classNames}  flex items-center shadow-gray-400 mb-2 p-2 rounded-full ease-in duration-300 `}
     >
       <NavLink
         onClick={props.onDismiss}
         to={props.link}
         key={props.id}
-        className={`flex flex-row gap-6 w-full md:gap-6 group-hover:text-paleRed text-white`}
+        activeclassname="active"
+        className={`flex flex-row gap-6 w-full md:gap-6 hover:text-paleRed text-white`}
       >
-        <span className=" flex flex-row gap-6 text-[14px] sm:text-lg md:text-sm lg:text-sm justify-start tracking-wide">
+        <span className=" flex flex-row gap-6 text-sm md:text-sm lg:text-[0.9rem] font-semibold justify-start  leading-3">
           {props.icon}
           {props.title}
         </span>

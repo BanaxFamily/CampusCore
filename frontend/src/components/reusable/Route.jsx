@@ -1,12 +1,14 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import { adminLinks, studentLinks } from "../../constants/index";
+import { adminLinks, deanLink, studentLinks } from "../../constants/index";
+import { useAuth } from "../../utils/AuthContext";
 import SideNav from "./SideNav";
 
 export default function Route(props) {
+  const {userRole} = useAuth()
   return (
     <>
-      {props.userType === "student" &&
+      {userRole === "Student" &&
         studentLinks.map((nav) => (
           <SideNav
             key={nav.link}
@@ -15,17 +17,31 @@ export default function Route(props) {
             icon={nav.icon}
             title={nav.title}
             onDismiss={props.onClose}
-            
-            //   classNames={classNames}
+
+          //   classNames={classNames}
           />
         ))}
 
-      {props.userType === "admin" &&
+      {userRole === "Admin" &&
         adminLinks.map((nav) => (
           <SideNav
             key={nav.link}
             id={nav.id}
             link={nav.link}
+            icon={nav.icon}
+            title={nav.title}
+            classNames={props.className}
+            openMobileMenu={props.openMobileMenu}
+            onDismiss={props.onClose}
+          />
+        ))}
+
+      {userRole === "Dean" &&
+        deanLink.map((nav) => (
+          <SideNav
+            key={nav.link}
+            id={nav.id}
+            link={`${nav.link}`}
             icon={nav.icon}
             title={nav.title}
             classNames={props.className}

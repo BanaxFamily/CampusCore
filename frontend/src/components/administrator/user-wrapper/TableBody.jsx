@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
-import { LiaUserEditSolid } from "react-icons/lia";
-import { AiOutlineCheckCircle, AiOutlineUserDelete } from "react-icons/ai";
+import { CancelOutlined, CheckBox, CheckCircleOutlineOutlined, CheckOutlined, CheckRounded, OfflineBoltOutlined } from "@mui/icons-material";
+import { TableCell, TableRow } from "@mui/material";
+import React from "react";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 import { FaPencil } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
-import { TableCell, TableRow } from "@mui/material";
 
 export default function TableBodyUser(props) {
   return (
@@ -21,13 +21,13 @@ export default function TableBodyUser(props) {
         {props.user.status === "active" ? (
           <form action="">
             <button>
-              <AiOutlineCheckCircle color="green" size={18} />
+              <CheckCircleOutlineOutlined color="success"/>
             </button>
           </form>
         ) : (
           <form>
             <button>
-              <AiOutlineCheckCircle color="red" size={18} />
+              <CancelOutlined color="disabled"/>
             </button>
           </form>
         )}
