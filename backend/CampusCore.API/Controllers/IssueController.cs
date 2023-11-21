@@ -65,16 +65,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        //api/Issue/search
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _issueService.SearchIssueAsync(model);
-
-
-
+        
         //api/Issue/search
         [HttpPost("search")]
         public async Task<IActionResult> SearchIssueAsync(StringSearchViewModel model)
