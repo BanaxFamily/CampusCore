@@ -10,10 +10,10 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreatePublicResearchRepositoryAsync(PublicResearchRepositoryAddViewModel model);
         Task<ResponseManager> ViewPublicResearchRepositoryListAsync();
         //Task<ResponseManager> ViewPublicResearchRepositoryListOpenAsync();
-        Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(GetByIdModel model);
-        Task<ResponseManager> DeletePublicResearchRepositoryAsync(PublicResearchRepositoryDeleteModel model);
+        Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model);
+        Task<ResponseManager> DeletePublicResearchRepositoryAsync(IntIdViewModel model);
         Task<ResponseManager> UpdatePublicResearchRepositoryAsync(PublicResearchRepositoryUpdateViewModel model);
-        Task<ResponseManager> SearchPublicResearchRepositoryAsync(PublicResearchRepositorySearchViewModel model);
+        Task<ResponseManager> SearchPublicResearchRepositoryAsync(StringSearchViewModel model);
 
     }
 
@@ -72,15 +72,15 @@ namespace CampusCore.API.Services
 
 
         }
-        public async Task<ResponseManager> SearchPublicResearchRepositoryAsync(PublicResearchRepositorySearchViewModel model)
+        public async Task<ResponseManager> SearchPublicResearchRepositoryAsync(StringSearchViewModel model)
         {
-            string searchKey = model.SearchPublicResearchRepository;
+            string searchKey = model.SearchKey;
 
             try
             {
 
                 var searchResults = await _context.ResearchRepository
-                    .Where(oc => EF.Functions.Like(oc.Title, $"%{model.SearchPublicResearchRepository}%"))
+                    .Where(oc => EF.Functions.Like(oc.Title, $"%{model.SearchKey}%"))
                     .ToListAsync();
 
 
@@ -158,7 +158,7 @@ namespace CampusCore.API.Services
         //}
 
 
-        public async Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(GetByIdModel model)
+        public async Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model)
         {
 
 
@@ -190,7 +190,7 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> DeletePublicResearchRepositoryAsync(PublicResearchRepositoryDeleteModel model)
+        public async Task<ResponseManager> DeletePublicResearchRepositoryAsync(IntIdViewModel model)
         {
             try
             {
