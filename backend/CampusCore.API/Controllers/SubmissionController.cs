@@ -44,7 +44,7 @@ namespace CampusCore.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.GetAllByCourseAsync(model);
+                var result = await _submissionService.GetAllByCourseDeliverableAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -196,6 +196,37 @@ namespace CampusCore.API.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _submissionService.GetApprovedPRC(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+        [HttpPost("search")]
+        //Authorize(Roles = "Dean")]
+        public async Task<IActionResult> SearchNameAsync([FromBody] StringSearchViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _submissionService.SearchNameAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+
+        [HttpPost("approve")]
+        //Authorize(Roles = "Dean")]
+        public async Task<IActionResult> ApproveAsync([FromBody] SubmissionApproveViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _submissionService.Approve(model);
 
                 if (result.IsSuccess)
                     return Ok(result); // Status code: 200

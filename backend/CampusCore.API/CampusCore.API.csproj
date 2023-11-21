@@ -40,6 +40,10 @@
   <ItemGroup>
     <ProjectReference Include="..\CampusCore.Shared\CampusCore.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Uploads\" />
+  </ItemGroup>
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 	</PropertyGroup>

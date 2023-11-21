@@ -35,7 +35,6 @@ namespace CampusCore.API.Services
                 StudentId = model.StudentId
             };
 
-
             _context.CourseEnrollments.Add(courseEnrollment);
             var result = await _context.SaveChangesAsync();
 
