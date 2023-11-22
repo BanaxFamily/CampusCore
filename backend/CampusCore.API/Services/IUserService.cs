@@ -3,6 +3,7 @@ using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,6 +21,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model);
         Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model);
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
+        Task<ResponseManager> LogoutAsync(string userId);
         Task<ResponseManager> UserGetByIdAsync(UserGetByIdViewModel model);
     }
 }
@@ -28,11 +30,13 @@ public class UserService : IUserService
 {
     private UserManager<User> _userManager;
     private IConfiguration _configuration;
+    private AppDbContext _context;
 
-    public UserService(UserManager<User> userManager, IConfiguration configuration)
+    public UserService(UserManager<User> userManager, IConfiguration configuration, AppDbContext context)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _context = context;
        
     }
   
@@ -42,7 +46,7 @@ public class UserService : IUserService
     public  async Task<ResponseManager> LoginAsync(UserLoginViewModel model)
     {
         if (model == null)
-            throw new NullReferenceException("Register Model is null");
+            throw new NullReferenceException("Login Model is null");
         var user = await _userManager.FindByNameAsync(model.Username);
 
         if (user == null)
@@ -55,43 +59,90 @@ public class UserService : IUserService
         }
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
+        
+
         if(!result)
         {
-            return new ResponseManager
+            return new ErrorResponseManager
             {
                 Message = "Invalid login",
-                IsSuccess = false
+                IsSuccess = false,
+                Errors = new List<string>() {"Invalid login credentials"}
             };
         }
-        var userRole = await _userManager.GetRolesAsync(user);
-        var claims = new[]
+
+        try
         {
+            var userRole = await _userManager.GetRolesAsync(user);
+            var claims = new[]
+            {
             new Claim("Username", model.Username),
             new Claim(ClaimTypes.NameIdentifier,user.Id),
             new Claim(ClaimTypes.Role, userRole.FirstOrDefault())
 
-        };
+            };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
-        var token = new JwtSecurityToken(
-            issuer: _configuration["AuthSettings:Issuer"],
-            audience: _configuration["AuthSettings:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddDays(30),
-            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["AuthSettings:Issuer"],
+                audience: _configuration["AuthSettings:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
 
-        string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+            string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+            
+            _context.UserLogs.Add(new UserLog
+            {
+                UserId = user.Id,
+                Log = DateTime.Now,
+                Action = "login"
+            });
+            _context.SaveChanges();
 
-        return new LoginResponseManager
+
+            return new LoginResponseManager
+            {
+                Token = tokenAsString,
+                IsSuccess = true,
+                Message = "Successfully logged in"
+            };
+
+        }
+        catch
         {
-            Token = tokenAsString,
-            IsSuccess = true,
-            Message = "Successfully logged in"
-        };
+            return new ErrorResponseManager
+            {
+                Message = "Something went wrong",
+                IsSuccess = false,
+                Errors = new List<string>() { "Token creation error" }
+            };
+        }
+        
+
+        
+        
+        
 
 
     }
-    [Authorize(Roles = "Admin")]
+    [HttpPost("logout")]
+    public async Task<ResponseManager> LogoutAsync(string userId)
+    {
+
+        _context.UserLogs.Add(new UserLog
+        {
+            UserId = userId,
+            Log = DateTime.Now,
+            Action = "login"
+        });
+
+        return new ResponseManager
+        {
+            Message = "Logout successful",
+            IsSuccess = true
+        };
+    }
     public async Task<ResponseManager> UserAddAsync(UserAddViewModel model)
     {
         if( model == null)
