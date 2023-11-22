@@ -1,14 +1,20 @@
 /* eslint-disable react/prop-types */
-import { Alert, Checkbox, CircularProgress, List, ListItem, ListItemText, ListSubheader, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, CircularProgress, Divider, List, ListItem, ListItemText, ListSubheader, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as GetRole from '../../../network/getUserRole_api';
 import DashBoardHeading from "../../reusable/DashBoardHeading";
 import Modal from "../Modal";
+import { useParams } from "react-router-dom";
+import { Person } from "@mui/icons-material";
+import { useForm } from "react-hook-form";
+import * as EnrollmentApi from '../../../network/courseEnrollment_api'
 
 export default function ModalEnrollStudent(props) {
+    let { courseName, courseId } = useParams()
     const [students, setStudents] = useState(null)
-    const [selectedStudent, setSelectedStudent] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState("");
     const [selectedName, setSelectedName] = useState([]);
+    const { register, handleSubmit,setValue,reset, formState: { isSubmitting } } = useForm()
 
     useEffect(() => {
         async function getStudentRole() {
@@ -25,10 +31,19 @@ export default function ModalEnrollStudent(props) {
         getStudentRole()
     }, [])
 
+    async function addEnrolled(data) {
+        try {
+            const response = await EnrollmentApi.addEnrollmentStudent(data)
+            console.log(response)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const handleToggle = (value, name) => () => {
         setSelectedStudent(value);
         setSelectedName(name);
+        setValue("studentId", value || "");
     };
 
     return (
@@ -37,39 +52,23 @@ export default function ModalEnrollStudent(props) {
             width={'md:w-[40rem]'}
             heading={<DashBoardHeading title="Enroll student" desc="" />}
         >
-            <Stack>
-                <Stack direction={'row'} alignItems={'center'}>
-                    <Typography>Course select</Typography>
-                    <TextField size="small" margin="dense" />
-                </Stack>
+            <Stack spacing={1} className="mb-4">
+                {/* Dispaly selected course and student name */}
+                <Typography className="text-black">Course: <span className="underline font-semibold">{courseName}</span></Typography>
+                <Typography className="text-black">Selected Student: <span className="underline font-semibold">{selectedName ? selectedStudent : <Person />}</span></Typography>
             </Stack>
-            <Stack direction={'row'} alignItems={'center'} spacing={2} className="w-full my-2" >
-                <Stack className="w-1/2" spacing={2}>
-                    <Typography>Course</Typography>
-                    <TextField
-                        id="filled-role"
-                        select
-                        label="Select subject"
-                        SelectProps={{
-                            native: true,
-                        }}
-                        name="subject"
-                        size="small"
-                    // {...register("status", { required: "select one option" })}
-                    >
-                        <option value=""></option>
-                        {
-                            // Displays all the offered courses
-                            props.data ? props.data.map((course, index) => (
-                                <option value={course.course.id} selected key={index}>{course.course.name}/</option>
-                            )) : <option>No courses offered</option>
-                        }
-                    </TextField>
-                </Stack>
-                <Stack className="w-1/2 " spacing={2}>
+            <Divider className="!bg-black" />
+            <Stack direction={'row'} spacing={2} className="w-full my-2" >
+                <Stack className="w-1/2 " direction={'row'} alignItems={'center'} spacing={2}>
                     <Typography>Search</Typography>
                     <TextField size="small" label="search" margin="dense" className="w-full flex self-end" />
                 </Stack>
+                <Stack className="w-1/2"><Button variant="outlined" onClick={() => {
+                    // Clear the selected name
+                    setSelectedStudent("")
+                    setSelectedName(null)
+                    reset()
+                }} className="!border-red-400 !text-red-400 hover:!bg-red-800 flex self-end">Clear</Button></Stack>
             </Stack>
 
             <Stack className="border rounded-md">
@@ -91,9 +90,10 @@ export default function ModalEnrollStudent(props) {
                             (
                                 <ul>
                                     {students.map((student, index) => (
-                                        <ListItem key={`item-${index}`} className="hover:bg-gray-300">
+                                        // <ListItem onClick={() => handleToggle(data)} key={index}>
+                                        <ListItem onClick={() => handleToggle(student.id)} key={`item-${index}`} className="hover:bg-gray-300">
                                             <Checkbox
-                                                checked={selectedStudent.indexOf(student.id) !== -1}
+                                                checked={student.id === selectedStudent}
                                                 onChange={handleToggle(student.id, student.fullName)}
                                             />
                                             <ListItemText primary={`${student.idno} | ${student.lastName}, ${student.firstName}`} />
@@ -104,6 +104,15 @@ export default function ModalEnrollStudent(props) {
                     }
                 </List>
             </Stack>
+            {/* Mounting to send the data to API  */}
+            <form action="" onSubmit={handleSubmit(addEnrolled)}>
+                <Stack>
+                    <input type="text" hidden defaultValue={selectedStudent} name="studentId" {...register('studentId')}  />
+                    <input type="text" hidden defaultValue={courseId} name="offeredCourseId"{...register('offeredCourseId')}  />
+
+                    <Button disable={isSubmitting} type="submit" variant="contained" className="flex self-end">Enroll Student</Button>
+                </Stack>
+            </form>
         </ Modal>
     )
 }

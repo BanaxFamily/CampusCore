@@ -1,4 +1,4 @@
-import { Button, Divider, Stack, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import { Button, CircularProgress, Divider, Stack, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import BackNav from "../../reusable/BackNav"
@@ -7,11 +7,14 @@ import DashBoardHeading from "../../reusable/DashBoardHeading"
 import DynamicTable from "../../reusable/DynamicTable"
 import ModalEnrollStudent from "./ModalEnrollStudent"
 import * as OfferedCourse from "../../../network/offeredCourse_api"
+import * as EnrollmentApi from "../../../network/courseEnrollment_api"
 
 export default function EnrolledStudents() {
-  let { courseName } = useParams()
+  let { courseName, courseId } = useParams()
+  const [loading, setLoading] = useState(true)
   const [showModalEnroll, setShowModalEnroll] = useState(false)
   const [offeredCourse, setOfferedCourse] = useState(null)
+  const [enrolledStudent, setEnrolledStudents] = useState(null)
   const breadCrumbUrl = [
     {
       url: '../',
@@ -31,9 +34,20 @@ export default function EnrolledStudents() {
         console.error(error)
       }
     }
+    async function displayEnrolledStudents() {
+      try {
+        const response = await EnrollmentApi.getEnrolledStudents({ 'courseId': courseId })
+        if (response.isSuccess) {
+          setEnrolledStudents(response.data)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+      setLoading(false)
+    }
+    displayEnrolledStudents()
     getAllOfferedCourse()
-  }, [])
-
+  }, [courseId, setLoading])
   return (
     <Stack>
       <Stack>
@@ -51,22 +65,32 @@ export default function EnrolledStudents() {
           <Button className="flex self-end !my-4" variant="contained" onClick={() => setShowModalEnroll(true)}>Enroll student</Button>
 
           <Stack>
-            <DynamicTable>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Course</TableCell>
-                  <TableCell align="center">Schedule</TableCell>
-                  <TableCell align="center">Assigned</TableCell>
-                  <TableCell align="center">Email</TableCell>
-                  <TableCell align="right">Semester</TableCell>
-                  <TableCell align="right">Year</TableCell>
-                  <TableCell align="center">Action</TableCell>
-                  <TableCell align="center" > Enrolled</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-              </TableBody>
-            </DynamicTable>
+            {
+              loading ? <CircularProgress color="inherit" /> : (
+                <DynamicTable>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">Offered course ID</TableCell>
+                      <TableCell align="center">Id number</TableCell>
+                      <TableCell align="center">Fullname</TableCell>
+                      <TableCell align="center">Email</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      enrolledStudent !== null && enrolledStudent.map((student, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="center">{student.offeredCourseId}</TableCell>
+                          <TableCell align="center">{student.student.idno}</TableCell>
+                          <TableCell align="center">{student.student.fullName}</TableCell>
+                          <TableCell align="center">{student.student.email}</TableCell>
+                        </TableRow>
+                      ))
+                    }
+                  </TableBody>
+                </DynamicTable>
+              )
+            }
           </Stack>
         </Stack>
       </Stack>

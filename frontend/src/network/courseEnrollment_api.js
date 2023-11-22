@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { fetchData } from "./user_api";
 
-export async function getEnrolledStudent(data) {
+export async function addEnrollmentStudent(data) {
   const response = await fetchData("api/course-enrollment/create", {
     method: "POST",
     headers: {
@@ -17,6 +17,24 @@ export async function getEnrolledCourses(data) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Header": {
+        "userRole": "Admin"
+      }
+    },
+    body: JSON.stringify(data),
+  });
+
+  return response;
+}
+
+export async function getEnrolledStudents(data) {
+  const response = await fetchData("api/course-enrollment/enrolledStudents", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Header": {
+        "userRole": "Admin"
+      }
     },
     body: JSON.stringify(data),
   });

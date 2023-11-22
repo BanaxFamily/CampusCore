@@ -20,7 +20,7 @@ namespace CampusCore.API.Controllers
 
         // /api/course/create
         [HttpPost("create")]
-        [Authorize(Roles = "Admin,Dean")]
+        //[Authorize(Roles = "Admin,Dean")]
         public async Task<IActionResult> CreateAsync(CourseEnrollmentAddViewModel model)
         {
             if (ModelState.IsValid)
