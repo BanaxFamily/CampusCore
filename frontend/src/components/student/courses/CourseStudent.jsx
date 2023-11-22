@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import * as CourseEnrollment from '../../../network/courseEnrollment_api'
 import { useAuth } from '../../../utils/AuthContext'
 import DashBoardHeading from '../../reusable/DashBoardHeading'
-import CoursesStudent from './CoursesStudent'
+import CardCoursesStudent from './CardCoursesStudent'
 
-export default function CardCoursesStudent() {
+export default function CourseStudent() {
   const { userId } = useAuth()
   const [data, setData] = useState(null)
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function CardCoursesStudent() {
       // try {
       const response = await CourseEnrollment.getEnrolledCourses({ "studentId": userId })
       setData(response.data)
-      console.log(userId)
+      console.log(response.data)
       // } catch (error) {
 
       // }
@@ -27,7 +27,7 @@ export default function CardCoursesStudent() {
       <Stack className='my-2'>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {!data ? <LinearProgress /> : (
-            data.length > 0 ? : (<Alert severity='info' className='!rounded-lg'>No currently enrolled courses</Alert>)
+            data.length > 0 ? <CardCoursesStudent data={data}/>: (<Alert severity='info' className='!rounded-lg'>No currently enrolled courses</Alert>)
           )}
         </div>
       </Stack>

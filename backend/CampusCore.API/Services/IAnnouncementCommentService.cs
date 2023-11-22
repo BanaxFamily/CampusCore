@@ -70,7 +70,10 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.AnnouncementComments.ToListAsync();
+                var result = await _context.AnnouncementComments
+                                            .Include(x => x.Announcement)
+                                            .Include(x => x.User)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {

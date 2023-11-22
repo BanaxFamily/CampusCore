@@ -34,7 +34,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateOfferedCourseAsync([FromBody] OfferedCourseUpdateViewModel model)
         {
             if (ModelState.IsValid)
@@ -97,7 +97,7 @@ namespace CampusCore.API.Controllers
         }
         //insert method here
         [HttpPost("getById")]
-        public async Task<IActionResult> GetByIdAsync(OfferedCourseGetByIdModel model)
+        public async Task<IActionResult> GetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -113,7 +113,7 @@ namespace CampusCore.API.Controllers
 
         //[Authorize(Roles = "Admin,Dean")]
         [HttpDelete("delete")]
-            public async Task<IActionResult> DeleteAsync([FromBody] OfferedCourseDeleteModel model)
+            public async Task<IActionResult> DeleteAsync([FromBody] IntIdViewModel model)
             {
                 if (ModelState.IsValid)
                 {

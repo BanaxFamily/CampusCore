@@ -65,7 +65,7 @@ namespace CampusCore.API.Controllers
 
         //api/publicResearchRepository/search
         [HttpPost("search")]
-        public async Task<IActionResult> SearchAsync(PublicResearchRepositorySearchViewModel model)
+        public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +82,7 @@ namespace CampusCore.API.Controllers
 
         //api/publicResearchRepository/search
         [HttpPost("getById")]
-        public async Task<IActionResult> PublicResearchRepositoryGetByIdAsync(GetByIdModel model)
+        public async Task<IActionResult> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -98,7 +98,7 @@ namespace CampusCore.API.Controllers
 
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync(PublicResearchRepositoryDeleteModel model)
+        public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
