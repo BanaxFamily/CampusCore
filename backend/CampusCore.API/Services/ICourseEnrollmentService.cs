@@ -111,6 +111,8 @@ namespace CampusCore.API.Services
             try
             {
                 var result = await _context.CourseEnrollments
+                             .Include(ce => ce.OfferedCourse)
+                             .Include(ce => ce.OfferedCourse.Course)
                              .Where(ce => ce.StudentId == model.StudentId)
                              .ToListAsync();
 
