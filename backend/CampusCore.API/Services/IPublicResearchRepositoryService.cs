@@ -64,7 +64,7 @@ namespace CampusCore.API.Services
             {
                 Message = "Research repository is not created",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding research repository in DB" }
+                Errors = new List<string>() { "Error adding research repository in DB" }
             };
 
 
