@@ -107,6 +107,21 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid");
         }
 
+        // /api/auth/logout
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.LogoutAsync(id);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+
         // api/auth/getById
         [HttpPost("getById")]
         public async Task<IActionResult> GetByIdAsync(StringIdViewModel model)

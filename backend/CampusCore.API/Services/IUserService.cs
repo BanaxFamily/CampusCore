@@ -3,6 +3,7 @@ using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,6 +22,8 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UserDeleteAsync(StringIdViewModel model);
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
         Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model);
+        Task<ResponseManager> LogoutAsync(string userId);
+
     }
 }
 
@@ -28,11 +31,13 @@ public class UserService : IUserService
 {
     private UserManager<User> _userManager;
     private IConfiguration _configuration;
+    private AppDbContext _context;
 
-    public UserService(UserManager<User> userManager, IConfiguration configuration)
+    public UserService(UserManager<User> userManager, IConfiguration configuration, AppDbContext context)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _context = context;
        
     }
   
@@ -42,7 +47,7 @@ public class UserService : IUserService
     public  async Task<ResponseManager> LoginAsync(UserLoginViewModel model)
     {
         if (model == null)
-            throw new NullReferenceException("Register Model is null");
+            throw new NullReferenceException("Login Model is null");
         var user = await _userManager.FindByNameAsync(model.Username);
 
         if (user == null)
@@ -55,43 +60,90 @@ public class UserService : IUserService
         }
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
+        
+
         if(!result)
         {
-            return new ResponseManager
+            return new ErrorResponseManager
             {
                 Message = "Invalid login",
-                IsSuccess = false
+                IsSuccess = false,
+                Errors = new List<string>() {"Invalid login credentials"}
             };
         }
-        var userRole = await _userManager.GetRolesAsync(user);
-        var claims = new[]
+
+        try
         {
+            var userRole = await _userManager.GetRolesAsync(user);
+            var claims = new[]
+            {
             new Claim("Username", model.Username),
             new Claim(ClaimTypes.NameIdentifier,user.Id),
             new Claim(ClaimTypes.Role, userRole.FirstOrDefault())
 
-        };
+            };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
-        var token = new JwtSecurityToken(
-            issuer: _configuration["AuthSettings:Issuer"],
-            audience: _configuration["AuthSettings:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddDays(30),
-            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["AuthSettings:Issuer"],
+                audience: _configuration["AuthSettings:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
 
-        string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+            string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+            
+            _context.UserLogs.Add(new UserLog
+            {
+                UserId = user.Id,
+                Log = DateTime.Now,
+                Action = "login"
+            });
+            _context.SaveChanges();
 
-        return new LoginResponseManager
+
+            return new LoginResponseManager
+            {
+                Token = tokenAsString,
+                IsSuccess = true,
+                Message = "Successfully logged in"
+            };
+
+        }
+        catch
         {
-            Token = tokenAsString,
-            IsSuccess = true,
-            Message = "Successfully logged in"
-        };
+            return new ErrorResponseManager
+            {
+                Message = "Something went wrong",
+                IsSuccess = false,
+                Errors = new List<string>() { "Token creation error" }
+            };
+        }
+        
+
+        
+        
+        
 
 
     }
-    [Authorize(Roles = "Admin")]
+    [HttpPost("logout")]
+    public async Task<ResponseManager> LogoutAsync(string userId)
+    {
+
+        _context.UserLogs.Add(new UserLog
+        {
+            UserId = userId,
+            Log = DateTime.Now,
+            Action = "login"
+        });
+
+        return new ResponseManager
+        {
+            Message = "Logout successful",
+            IsSuccess = true
+        };
+    }
     public async Task<ResponseManager> UserAddAsync(UserAddViewModel model)
     {
         if( model == null)
@@ -355,7 +407,6 @@ public class UserService : IUserService
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-
                     Message = "user not found",
                     Errors = new List<string> { "user with the specified ID does not exist" }
 
@@ -363,9 +414,6 @@ public class UserService : IUserService
             }
 
             // Update the user properties from the model
-            
-
-            
             user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;
@@ -373,16 +421,16 @@ public class UserService : IUserService
             user.Status = model.Status;
 
 
-            if (userRole.Contains(model.Role))
+            if (!userRole.Contains(model.Role))
             {
-                await _userManager.RemoveFromRoleAsync(user, userRole[0]);
+                await _userManager.RemoveFromRoleAsync(user, userRole.First());
                 await _userManager.AddToRoleAsync(user, model.Role);
             }
             
 
             // Save changes to the database
-            var result = await _userManager.UpdateAsync(user);
-
+            await _userManager.UpdateAsync(user);
+            
             return new ResponseManager
             {
                 IsSuccess = true,
