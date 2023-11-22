@@ -113,15 +113,28 @@ namespace CampusCore.API.Services
                 var result = await _context.CourseEnrollments
                              .Include(ce => ce.OfferedCourse)
                              .Include(ce => ce.OfferedCourse.Course)
-                             .Include(ce => ce.OfferedCourse.FacultyAssigned.FullName)
+                             .Include(ce => ce.OfferedCourse.FacultyAssigned)
                              .Where(ce => ce.StudentId == model.StudentId)
                              .ToListAsync();
+                var data = new List<CourseEnrolledViewModel>();
+                foreach (var item in result)
+                {
+                    data.Add(new CourseEnrolledViewModel
+                    {
+                        Id = item.Id,
+                        Name = item.OfferedCourse.FacultyAssigned.FullName,
+                        Description = item.OfferedCourse.Course.Description,
+                        Schedule = item.OfferedCourse.Schedule,
+                        Sem = item.OfferedCourse.Sem,
+                        AcadYear = item.OfferedCourse.AcadYear,
+                    }) ;
+                }
 
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = "Enrolled courses retrieved successfully",
-                    Data = result
+                    Data = data
                 };
             }
             catch (Exception ex)
