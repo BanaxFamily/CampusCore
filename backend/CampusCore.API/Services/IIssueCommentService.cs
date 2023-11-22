@@ -8,10 +8,10 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> CreateIssueCommentAsync(IssueCommentAddViewModel model);
         Task<ResponseManager> ViewIssueCommentListAsync();
-        Task<ResponseManager> IssueCommentGetByIdAsync(GetByIdModel model);
-        Task<ResponseManager> DeleteIssueCommentAsync(IssueCommentDeleteModel model);
+        Task<ResponseManager> IssueCommentGetByIdAsync(IntIdViewModel model);
+        Task<ResponseManager> DeleteIssueCommentAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateIssueCommentAsync(IssueCommentUpdateViewModel model);
-        Task<ResponseManager> SearchIssueCommentAsync(IssueCommentSearchViewModel model);
+        Task<ResponseManager> SearchIssueCommentAsync(StringSearchViewModel model);
 
     }
 
@@ -44,7 +44,7 @@ namespace CampusCore.API.Services
             {
                 return new ResponseManager
                 {
-                    Message = "Issie comment created successfully!",
+                    Message = "Issue's comment created successfully!",
                     IsSuccess = true
                 };
 
@@ -54,9 +54,9 @@ namespace CampusCore.API.Services
 
             return new ErrorResponseManager
             {
-                Message = "Issue comment is not created",
+                Message = "Issue's comment is not created",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding issue comment in DB" }
+                Errors = new List<string>() { "Error updating adding issue's comment in the database" }
             };
 
 
@@ -64,15 +64,17 @@ namespace CampusCore.API.Services
 
 
         }
-        public async Task<ResponseManager> SearchIssueCommentAsync(IssueCommentSearchViewModel model)
+        public async Task<ResponseManager> SearchIssueCommentAsync(StringSearchViewModel model)
         {
-            string searchKey = model.SearchIssueComment;
+            string searchKey = model.SearchKey;
 
             try
             {
 
                 var searchResults = await _context.IssueComments
-                    .Where(oc => EF.Functions.Like(oc.CommentText, $"%{model.SearchIssueComment}%"))
+                    .Where(oc => EF.Functions.Like(oc.CommentText, $"%{model.SearchKey}%"))
+                    .Include(ic => ic.Issue)
+                    .Include(ic => ic.User)
                     .ToListAsync();
 
 
@@ -80,7 +82,7 @@ namespace CampusCore.API.Services
                 return new DataResponseManager
                 {
                     IsSuccess = true,
-                    Message = "Searched issue comments retrieved successfully",
+                    Message = "Searched comment for the issue retrieved successfully",
                     Data = searchResults
                 };
             }
@@ -101,12 +103,15 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.IssueComments.ToListAsync();
+                var result = await _context.IssueComments
+                                            .Include(ic => ic.Issue)
+                                            .Include(ic => ic.User)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
                     IsSuccess = true,
-                    Message = "Issue comments retrieved successfully",
+                    Message = "Issue's comments retrieved successfully",
                     Data = result
                 };
             }
@@ -115,23 +120,27 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching issue comments",
+                    Message = "An error occurred while fetching issue's comments",
                     Errors = new List<string> { ex.Message }
                 };
             }
         }
-        public async Task<ResponseManager> IssueCommentGetByIdAsync(GetByIdModel model)
+        public async Task<ResponseManager> IssueCommentGetByIdAsync(IntIdViewModel model)
         {
 
 
             try
             {
-                var result = await _context.IssueComments.FindAsync(model.Id);
+                var result = await _context.IssueComments
+                                            .Include (ic => ic.Issue)
+                                            .Include(ic => ic.User)
+                                            .Where(ic => ic.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
                     IsSuccess = true,
-                    Message = "Issue comments retrieved successfully",
+                    Message = "Issue's comments retrieved successfully",
                     Data = result
                 };
             }
@@ -140,7 +149,7 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching issue comments",
+                    Message = "An error occurred while fetching issue's comments",
                     Errors = new List<string> { ex.Message }
                 };
             }
@@ -152,7 +161,7 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> DeleteIssueCommentAsync(IssueCommentDeleteModel model)
+        public async Task<ResponseManager> DeleteIssueCommentAsync(IntIdViewModel model)
         {
             try
             {
@@ -163,8 +172,8 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "Issue comment not found",
-                        Errors = new List<string> { "Issue comment with the specified ID does not exist" }
+                        Message = "Issue's comment not found",
+                        Errors = new List<string> { "Issue's comment with the specified ID does not exist" }
                     };
                 }
 
@@ -176,7 +185,7 @@ namespace CampusCore.API.Services
                     return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "Issue comment deleted successfully"
+                        Message = "Issue's comment deleted successfully"
                     };
                 }
                 else
@@ -184,8 +193,8 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "Issue comment deletion failed",
-                        Errors = new List<string> { "Error occurred while deleting the issue comment" }
+                        Message = "Issue's comment deletion failed",
+                        Errors = new List<string> { "Error occurred while deleting the issue's comment" }
                     };
                 }
             }
@@ -194,7 +203,7 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while deleting the issue comment",
+                    Message = "An error occurred while deleting the issue's comment",
                     Errors = new List<string> { ex.Message }
                 };
             }
@@ -211,8 +220,8 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "Issue comment not found",
-                        Errors = new List<string> { "Issue comment with the specified ID does not exist" }
+                        Message = "Issue's comment not found",
+                        Errors = new List<string> { "Issue's comment with the specified ID does not exist" }
                     };
                 }
 
@@ -230,7 +239,7 @@ namespace CampusCore.API.Services
                     return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "Issue comment updated successfully"
+                        Message = "Issue's comment updated successfully"
                     };
                 }
                 else
@@ -238,8 +247,8 @@ namespace CampusCore.API.Services
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
-                        Message = "Issue comment update failed",
-                        Errors = new List<string> { "Error occurred while updating the issue comment" }
+                        Message = "Issue's comment update failed",
+                        Errors = new List<string> { "Error occurred while updating the issue's comment" }
                     };
                 }
             }
@@ -248,7 +257,7 @@ namespace CampusCore.API.Services
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while updating the issue comment",
+                    Message = "An error occurred while updating the issue's comment",
                     Errors = new List<string> { ex.Message }
                 };
             }
