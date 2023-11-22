@@ -76,7 +76,7 @@ export default function CourseLoadWrapper() {
                       native: true,
                     }}
                     required
-                    variant="filled"
+                    variant="outlined"
                     name="sem"
                     {...register("sem", { required: "select one option" })}
                   >
@@ -99,7 +99,7 @@ export default function CourseLoadWrapper() {
                     id="outline-year"
                     name="acadYear"
                     label="Year"
-                    variant="filled"
+                    variant="outlined"
                     {...register("acadYear", { required: "this si required" })}
 
                   />
@@ -136,7 +136,9 @@ export default function CourseLoadWrapper() {
           </div>
         </div>
       </div>
-      <Divider />
+      <Stack className="my-4">
+        <Divider />
+      </Stack>
 
       {sortedCourse.length > 0 ? <OfferedCourseTable courseOffered={sortedCourse} /> : <p>No record found</p>}
 

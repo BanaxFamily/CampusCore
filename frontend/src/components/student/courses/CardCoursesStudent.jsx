@@ -7,7 +7,7 @@ export default function CardCoursesStudent({ data }) {
     data.map((course, index) => (
 
       <div className='shadow-md rounded-md hover:shadow-gray-800 ' key={index} >
-        <Card sx={{ maxWidth: 'auto', width: '100%', height: '13rem', margin: 'auto' }} >
+        <Card sx={{ maxWidth: 'auto', width: '100%', margin: 'auto' }} >
           <CardHeader
             avatar={
               <Avatar aria-label="recipe">
@@ -19,21 +19,23 @@ export default function CardCoursesStudent({ data }) {
                 <MoreHoriz />
               </IconButton>
             }
-            title="Teacher name"
-            subheader={course.offeredCourse.schedule}
+            title={course.facultyAssigneds}
+            subheader={'schedule here'}
           />
-          <CardActionArea>
-            <CardContent className='h-[6rem] overflow-y-auto'>
-              <Typography gutterBottom variant="h5" component="div">
-                {course.offeredCourse.course.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {course.offeredCourse.course.description}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
+          <Link to={`submission`} size="small" color="primary" className='hover:!text-blue-300'>
+            <CardActionArea>
+              <CardContent className='h-[6rem]'>
+                <Typography gutterBottom variant="h5" component="div" fontSize={'medium'}>
+                  {course.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {course.description}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Link>
           <CardActions sx={{ justifyContent: 'flex-end' }}>
-            <Link to={`submission`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
+            <Link to={`deliverable/${course.name}/${course.id}`} size="small" color="primary" className=' text-blue-500 p-2 hover:text-mainBlueColor'>
               Open
             </Link>
           </CardActions>

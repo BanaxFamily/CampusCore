@@ -9,7 +9,10 @@ import {
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import ManageRepo from "./components/administrator/ManageRepo";
+import ManageCourse from "./components/administrator/course-layout/ManageCourse";
 import CourseLoad from "./components/administrator/courseloads/CourseLoad";
+import CourseLoadLayout from "./components/administrator/courseloads/CourseLoadLayout";
+import EnrolledStudents from "./components/administrator/courseloads/EnrolledStudents";
 import GenerateReport from "./components/administrator/report/GenerateReport";
 import ManageUsers from "./components/administrator/user-wrapper/ManageUsers";
 import CourseLayout from "./components/dean/courses/CourseLayout";
@@ -24,7 +27,8 @@ import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
 import Home from "./components/shared-route/home/Home";
 import CourseStudent from "./components/student/courses/CourseStudent";
-import DeliverableStudent from "./components/student/deliverable/DeliverableStudent";
+import LayoutCourse from "./components/student/courses/LayoutCourse";
+import DeliverableWrapper from "./components/student/courses/deliverable/DeliverableWrapper";
 import Issues from "./components/student/issues/Issues";
 import ResearchRepo from "./components/student/repo/ResearchRepo";
 import UserSetting from "./components/student/settings/UserSetting";
@@ -33,9 +37,6 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
-import ManageCourse from "./components/administrator/course-layout/ManageCourse";
-import CourseLoadLayout from "./components/administrator/courseloads/CourseLoadLayout";
-import EnrolledStudents from "./components/administrator/courseloads/EnrolledStudents";
 
 
 export default function App() {
@@ -64,8 +65,10 @@ export default function App() {
           {userRole === "Student" && (
             <>
               <Route path={`/research`} element={<ResearchRepo />} />
-              <Route path={`/course`} element={<CourseStudent />} />
-              <Route path={`/deliverable`} element={<DeliverableStudent />} />
+              <Route path={`/course/*`} element={<LayoutCourse />}>
+                <Route index element={<CourseStudent />} />
+                <Route path={`deliverable/:courseName/:courseId`} element={<DeliverableWrapper />} />
+              </Route>
               <Route path={`/issues`} element={<Issues />} />
               <Route path={`/timetable`} element={<Timetable />} />
               <Route path={`/settings`} element={<UserSetting />} />
@@ -76,8 +79,8 @@ export default function App() {
               <Route path={`manage/course`} loader={async () => { return CourseApi.viewCourse(); }} element={<ManageCourse />} />
               <Route path={`manage/user`} loader={async () => { return UserApi.viewUser(); }} element={<ManageUsers />} />
               <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
-                <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad/>}/>
-                <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents/>}/>
+                <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
+                <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
               </Route>
               <Route path={`manage/repository/*`} element={<ManageRepo />} />
               <Route path={`reports`} element={<GenerateReport />}></Route>
@@ -88,6 +91,10 @@ export default function App() {
               <Route path={`/deliverable-management/*`} element={<CourseLayout />}>
                 <Route index element={<DeanDeliverables />} />
                 <Route path=":courseName/deliverables/:courseId?" element={<Deliverables />} />
+              </Route>
+              <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
+                <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
+                <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
               </Route>
               <Route path={`/courses/*`} element={<CourseLayout />}>
                 <Route index element={<DeanCourses />} />
