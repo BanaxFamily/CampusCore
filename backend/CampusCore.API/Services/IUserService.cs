@@ -406,7 +406,6 @@ public class UserService : IUserService
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-
                     Message = "user not found",
                     Errors = new List<string> { "user with the specified ID does not exist" }
 
@@ -414,9 +413,6 @@ public class UserService : IUserService
             }
 
             // Update the user properties from the model
-            
-
-            
             user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;
@@ -424,16 +420,16 @@ public class UserService : IUserService
             user.Status = model.Status;
 
 
-            if (userRole.Contains(model.Role))
+            if (!userRole.Contains(model.Role))
             {
-                await _userManager.RemoveFromRoleAsync(user, userRole[0]);
+                await _userManager.RemoveFromRoleAsync(user, userRole.First());
                 await _userManager.AddToRoleAsync(user, model.Role);
             }
             
 
             // Save changes to the database
-            var result = await _userManager.UpdateAsync(user);
-
+            await _userManager.UpdateAsync(user);
+            
             return new ResponseManager
             {
                 IsSuccess = true,
