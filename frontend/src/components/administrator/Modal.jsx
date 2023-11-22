@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-const Modal = ({ heading, onDismiss, children }) => {
+const Modal = ({ heading, onDismiss, children, width }) => {
   return (
-    <div className="fixed bg-black/70 inset-0 flex items-center justify-center z-50">
-      <div className=" bg-white relative w-11/12 md:max-w-xl mx-auto shadow-lg z-50 overflow-y-auto rounded-md">
+    <div className={` fixed bg-black/70 inset-0 flex items-center justify-center z-50 `}>
+      <div className={` ${width} bg-white relative w-11/12 md:max-w-[45rem] mx-auto shadow-lg z-50 overflow-y-auto rounded-md`}>
         {heading}
         <div className=" py-4 text-left px-6">
           <div className="flex justify-end">

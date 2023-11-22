@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { TableCell, TableRow } from "@mui/material";
-import { AiOutlineCheckCircle } from "react-icons/ai";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 import { FaPencil } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
 
@@ -24,7 +24,7 @@ export default function TableBodyCourse(props) {
         ) : (
           <form>
             <button>
-              <AiOutlineCheckCircle color="red" size={18} />
+              <AiOutlineCloseCircle color="red" size={18} />
             </button>
           </form>
         )}

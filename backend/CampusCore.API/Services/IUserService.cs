@@ -413,8 +413,6 @@ public class UserService : IUserService
             }
 
             // Update the user properties from the model
-            
-
             user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;
