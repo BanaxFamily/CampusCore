@@ -61,7 +61,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync([FromBody] UserDeleteViewModel model)
+        public async Task<IActionResult> DeleteAsync([FromBody] StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -124,7 +124,7 @@ namespace CampusCore.API.Controllers
 
         // api/auth/getById
         [HttpPost("getById")]
-        public async Task<IActionResult> GetByIdAsync(UserGetByIdViewModel model)
+        public async Task<IActionResult> GetByIdAsync(StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {

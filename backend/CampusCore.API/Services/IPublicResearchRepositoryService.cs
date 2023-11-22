@@ -81,6 +81,7 @@ namespace CampusCore.API.Services
 
                 var searchResults = await _context.ResearchRepository
                     .Where(oc => EF.Functions.Like(oc.Title, $"%{model.SearchKey}%"))
+                    .Include(rr => rr.Submission)
                     .ToListAsync();
 
 
@@ -109,7 +110,9 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.ResearchRepository.ToListAsync();
+                var result = await _context.ResearchRepository
+                                            .Include(rr => rr.Submission)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
@@ -164,7 +167,10 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.ResearchRepository.FindAsync(model.Id);
+                var result = await _context.ResearchRepository
+                                            .Include (rr => rr.Submission)
+                                            .Where(rr => rr.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {

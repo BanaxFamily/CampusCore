@@ -100,6 +100,7 @@ namespace CampusCore.API.Services
 
                 var searchResults = await _context.Issues
                     .Where(oc => EF.Functions.Like(oc.Name, $"%{searchKey}%"))
+                    .Include(si => si.User)
                     .ToListAsync();
 
 
@@ -137,6 +138,7 @@ namespace CampusCore.API.Services
                                                 .Where(si => si.SubmissionId == submissionId)
                                                 .Select(si => si.Issue)
                                                 .Where(i => i.Status == "open")
+                                                .Include(si => si.User)
                                                 .ToListAsync();
                     return new DataResponseManager
                     {
@@ -227,6 +229,7 @@ namespace CampusCore.API.Services
                                                 .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
                                                 .Select(si => si.Issue)
                                                 .Where(i => i.Status == "open")
+                                                .Include(si => si.User)
                                                 .ToListAsync();
 
                     return new DataResponseManager
@@ -363,7 +366,10 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.Issues.FindAsync(model.Id);
+                var result = await _context.Issues
+                                            .Include(i => i.User)
+                                            .Where(i => i.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
