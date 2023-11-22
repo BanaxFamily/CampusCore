@@ -37,6 +37,7 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
+import CourseAssigned from "./components/faculty/CourseAssigned";
 
 
 export default function App() {
@@ -62,6 +63,11 @@ export default function App() {
           <Route path={`/`} element={<Home />} />
           <Route path={`/home`} element={<Home />} />
           <Route path={`/manage/profile`} element={<ManageProfile />} />
+          {userRole === "Faculty" && (
+            <>
+              <Route path={`course/assigned`} element={<CourseAssigned />} />
+            </>
+          )}
           {userRole === "Student" && (
             <>
               <Route path={`/research`} element={<ResearchRepo />} />

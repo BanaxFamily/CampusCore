@@ -180,11 +180,5 @@ export const facultyLinks = [
     link: "course/assigned",
     title: "Course assigned",
     icon: <Book />,
-  },
-  {
-    id: "courloads",
-    link: "course/assigned",
-    title: "Course assigned",
-    icon: <Book />,
   }
 ]
