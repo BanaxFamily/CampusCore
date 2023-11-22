@@ -20,7 +20,7 @@ namespace CampusCore.API.Controllers
 
             // /api/deliverable/create
             [HttpPost("create")]
-            [Authorize(Roles = "Dean")]
+            //[Authorize(Roles = "Dean")]
             public async Task<IActionResult> CreateAsync(DeliverableAddViewModel model)
             {
                 if (ModelState.IsValid)
@@ -88,7 +88,7 @@ namespace CampusCore.API.Controllers
 
             // /api/Deliverable/update
             [HttpPut("update")]
-            [Authorize(Roles = "Dean")]
+            //[Authorize(Roles = "Dean")]
             public async Task<IActionResult> UpdateAsync([FromBody] DeliverableUpdateViewModel model)
             {
                 if (ModelState.IsValid)

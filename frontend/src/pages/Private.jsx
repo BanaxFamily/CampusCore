@@ -1,4 +1,3 @@
-import React from 'react'
 import Route from '../components/reusable/Route';
 import ResearchRepo from '../components/student/repo/ResearchRepo';
 import CourseStudent from '../components/student/courses/CourseStudent';
@@ -7,7 +6,6 @@ import Issues from '../components/student/issues/Issues';
 import Timetable from '../components/student/timetable/Timetable';
 import UserSetting from '../components/student/settings/UserSetting';
 import ManageCourse from '../components/administrator/course-layout/ManageCourse';
-import ManageUsers from '../components/administrator/user-wrapper/ManageUsers';
 import CourseLoad from '../components/administrator/courseloads/CourseLoad';
 import ManageRepo from '../components/administrator/ManageRepo';
 import GenerateReport from '../components/administrator/report/GenerateReport';
@@ -16,6 +14,7 @@ import DeanCourses from '../components/dean/courses/DeanCourses';
 import * as UserApi from '../network/user_api'
 import * as CourseApi from '../network/course_api'
 import { useAuth } from '../utils/AuthContext';
+import ManageUsers from '../components/administrator/user-wrapper/ManageUsers';
 
 export default function Private() {
   const {userRole} = useAuth()

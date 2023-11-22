@@ -86,7 +86,7 @@ export const adminLinks = [
 
   {
     id: "repository",
-    link: "/faculty/course/loads",
+    link: "/faculty/course-loads/subjects",
     title: "Faculty course loads",
     icon: <LocalPostOffice />,
   },

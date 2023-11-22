@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 // import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import ManageCourse from "./components/administrator//course-layout/ManageCourse";
 import ManageRepo from "./components/administrator/ManageRepo";
 import CourseLoad from "./components/administrator/courseloads/CourseLoad";
 import GenerateReport from "./components/administrator/report/GenerateReport";
@@ -34,6 +33,9 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
+import ManageCourse from "./components/administrator/course-layout/ManageCourse";
+import CourseLoadLayout from "./components/administrator/courseloads/CourseLoadLayout";
+import EnrolledStudents from "./components/administrator/courseloads/EnrolledStudents";
 
 
 export default function App() {
@@ -73,7 +75,10 @@ export default function App() {
             <>
               <Route path={`manage/course`} loader={async () => { return CourseApi.viewCourse(); }} element={<ManageCourse />} />
               <Route path={`manage/user`} loader={async () => { return UserApi.viewUser(); }} element={<ManageUsers />} />
-              <Route path={`faculty/course/loads`} loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
+              <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
+                <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad/>}/>
+                <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents/>}/>
+              </Route>
               <Route path={`manage/repository/*`} element={<ManageRepo />} />
               <Route path={`reports`} element={<GenerateReport />}></Route>
             </>

@@ -44,15 +44,15 @@ export default function AddDeliverable(props) {
                 <form action="" onSubmit={handleSubmit(addDeliverable)}>
 
                     <Stack className="border-2 w-full items-center mt-5 rounded-md shadow-md" paddingY={4}>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Title</Typography>
                             <TextField variant="outlined" size="small" className="flex flex-grow" name="title" {...register('name')} />
                         </Stack>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Instructions</Typography>
                             <TextField variant="outlined" size="small" className="flex flex-grow" name="instruction" {...register('instruction')} />
                         </Stack>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Resources</Typography>
                             <Button component="label" variant="contained" className="flex flex-grow" startIcon={<FileUpload />}  >
                                 {file ? file.name : 'Upload file'} (conditional rendering title not working yet)
@@ -60,7 +60,7 @@ export default function AddDeliverable(props) {
                             </Button>
 
                         </Stack>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Due date</Typography>
                             <TextField variant="outlined" size="small" className="flex flex-grow" name="date" {...register('date')} />
                         </Stack>
