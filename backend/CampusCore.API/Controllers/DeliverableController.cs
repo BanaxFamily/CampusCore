@@ -20,7 +20,7 @@ namespace CampusCore.API.Controllers
 
             // /api/deliverable/create
             [HttpPost("create")]
-            [Authorize(Roles = "Dean")]
+            //[Authorize(Roles = "Dean")]
             public async Task<IActionResult> CreateAsync(DeliverableAddViewModel model)
             {
                 if (ModelState.IsValid)
@@ -38,7 +38,7 @@ namespace CampusCore.API.Controllers
             // /api/deliverable/viewList
             //insert method here
             [HttpGet("viewList")]
-        [Authorize(Roles = "Dean,Faculty")]
+        //[Authorize(Roles = "Dean,Faculty")]
         public async Task<IActionResult> ViewListAsync()
             {
                 if (ModelState.IsValid)
@@ -53,7 +53,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
         //api/deliverable/search
-        [Authorize(Roles = "Dean,Faculty")]
+       // [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("search")]
             public async Task<IActionResult> SearchAsync(DeliverableSearchViewModel model)
             {
@@ -70,8 +70,8 @@ namespace CampusCore.API.Controllers
             }
 
             [HttpDelete("delete")]
-            [Authorize(Roles = "Dean")]
-            public async Task<IActionResult> DeleteAsync(DeliverableDeleteViewModel model)
+           // [Authorize(Roles = "Dean")]
+            public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
             {
                 if (ModelState.IsValid)
                 {
@@ -88,7 +88,7 @@ namespace CampusCore.API.Controllers
 
             // /api/Deliverable/update
             [HttpPut("update")]
-            [Authorize(Roles = "Dean")]
+            //[Authorize(Roles = "Dean")]
             public async Task<IActionResult> UpdateAsync([FromBody] DeliverableUpdateViewModel model)
             {
                 if (ModelState.IsValid)
@@ -103,7 +103,24 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid for update"); // Status code: 400
             }
 
+            // /api/Deliverable/getById
+            [HttpPut("getById")]
+            [Authorize(Roles = "Dean")]
+            public async Task<IActionResult> GetByIdAsync([FromBody] IntIdViewModel model)
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _deliverableService.DeliverableGetByIdAsync(model);
 
-        }
+                    if (result.IsSuccess)
+                        return Ok(result); // Status code: 200
+
+                    return BadRequest(result);
+                }
+                return BadRequest("Some properties are not valid for update"); // Status code: 400
+            }
+
+
+    }
     
 }

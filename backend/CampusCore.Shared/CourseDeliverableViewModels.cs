@@ -8,7 +8,6 @@ namespace CampusCore.Shared
 {
     public class CourseDeliverableAddViewModel
     {
-        public int Id { get; set; }
         public int OfferedCourseId { get; set; }
         public int DeliverableId { get; set; }
         public DateTime DeliverableDeadline { get; set; }
@@ -19,11 +18,6 @@ namespace CampusCore.Shared
         public int OfferedCourseId { get; set; }
         public int DeliverableId { get; set; } 
         public DateTime DeliverableDeadline { get; set; }
-    }
-    public class CourseDeliverableDeleteViewModel
-    {
-        public int Id { get; set; }
-        
     }
     public class CourseDeliverableUpdateViewModel
     {

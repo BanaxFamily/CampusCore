@@ -12,19 +12,24 @@ import { TextField, Button } from "@mui/material"
 import { useForm } from "react-hook-form";
 import * as OfferCourse from "../../../network/offeredCourse_api"
 import * as UserRole from "../../../network/getUserRole_api"
+import { useNavigate } from "react-router-dom";
 
 export default function AddOfferedCourse({ offeredCourse, onClose }) {
-
+  const navigate = useNavigate()
   const [selectedItem, setSelectedItem] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
   const {
     register,
     handleSubmit,
+    setValue,
+    reset,
     formState: { isSubmitting },
   } = useForm();
 
   const handleToggle = (data) => {
-    setSelectedItem(data.id === selectedItem?.id ? null : data);
+    setSelectedItem(data);
+    setValue("courseId", data.id || "");
+    setValue("Course", data.name || "");
   };
 
   async function onSubmit(credentials) {
@@ -34,14 +39,14 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
       alert(`Error: ${response.status}`);
     } else {
       alert("User added successfully!");
-      // reset();
-      // navigate(0);
+      reset();
+      navigate(0);
     }
   }
 
   useEffect(() => {
-    async function getUserRoles(){
-      const response = await UserRole.getUserRoles({"role":"faculty"})
+    async function getUserRoles() {
+      const response = await UserRole.getUserRoles({ "role": "faculty" })
       setUserRoles(response.data)
     }
     getUserRoles()
@@ -58,7 +63,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
           <div className="flex flex-col sm:flex-row sm:gap-1 overflow-hidden ">
             <div className="w-full h-32 flex-col sm:h-[400px] overflow-y-auto sm:flex sm:w-1/2 justify-center md:border-r-2 md:gap-[3px]">
               <p className="text-lg font-semibold">Opened Subjects</p>
-              <List className="text-lg">
+              <List className="text-md">
                 {offeredCourse.map((data, index) => (
                   <ListItem onClick={() => handleToggle(data)} key={index}>
                     <Checkbox
@@ -71,17 +76,18 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
               </List>
             </div>
             <span className="block md:hidden">
-              <Divider/>
-              </span>
+              <Divider />
+            </span>
             <form action="" className="w-full h-64 sm:h-full md:h-[400px] md:w-1/2 flex flex-col gap-2 overflow-y-auto" onSubmit={handleSubmit(onSubmit)}>
               <p className="text-lg font-semibold py-2">To be assigned course</p>
               <div className=" w-full py-2 mb-4 mt-2 flex flex-col gap-2">
-                <input
+                <TextField
                   id="outline-courseId"
                   name="courseId"
                   label="courseId ID"
-                  value={selectedItem.id | ''}
-                  hidden
+                  variant="filled"
+                  value={selectedItem.id || ''}
+                  style={{ display: "none" }}
                   {...register("courseId", { required: "this si required" })}
                 />
 
@@ -89,6 +95,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   required
                   id="outlined-required"
                   label="Course"
+                  variant="filled"
                   value={selectedItem.name || ''}
 
                 />
@@ -98,6 +105,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   id="outline-semester"
                   label="Semester"
                   name="sem"
+                  variant="filled"
                   {...register("sem", { required: "this si required" })}
 
                 // value={selectedItem.name || ''}
@@ -108,6 +116,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   id="outline-year"
                   name="acadYear"
                   label="Year"
+                  variant="filled"
                   {...register("acadYear", { required: "this si required" })}
 
                 // value={selectedItem.name || ''}
@@ -118,19 +127,11 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   id="outline-schedule"
                   name="schedule"
                   label="Schedule"
+                  variant="filled"
                   {...register("schedule", { required: "this si required" })}
 
                 // value={selectedItem.name || ''}
                 />
-
-                {/* <TextField
-                  required
-                  id="outline-faculty"
-                  name="facultyId"
-                  label="Faculty ID"
-                  {...register("facultyId", {required: "this si required"})}
-                // value={selectedItem.name || ''}
-                /> */}
 
                 <TextField
                   id="filled-role"
@@ -140,19 +141,17 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   SelectProps={{
                     native: true,
                   }}
-                  helperText="Please select a proffesor to handle this subject"
                   variant="filled"
+                  helperText="Please select a proffesor to handle this subject"
                   name="facultyId"
                   {...register("facultyId", { required: "select one option" })}
                 >
                   <option value=""></option>
                   {
                     userRoles.map((role, index) => (
-                    <option value={role.id} key={index}>{role.fullName}</option>
+                      <option value={role.id} key={index}>{role.fullName}</option>
                     ))
                   }
-                  {/* <option value="open">Open</option>
-                  <option value="close">Close</option> */}
                 </TextField>
               </div>
 

@@ -17,13 +17,12 @@ namespace CampusCore.API.Models
         public DbSet<OfferedCourse> OfferedCourses { get; set; }
         public DbSet<CourseEnrollment> CourseEnrollments { get; set; }
         public DbSet<StudentGroup> StudentGroups { get; set; }
+        public DbSet<Group> Groups { get; set; }
         public DbSet<CourseDeliverable> CourseDeliverables { get; set; }
         public DbSet<Deliverable> Deliverables { get; set; }
         public DbSet<CourseDeliverableSubmission> CourseDeliverableSubmissions { get; set; }
 
         public DbSet<Submission> Submissions { get; set; }
-        public DbSet<SubmissionVersion> SubmissionVersions { get; set; }
-        public DbSet<Version> Versions { get; set; }
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueComment> IssueComments { get; set; }
@@ -41,13 +40,13 @@ namespace CampusCore.API.Models
             builder.Entity<OfferedCourse>()
                 .HasOne(oc => oc.Course)
                 .WithMany()
-                .HasForeignKey(oc => oc.CourseId).OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(oc => oc.CourseId).OnDelete(DeleteBehavior.Restrict);
 
             // Configure the relationship between OfferedCourse and FacultyMember (and Reviewer)
             builder.Entity<OfferedCourse>()
                 .HasOne(oc => oc.FacultyAssigned)
                 .WithMany()
-                .HasForeignKey(oc => oc.FacultyId).OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(oc => oc.FacultyId).OnDelete(DeleteBehavior.Restrict);
 
             // Configure the many-to-many relationship between OfferedCourse and User through CourseEnrollment
             //builder.Entity<CourseEnrollment>()
@@ -93,30 +92,19 @@ namespace CampusCore.API.Models
                 .HasOne(sl => sl.Submitter)
                 .WithMany()
                 .HasForeignKey(sl => sl.SubmitterId);
-            //builder.Entity<SubmissionVersion>()
-            //    .HasOne(sl => sl.Submission)
-            //    .WithMany()
-            //    .HasForeignKey(sl => sl.SubmissionId);
-            //builder.Entity<SubmissionVersion>()
-            //    .HasOne(sv => sv.Version)
-            //    .WithMany()
-            //    .HasForeignKey(sv => sv.VersionId);
 
-            //builder.Entity<SubmissionIssue>()
-            //    .HasOne(si => si.Submission)
-            //    .WithMany()
-            //    .HasForeignKey(si => si.SubmissionId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-            //builder.Entity<SubmissionIssue>()
-            //    .HasOne(vi => vi.Version)
-            //    .WithMany()
-            //    .HasForeignKey(vi => vi.VersionId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-            //builder.Entity<SubmissionIssue>()
-            //    .HasOne(ii => ii.Issue)
-            //    .WithMany()
-            //    .HasForeignKey(ii => ii.IssueId);
-            
+
+            builder.Entity<SubmissionIssue>()
+                .HasOne(si => si.Submission)
+                .WithMany()
+                .HasForeignKey(si => si.SubmissionId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<SubmissionIssue>()
+                .HasOne(ii => ii.Issue)
+                .WithMany()
+                .HasForeignKey(ii => ii.IssueId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Issue>()
                 .HasOne(i => i.User)
                 .WithMany()
@@ -129,7 +117,7 @@ namespace CampusCore.API.Models
                 .HasOne(ic => ic.User)
                 .WithMany()
                 .HasForeignKey(ic => ic.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Restrict);
             builder.Entity<Announcement>()
                 .HasOne(a => a.User)
                 .WithMany()
@@ -146,7 +134,7 @@ namespace CampusCore.API.Models
                 .HasOne(ac => ac.User)
                 .WithMany()
                 .HasForeignKey(ac => ac.UserId)
-                .OnDelete(DeleteBehavior.NoAction); // specify OnDelete behavior
+                .OnDelete(DeleteBehavior.Restrict); // specify OnDelete behavior
             builder.Entity<Notification>()
                 .HasOne(n => n.User)
                 .WithMany()

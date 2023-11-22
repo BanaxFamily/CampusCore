@@ -3,8 +3,10 @@
 import { useState } from "react";
 import logoImg from "../../assets/CAMPUSCORE.png";
 import TemporaryDrawer from "./Drawer";
+import Logout from "./Logout";
+import { useAuth } from "../../utils/AuthContext";
 export const Header = () => {
-  // const [mobileMenu, setMobileMenu] = useState(false);
+  const {userRole } =  useAuth()
   const [isProfileOpen, setProfileOpen] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [userName, setUserName] = useState("Maria Ty");
@@ -16,11 +18,12 @@ export const Header = () => {
   };
 
   return (
-    <nav className="sticky top-0 bg-white shadow-xl pb-2 z-50">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+    //  max-w-screen-2xl
+    <nav className="fixed w-full top-0 shadow-md pb-2 z-50 antialiased text-slate-500 dark:text-slate-400 bg-gray-50">
+      <div className="mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className=" absolute md:hidden inset-y-0 left-0 flex items-center ">
-            <TemporaryDrawer/>
+            <TemporaryDrawer userType={userRole} />
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-center md:justify-start">
             <div className="flex flex-col flex-shrink-0 items-center md:items-start">
@@ -35,10 +38,10 @@ export const Header = () => {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            
+
             <div className="relative ml-3">
               <div>
-                <button
+                {/* <button
                   type="button"
                   className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   id="user-menu-button"
@@ -53,30 +56,15 @@ export const Header = () => {
                     src={logoImg}
                     alt={userName}
                   />
-                </button>
+                </button> */}
+                <Logout />
+
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* {mobileMenu && (
-        <div
-          className=" w-full h-screen flex flex-col
-                    bg-white/90 fixed
-                "
-        >
-          <div className="bg-mainBlueColor w-1/2 h-full">
-            <div className="mt-16">
-              <Route
-                onClose={() => setMobileMenu(false)}
-                userType="admin"
-                className="w-3/4 flex items-center justify-center"
-              />
-            </div>
-          </div>
-        </div>
-      )} */}
 
       {isProfileOpen && (
         <div

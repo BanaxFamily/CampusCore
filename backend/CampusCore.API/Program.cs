@@ -60,12 +60,18 @@ builder.Services.AddAuthentication(auth =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
-//builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
+builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
 builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
+builder.Services.AddScoped<IAnnouncementCommentService, AnnouncementCommentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
+builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
+builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
+builder.Services.AddScoped<IIssueService, IssueService>();
+builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+
 
 var app = builder.Build();
 
@@ -76,7 +82,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-#region "creating roles"
+#region "seed"
 // Add your role and permission configuration code here
 using (var scope = app.Services.CreateScope())
 {

@@ -34,6 +34,21 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateOfferedCourseAsync([FromBody] OfferedCourseUpdateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _offeredCourseService.UpdateOfferedCourseAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
         // /api/course/viewList
         //insert method here
         [HttpGet("viewList")]
@@ -58,6 +73,20 @@ namespace CampusCore.API.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _offeredCourseService.ViewOfferedCourseBySemAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+        [HttpPost("viewListIsNeedDeansApproval")]
+        public async Task<IActionResult> OfferedCourseGetNeedDeansApprovalAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _offeredCourseService.OfferedCourseGetNeedDeansApprovalAsync();
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200

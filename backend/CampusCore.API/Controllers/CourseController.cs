@@ -56,7 +56,7 @@ namespace CampusCore.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _courseService.ViewCourseListAsync();
+                var result = await _courseService.ViewCourseListOpenAsync();
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -68,7 +68,7 @@ namespace CampusCore.API.Controllers
 
         //api/course/search
         [HttpPost("search")]
-            public async Task<IActionResult> SearchAsync(CourseSearchViewModel model)
+            public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
             {
                 if (ModelState.IsValid)
                 {
@@ -85,7 +85,7 @@ namespace CampusCore.API.Controllers
 
         //api/course/search
         [HttpPost("getById")]
-        public async Task<IActionResult> CourseGetByIdAsync(GetByIdModel model)
+        public async Task<IActionResult> CourseGetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace CampusCore.API.Controllers
 
             [HttpDelete("delete")]
             //  [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> DeleteAsync(CourseDeleteModel model)
+            public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
             {
                 if (ModelState.IsValid)
                 {

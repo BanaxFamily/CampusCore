@@ -10,7 +10,7 @@ import AddModalUser from "./AddModalUser";
 import UpdateModal from "./UpdateModal";
 import WrapperLayout from "../../reusable/WrapperLayout";
 import DynamicTable from "../../reusable/DynamicTable";
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import TableBodyUser from "./TableBody";
 
 export default function UserWrapper({ users }) {
@@ -31,7 +31,6 @@ export default function UserWrapper({ users }) {
 
   async function handleDeleteUser(id) {
     const response = await UserApi.deleteUser(id);
-    console.log(id)
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
@@ -62,18 +61,16 @@ export default function UserWrapper({ users }) {
     <WrapperLayout>
       <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
         <div className="flex ">
-          <div className="bg-blue-600 px-4 py-2 rounded-md">
-            <span
-              className="text-sm flex items-center gap-1 text-white uppercase px-
-                group-hover:text-slate-300  hover:cursor-pointer"
-            >
-              {" "}
+          <div className=" py-2 rounded-md">
+            <Button
+              onClick={() => setShowAddModal(true)}
+              variant="outlined"
+              className="mr-2 text-[15px] font-semibold hover:text-black">
               Add
               <AiOutlineUserAdd
                 size={20}
-                onClick={() => setShowAddModal(true)}
               />
-            </span>
+            </Button>
           </div>
         </div>
         <span className="flex text-black ">
@@ -159,7 +156,11 @@ export default function UserWrapper({ users }) {
       </div>
       {/* </div> */}
 
-      {showAddModal && <AddModalUser onClose={() => setShowAddModal(false)} />}
+      {showAddModal && <AddModalUser onClose={() => {
+        setShowAddModal(false)
+        navigate(0)
+        }}
+      />}
       {showUpdateModal && (
         <UpdateModal
           user={userToUpdate}
