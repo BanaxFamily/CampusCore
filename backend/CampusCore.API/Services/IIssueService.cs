@@ -7,7 +7,6 @@ namespace CampusCore.API.Services
     public interface IIssueService
     {
         Task<ResponseManager> CreateIssueAsync(IssueAddViewModel model);
-
         Task<ResponseManager> ViewIssueListAsync();
         Task<ResponseManager> ViewIssueListOpenAsync();
         Task<ResponseManager> IssueGetByIdAsync(IntIdViewModel model);

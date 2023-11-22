@@ -32,7 +32,6 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/issue/getAllBySubmission
-        //insert method here
         [HttpPost("getAllBySubmission")]
         public async Task<IActionResult> GetAllBySubmission(IssueGetAllModel model)
         {
