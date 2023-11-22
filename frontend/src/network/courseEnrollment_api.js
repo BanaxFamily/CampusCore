@@ -17,9 +17,9 @@ export async function getEnrolledCourses(data) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Header": {
-        "userRole": "Admin"
-      }
+      Header: {
+        userRole: "Admin",
+      },
     },
     body: JSON.stringify(data),
   });
@@ -32,12 +32,23 @@ export async function getEnrolledStudents(data) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Header": {
-        "userRole": "Admin"
-      }
+      Header: {
+        userRole: "Admin",
+      },
     },
     body: JSON.stringify(data),
   });
 
+  return response;
+}
+
+export async function deleteEnrolledStudent(data) {
+  const response = await fetchData("api/course-enrollment/delete", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
   return response;
 }

@@ -1,20 +1,23 @@
 /* eslint-disable react/prop-types */
-import { Alert, Button, Checkbox, CircularProgress, Divider, List, ListItem, ListItemText, ListSubheader, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, CircularProgress, Divider, IconButton, List, ListItem, ListItemText, ListSubheader, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as GetRole from '../../../network/getUserRole_api';
 import DashBoardHeading from "../../reusable/DashBoardHeading";
 import Modal from "../Modal";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Person } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import * as EnrollmentApi from '../../../network/courseEnrollment_api'
 
 export default function ModalEnrollStudent(props) {
     let { courseName, courseId } = useParams()
+    const navigate = useNavigate()
     const [students, setStudents] = useState(null)
     const [selectedStudent, setSelectedStudent] = useState("");
     const [selectedName, setSelectedName] = useState([]);
-    const { register, handleSubmit,setValue,reset, formState: { isSubmitting } } = useForm()
+    const [successMessage, setSuccessMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
+    const { register, handleSubmit, setValue, reset, formState: { isSubmitting } } = useForm()
 
     useEffect(() => {
         async function getStudentRole() {
@@ -34,7 +37,21 @@ export default function ModalEnrollStudent(props) {
     async function addEnrolled(data) {
         try {
             const response = await EnrollmentApi.addEnrollmentStudent(data)
-            console.log(response)
+            if (response.isSuccess) {
+                setSuccessMessage(response.message)
+                setSelectedStudent("")
+                setSelectedName(null)
+                reset()
+            }
+
+            if (!response.isSuccess) {
+                setErrorMessage(response.message)
+            }
+
+            setTimeout(() => {
+                setSuccessMessage(null)
+                setSuccessMessage(null)
+            }, 2000)
         } catch (error) {
             console.error(error)
         }
@@ -48,10 +65,17 @@ export default function ModalEnrollStudent(props) {
 
     return (
         <Modal
-            onDismiss={props.onDismiss}
+            onDismiss={() => {
+                props.onDismiss
+                navigate(0)
+            }}
             width={'md:w-[40rem]'}
             heading={<DashBoardHeading title="Enroll student" desc="" />}
         >
+            <Stack className="relative">
+                {successMessage && <Alert className="absolute right-0" severity="success">{successMessage}</Alert>}
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            </Stack>
             <Stack spacing={1} className="mb-4">
                 {/* Dispaly selected course and student name */}
                 <Typography className="text-black">Course: <span className="underline font-semibold">{courseName}</span></Typography>
@@ -107,10 +131,10 @@ export default function ModalEnrollStudent(props) {
             {/* Mounting to send the data to API  */}
             <form action="" onSubmit={handleSubmit(addEnrolled)}>
                 <Stack>
-                    <input type="text" hidden defaultValue={selectedStudent} name="studentId" {...register('studentId')}  />
-                    <input type="text" hidden defaultValue={courseId} name="offeredCourseId"{...register('offeredCourseId')}  />
+                    <input type="text" hidden defaultValue={selectedStudent} name="studentId" {...register('studentId')} />
+                    <input type="text" hidden defaultValue={courseId} name="offeredCourseId"{...register('offeredCourseId')} />
 
-                    <Button disable={isSubmitting} type="submit" variant="contained" className="flex self-end">Enroll Student</Button>
+                    {isSubmitting ? <IconButton size="small"><CircularProgress fontSize="inherit"/></IconButton> : <Button type="submit" variant="contained" className="flex self-end">Enroll Student</Button>}
                 </Stack>
             </form>
         </ Modal>
