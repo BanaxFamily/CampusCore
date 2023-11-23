@@ -1,21 +1,57 @@
-import { NavLink } from "react-router-dom";
-import { IoLogOutOutline } from "react-icons/io5";
+import { Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon } from "@mui/material";
+import { useState } from "react";
+import logoImg from "../../assets/CAMPUSCORE.png";
+import { LogoutSharp } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
-export default function Logout() {
+
+const Logout = () => {
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (isOpen) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    )
+      return;
+    setOpen(isOpen);
+  };
   return (
-    <div
-      className={`flex flex-col  shadow-gray-400 mb-2 py-3 px-1 rounded-full
-          hover:scale-110 ease-in duration-300 group
-      `}
-    >
-      <NavLink
-        to="/logout"
-        className={` flex flex-row items-center group-hover:text-paleRed text-white`}
+    <section>
+      <IconButton
+        className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+        edge="end"
+        color="inherit"
+        aria-label="menu"
+        onClick={toggleDrawer(true)}
       >
-        <IoLogOutOutline size={25}/>
-
-        <span className="text-[15px] ml-2">Logout</span>
-      </NavLink>
-    </div>
+        <span className="absolute -inset-1.5"></span>
+        <span className="sr-only">Open user menu</span>
+        <img
+          className="h-8 w-8 rounded-full"
+          src={logoImg}
+        />
+      </IconButton>
+      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+        <div
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          <List>
+            <ListItem>
+              <ListItemButton>
+                <ListItemIcon>
+                  <LogoutSharp/>
+                </ListItemIcon>
+                <Link to="logout">Logout</Link>
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </div>
+      </Drawer>
+    </section>
   );
-}
+};
+
+export default Logout;

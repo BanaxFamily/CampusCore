@@ -65,19 +65,20 @@ namespace CampusCore.API.Services
             {
                 Message = "Failed to create request for final research upload",
                 IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding research repository in DB" }
+                Errors = new List<string>() { "Error adding research repository in DB" }
             };
 
         }
-        public async Task<ResponseManager> SearchPublicResearchRepositoryAsync(PublicResearchRepositorySearchViewModel model)
+        public async Task<ResponseManager> SearchPublicResearchRepositoryAsync(StringSearchViewModel model)
         {
-            string searchKey = model.SearchPublicResearchRepository;
+            string searchKey = model.SearchKey;
 
             try
             {
 
                 var searchResults = await _context.ResearchRepository
-                    .Where(oc => EF.Functions.Like(oc.Title, $"%{model.SearchPublicResearchRepository}%"))
+                    .Where(oc => EF.Functions.Like(oc.Title, $"%{model.SearchKey}%"))
+                    .Include(rr => rr.Submission)
                     .ToListAsync();
 
 
@@ -105,7 +106,9 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.ResearchRepository.ToListAsync();
+                var result = await _context.ResearchRepository
+                                            .Include(rr => rr.Submission)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
@@ -154,13 +157,16 @@ namespace CampusCore.API.Services
         //}
 
 
-        public async Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(GetByIdModel model)
+        public async Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model)
         {
 
 
             try
             {
-                var result = await _context.ResearchRepository.FindAsync(model.Id);
+                var result = await _context.ResearchRepository
+                                            .Include (rr => rr.Submission)
+                                            .Where(rr => rr.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
@@ -186,7 +192,7 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> DeletePublicResearchRepositoryAsync(PublicResearchRepositoryDeleteModel model)
+        public async Task<ResponseManager> DeletePublicResearchRepositoryAsync(IntIdViewModel model)
         {
             try
             {

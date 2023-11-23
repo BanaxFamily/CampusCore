@@ -71,7 +71,10 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.Announcements.ToListAsync();
+                var result = await _context.Announcements
+                                            .Include(a => a.User)
+                                            .Include(a => a.OfferedCourse)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {
@@ -97,7 +100,11 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.Announcements.FindAsync(model.Id);
+                var result = await _context.Announcements
+                                            .Include(a => a.User)
+                                            .Include(a => a.OfferedCourse)
+                                            .Where(a => a.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {

@@ -1,29 +1,51 @@
 /* eslint-disable react/prop-types */
-import { TextField, Button } from "@mui/material";
+import { Alert, Button, TextField } from "@mui/material";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import * as UserApi from "../../../network/user_api";
 import DashBoarHeading from "../../reusable/DashBoardHeading";
 import Modal from "../Modal";
 
 export default function AddModalUser(props) {
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     reset,
   } = useForm();
+  const [error, setError] = useState(null);
 
   async function onSubmit(credentials) {
-    const response = await UserApi.addUser(credentials);
-    console.log(credentials)
-    if (response.status) {
-      alert(`Error: ${response.status}`);
-    } else {
-      alert("User added successfully!");
-      reset();
-      navigate(0);
+    try {
+      const response = await UserApi.addUser(credentials);
+
+      if (response.isSuccess) {
+        alert("User added successfully!");
+        reset();
+        return;
+      }
+
+      if (!response.ok) {
+        const data = await response.json();
+        // Check if there are multiple errors
+        // Extract values from errors
+        const errorValues = Object.values(data.errors)
+          .reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+        // Set the error state with values
+        setError(errorValues.join(', '));
+        // console.error('Error : ', [...data.errors]);
+        // setError(data.errors[0]);
+        return;
+      }
+
+
+    } catch (error) {
+      console.error('An unexpected error occurred:', error);
+      setError('An unexpected error occurred. Please check your inputs.');
+    } finally {
+      setTimeout(() => {
+        setError(null)
+      }, 3000);
     }
   }
 
@@ -32,28 +54,20 @@ export default function AddModalUser(props) {
       onDismiss={props.onClose}
       heading={<DashBoarHeading title="Add user" desc="" />}
     >
-      <div className="w-full border">
+      {
+        error && <Alert severity="error">{error}!</Alert>
+      }
+      <div className="w-full">
         <div className="p-2">
           <form action="" onSubmit={handleSubmit(onSubmit)} >
             <div className="flex flex-col sm:flex-row sm:gap-1">
               <div className="w-full flex-col sm:flex sm:w-1/2 justify-start md:gap-[3px]">
-
-
-                <TextField
-                  id="outline-idno"
-                  name="idno"
-                  label="ID #"
-                  variant="filled"
-                  // value={selectedItem.id || ''}
-
-                  {...register("idno", { required: true })}
-                />
-                <div className="flex flex-col w-full mt-1">
+                <div className="flex flex-col w-full">
                   <TextField
                     id="filled-userType"
                     select
                     label="User type"
-                    // defaultValue="  "
+                    size="small"
                     SelectProps={{
                       native: true,
                     }}
@@ -70,12 +84,65 @@ export default function AddModalUser(props) {
                     <option value="Student">Student</option>
                   </TextField>
                 </div>
+
+                <TextField
+                  id="outline-idno"
+                  name="idno"
+                  label="ID #"
+                  variant="filled"
+                  size="small"
+
+                  // value={selectedItem.id || ''}
+
+                  {...register("idno", { required: true })}
+                />
+
+                <TextField
+                  id="outline-firstname"
+                  name="firstName"
+                  label="Firstname"
+                  variant="filled"
+                  size="small"
+
+                  // value={selectedItem.id || ''}
+
+                  {...register("firstName", { required: true })}
+                />
+
+                <TextField
+                  id="outline-lastName"
+                  name="lastName"
+                  label="Lastname"
+                  variant="filled"
+                  size="small"
+
+                  // value={selectedItem.id || ''}
+
+                  {...register("lastName", { required: true })}
+                />
+
+                <TextField
+                  id="outline-username"
+                  name="username"
+                  label="Username"
+                  variant="filled"
+                  size="small"
+
+                  // value={selectedItem.id || ''}
+
+                  {...register("username", { required: true })}
+                />
+              </div>
+
+              <div className="w-full sm:w-1/2 flex flex-col gap-[4px]">
                 <div className="flex flex-col w-full ">
 
                   <TextField
                     id="filled-status"
                     select
                     label="Status"
+                    size="small"
+
                     // defaultValue=""
                     SelectProps={{
                       native: true,
@@ -93,45 +160,14 @@ export default function AddModalUser(props) {
                   </TextField>
                 </div>
 
-                <TextField
-                  id="outline-firstname"
-                  name="firstName"
-                  label="Firstname"
-                  variant="filled"
-                  // value={selectedItem.id || ''}
-
-                  {...register("firstName", { required: true })}
-                />
-
-                <TextField
-                  id="outline-lastName"
-                  name="lastName"
-                  label="Lastname"
-                  variant="filled"
-                  // value={selectedItem.id || ''}
-
-                  {...register("lastName", { required: true })}
-                />
-              </div>
-
-              <div className="w-full sm:w-1/2 flex flex-col gap-[4px]">
-
-
-                <TextField
-                  id="outline-username"
-                  name="username"
-                  label="Username"
-                  variant="filled"
-                  // value={selectedItem.id || ''}
-
-                  {...register("username", { required: true })}
-                />
 
                 <TextField
                   id="outline-email"
                   name="email"
                   label="Email"
                   variant="filled"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("email", { required: true })}
@@ -144,6 +180,8 @@ export default function AddModalUser(props) {
                   label="Password"
                   variant="filled"
                   type="password"
+                  size="small"
+
                   // value={selectedItem.id || ''}
 
                   {...register("password", { required: true })}
@@ -155,6 +193,7 @@ export default function AddModalUser(props) {
                   name="rePassword"
                   label="Confirm password"
                   variant="filled"
+                  size="small"
                   type="password"
                   // value={selectedItem.id || ''}
 

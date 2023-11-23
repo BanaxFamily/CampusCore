@@ -19,10 +19,11 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UserListAllAsync();
         Task<ResponseManager> UserListByRoleAsync(UserGetByRoleViewModel model);
         Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model);
-        Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model);
+        Task<ResponseManager> UserDeleteAsync(StringIdViewModel model);
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
+        Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model);
         Task<ResponseManager> LogoutAsync(string userId);
-        Task<ResponseManager> UserGetByIdAsync(UserGetByIdViewModel model);
+
     }
 }
 
@@ -188,7 +189,7 @@ public class UserService : IUserService
         
     }
 
-    public async Task<ResponseManager> UserDeleteAsync(UserDeleteViewModel model)
+    public async Task<ResponseManager> UserDeleteAsync(StringIdViewModel model)
     {
         try
         {
@@ -331,7 +332,7 @@ public class UserService : IUserService
     }
 
     //method to get user by id ("id" means id in database)
-    public async Task<ResponseManager> UserGetByIdAsync(UserGetByIdViewModel model)
+    public async Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model)
     {
         try
         {
@@ -413,8 +414,6 @@ public class UserService : IUserService
             }
 
             // Update the user properties from the model
-            
-
             user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;

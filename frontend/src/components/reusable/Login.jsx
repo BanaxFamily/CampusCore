@@ -1,35 +1,43 @@
+/* eslint-disable react/prop-types */
 // import { useState } from 'react'
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { Navigate, redirect } from "react-router-dom";
 import campusCoreImg from "../../assets/CAMPUSCORE.png";
-import * as UserApi from "../../network/user_api";
 import Footer from "./Footer";
+// import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../utils/AuthContext";
+import { Alert } from "@mui/material";
 
 const Login = () => {
-  // eslint-disable-next-line no-unused-vars
-  const userType = 'admin'
+  const { user, error, setError, loginUser } = useAuth()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
 
-  if (localStorage.getItem('token')) {
-    return <Navigate to="/" replace={true} />;
-  }
-  async function onSubmit(credentials) {
-    const response = await UserApi.signIn(credentials);
-    if ( response.isSuccess === true) {
-      localStorage.setItem('token', response.token);
-      redirect("/home")
-    } else {
-      alert(`Error: ${response.status}`);
+  useEffect(() => {
+    if (user) {
+      navigate('/home')
     }
+
+    setTimeout(() => {
+      setError(null)
+    }, 3000)
+  }, [navigate, setError, user])
+
+
+
+  async function onSubmit(credentials) {
+    loginUser(credentials)
   }
 
 
   return (
+    // localStorage.getItem('token') ? <Navigate to={`/${localStorage.getItem('role')}/home`} /> :
     <>
       <div className="mx-auto max-w-7xl h-screen flex flex-col md:flex-row mb-10">
         <div className="md:w-1/2 ">
@@ -42,9 +50,11 @@ const Login = () => {
 
         <div className="md:w-1/2 md:mt-5">
           <div
-            className=" w-[95%] m-auto border border-slate-600 overflow-hidden 
-                  bg-white h-auto md:mt-14 md:h-fit md:w-[65%] flex flex-col rounded-md "
+            className=" w-[95%] m-auto border border-slate-600 overflow-hidden
+                    bg-white h-auto md:mt-14 md:h-fit md:w-[65%] flex flex-col rounded-md "
           >
+            {error &&  <Alert severity="error" variant="outlined" className="">{error}!</Alert>}
+
             <div className="p-2 ">
               <h1 className=" text-black font-bold tracking-wide text-[25px]">
                 Sign in
