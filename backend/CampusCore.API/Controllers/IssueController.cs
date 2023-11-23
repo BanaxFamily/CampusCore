@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.API.Controllers
@@ -16,6 +17,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/issue/create
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("add")]
         public async Task<IActionResult> CreateAsync(IssueAddViewModel model)
         {
@@ -51,6 +53,7 @@ namespace CampusCore.API.Controllers
 
         // /api/issue/getAllBySubmission
         //insert method here
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("getAllBySubmission")]
         public async Task<IActionResult> GetAllBySubmission(IssueGetAllModel model)
         {
@@ -68,6 +71,7 @@ namespace CampusCore.API.Controllers
 
         // /api/issue/getAllByUser
         //insert method here
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("getAllByUser")]
         public async Task<IActionResult> GetAllByUser(IssueGetAllModel model)
         {
@@ -83,8 +87,9 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        
+
         //api/Issue/search
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("search")]
         public async Task<IActionResult> SearchIssueAsync(StringSearchViewModel model)
         {
@@ -103,6 +108,7 @@ namespace CampusCore.API.Controllers
 
 
         //api/issue/getById
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("getById")]
         public async Task<IActionResult> IssueGetByIdAsync(IntIdViewModel model)
         {
@@ -118,7 +124,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
@@ -136,6 +142,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/issue/update
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] IssueUpdateViewModel model)
         {
