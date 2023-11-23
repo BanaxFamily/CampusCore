@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.API.Controllers
@@ -14,8 +15,9 @@ namespace CampusCore.API.Controllers
         {
             _groupService = groupService;
         }
-        
+
         // /api/group/create
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(GroupAddViewModel model)
         {
@@ -33,6 +35,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/group/getAllByStudent
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("getAllByStudent")]
         public async Task<IActionResult> GetAllByStudentAsync(StringIdViewModel model)
         {
@@ -49,6 +52,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/group/getAllByCourse
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("getAllByCourse")]
         public async Task<IActionResult> GetAllByCourseAsync(IntIdViewModel model)
         {
@@ -66,6 +70,7 @@ namespace CampusCore.API.Controllers
 
 
         //api/group/search
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("search")]
         public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
         {
@@ -82,6 +87,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/group/getAll
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -98,6 +104,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/group/getById
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("getById")]
         public async Task<IActionResult> GroupGetByIdAsync(IntIdViewModel model)
         {
@@ -114,6 +121,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/group/getMembers
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("getMembers")]
         public async Task<IActionResult> GetMembersAsync(IntIdViewModel model)
         {
@@ -130,6 +138,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/group/delete
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
@@ -148,6 +157,7 @@ namespace CampusCore.API.Controllers
 
         //For updating group name or adviser
         // /api/group/updateDetails
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPut("updateDetails")]
         public async Task<IActionResult> UpdateDetailsAsync(GroupUpdateDetailsViewModel model)
         {
@@ -165,6 +175,7 @@ namespace CampusCore.API.Controllers
 
         //For updating group members in a group (give array of student id for updated members)
         // /api/group/updateMembers
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPut("updateMembers")]
         public async Task<IActionResult> UpdateMembersAsync(GroupUpdateMembersViewModel model)
         {
@@ -182,6 +193,7 @@ namespace CampusCore.API.Controllers
 
         //for updating group status such as "active", "dissolved"
         // /api/group/update
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPut("updateStatus")]
         public async Task<IActionResult> UpdateStatusAsync(GroupUpdateStatusViewModel model)
         {

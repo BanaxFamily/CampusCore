@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.API.Controllers
@@ -16,6 +17,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/repository/create
+        [Authorize(Roles = "Faculty,Student")]
         [HttpPost("requestUpload")]
         public async Task<IActionResult> CreateAsync(PublicResearchRepositoryAddViewModel model)
         {
@@ -32,6 +34,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/repository/getAll
+        [Authorize(Roles = "Dean")]
         [HttpGet("getAll")]
         public async Task<IActionResult> ViewListAsync()
         {
@@ -48,6 +51,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/repository/getAllPublished
+        [Authorize(Roles = "Admin,Dean,Faculty,Student,PRC")]
         [HttpGet("getAllPublished")]
         public async Task<IActionResult> ListPublishedAsync()
         {
@@ -63,6 +67,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
         //api/repository/getAllRequest
+        [Authorize(Roles = "Dean")]
         [HttpGet("getAllRequest")]
         public async Task<IActionResult> ListRequestAsync()
         {
@@ -80,6 +85,7 @@ namespace CampusCore.API.Controllers
 
 
         //api/repository/search
+        [Authorize(Roles = "Admin,Dean,Faculty,Student,PRC")]
         [HttpPost("search")]
         public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
         {
@@ -97,6 +103,7 @@ namespace CampusCore.API.Controllers
 
 
         //api/repository/getById
+        [Authorize(Roles = "Admin,Dean,Faculty,Student,PRC")]
         [HttpPost("getById")]
         public async Task<IActionResult> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model)
         {
@@ -112,7 +119,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
@@ -130,6 +137,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/repository/approveResearch
+        [Authorize(Roles = "Dean")]
         [HttpPost("approveResearch")]
         public async Task<IActionResult> ApproveAsync(PublicResearchRepositoryApproveViewModel model)
         {
