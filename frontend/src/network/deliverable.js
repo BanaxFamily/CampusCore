@@ -36,3 +36,15 @@ export async function updateDeliverable(data){
     return response;
 }
 
+export async function deleteDeliverable(data){
+    const response = await fetchData('api/deliverable/delete', {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}
+

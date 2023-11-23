@@ -21,3 +21,14 @@ export async function getCourseDeliverable(data){
     })
     return response
 }
+
+export async function deleteCourseDeliverable(data){
+    const response = await fetchData('api/course-deliverable/delete', {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    return response
+}

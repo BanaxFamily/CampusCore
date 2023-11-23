@@ -15,7 +15,8 @@ export default function AddDeliverable(props) {
     const navigate = useNavigate()
     const [file, setSelectedFile] = useState(null)
     const [error, setError] = useState(false)
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+    const [successMessage, setSuccessMessage] = useState("")
+    const { register, reset, handleSubmit, formState: { isSubmitting } } = useForm();
 
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
@@ -34,22 +35,35 @@ export default function AddDeliverable(props) {
         console.log(file)
 
     }
-    async function addDeliverableToCourse(data){
+    async function addDeliverableToCourse(data) {
         const formData = {
             'CourseId': courseId,
             'deliverableId': data,
             'deliverableDeadline': null
         }
+        try {
 
-        const response = await CourseDeliverable.createCourseDeliverable(formData)
-        if(!response.ok){
-            setError('Fail to create deliverable. Check your inputs')
+            const response = await CourseDeliverable.createCourseDeliverable(formData)
+            console.log(response)
+
+            if(response.isSuccess){
+                setSuccessMessage(response.message)
+                reset()
+                return
+            }
+
+            if (!response.ok) {
+                setError('Fail to create deliverable. Check your inputs')
+                return
+            }
+        } catch (error) {
+            console.error(error)
         }
     }
 
     async function addDeliverable(credentials) {
         const response = await Deliverable.addDeliverable(credentials);
-        if(response.isSuccess){
+        if (response.isSuccess) {
             const deliverableId = response.data
             addDeliverableToCourse(deliverableId);
         }
@@ -67,6 +81,7 @@ export default function AddDeliverable(props) {
             >
                 <Stack className="mb-2">
                     {error && <Alert severity='error'>{error}</Alert>}
+                    {!error && successMessage && <Alert severity='success'>{successMessage}</Alert>}
                 </Stack>
                 <Stack spacing={1}>
                     <Typography className="text-black">Course: <span className="underline font-semibold">{courseName}</span></Typography>
