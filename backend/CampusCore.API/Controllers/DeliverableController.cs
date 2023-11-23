@@ -38,7 +38,7 @@ namespace CampusCore.API.Controllers
             // /api/deliverable/viewList
             //insert method here
             [HttpGet("viewList")]
-        //[Authorize(Roles = "Dean,Faculty")]
+        [Authorize(Roles = "Dean,Faculty")]
         public async Task<IActionResult> ViewListAsync()
             {
                 if (ModelState.IsValid)
@@ -53,7 +53,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
         //api/deliverable/search
-       // [Authorize(Roles = "Dean,Faculty")]
+        [Authorize(Roles = "Dean,Faculty")]
         [HttpPost("search")]
             public async Task<IActionResult> SearchAsync(DeliverableSearchViewModel model)
             {
@@ -70,8 +70,8 @@ namespace CampusCore.API.Controllers
             }
 
             [HttpDelete("delete")]
-           // [Authorize(Roles = "Dean")]
-            public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
+        [Authorize(Roles = "Dean")]
+        public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
             {
                 if (ModelState.IsValid)
                 {
