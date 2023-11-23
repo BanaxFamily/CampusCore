@@ -22,6 +22,7 @@ import View from "./components/dean/courses/submission/View";
 import DeanDeliverables from "./components/dean/deliverables/DeanDeliverables";
 import Deliverables from "./components/dean/deliverables/Deliverables";
 import DeanSetting from "./components/dean/settings/DeanSetting";
+import CourseAssigned from "./components/faculty/CourseAssigned";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
@@ -29,6 +30,7 @@ import Home from "./components/shared-route/home/Home";
 import CourseStudent from "./components/student/courses/CourseStudent";
 import LayoutCourse from "./components/student/courses/LayoutCourse";
 import DeliverableWrapper from "./components/student/courses/deliverable/DeliverableWrapper";
+import ViewSpecificDeliverable from "./components/student/courses/deliverable/ViewSpecificDeliverable";
 import Issues from "./components/student/issues/Issues";
 import ResearchRepo from "./components/student/repo/ResearchRepo";
 import UserSetting from "./components/student/settings/UserSetting";
@@ -37,7 +39,6 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
-import CourseAssigned from "./components/faculty/CourseAssigned";
 
 
 export default function App() {
@@ -73,7 +74,10 @@ export default function App() {
               <Route path={`/research`} element={<ResearchRepo />} />
               <Route path={`/course/*`} element={<LayoutCourse />}>
                 <Route index element={<CourseStudent />} />
-                <Route path={`deliverable/:courseName/:courseId`} element={<DeliverableWrapper />} />
+                <Route path={`deliverable/:courseName/:courseId/*`} element={<LayoutCourse />} >
+                  <Route index element={<DeliverableWrapper/>}/>
+                  <Route path="view/:deliverableName/:deliverableId/:courseDeliverabelId" element={<ViewSpecificDeliverable/>}/>
+                </Route>
               </Route>
               <Route path={`/issues`} element={<Issues />} />
               <Route path={`/timetable`} element={<Timetable />} />
