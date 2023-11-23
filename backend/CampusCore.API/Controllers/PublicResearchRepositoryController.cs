@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.API.Controllers
 {
-    [Route("api/publicResearchRepository")]
+    [Route("api/repository")]
     [ApiController]
     public class PublicResearchRepositoryController : Controller
     {
@@ -15,13 +15,13 @@ namespace CampusCore.API.Controllers
             _publicResearchRepositoryService = publicResearchRepositoryService;
         }
 
-        // /api/publicResearchRepository/create
-        [HttpPost("add")]
+        // /api/repository/create
+        [HttpPost("requestUpload")]
         public async Task<IActionResult> CreateAsync(PublicResearchRepositoryAddViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _publicResearchRepositoryService.CreatePublicResearchRepositoryAsync(model);
+                var result = await _publicResearchRepositoryService.RequestUploadAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -31,14 +31,13 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        // /api/publicResearchRepository/viewList
-        //insert method here
-        [HttpGet("viewList")]
+        //api/repository/getAll
+        [HttpGet("getAll")]
         public async Task<IActionResult> ViewListAsync()
         {
             if (ModelState.IsValid)
             {
-                var result = await _publicResearchRepositoryService.ViewPublicResearchRepositoryListAsync();
+                var result = await _publicResearchRepositoryService.GetAllAsync();
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -48,22 +47,39 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        //[HttpGet("getAllOpen")]
-        //public async Task<IActionResult> ViewListOpenAsync()
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _publicResearchRepositoryService.ViewPublicResearchRepositoryListAsync();
+        //api/repository/getAllPublished
+        [HttpGet("getAllPublished")]
+        public async Task<IActionResult> ListPublishedAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _publicResearchRepositoryService.ListPublishedAsync();
 
-        //        if (result.IsSuccess)
-        //            return Ok(result); //Status code: 200
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
 
-        //        return BadRequest(result);
-        //    }
-        //    return BadRequest("Some properties are not valid"); //status code: 400
-        //}
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+        //api/repository/getAllRequest
+        [HttpGet("getAllRequest")]
+        public async Task<IActionResult> ListRequestAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _publicResearchRepositoryService.ListRequestAsync();
 
-        //api/publicResearchRepository/search
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+
+        //api/repository/search
         [HttpPost("search")]
         public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
         {
@@ -80,7 +96,7 @@ namespace CampusCore.API.Controllers
         }
 
 
-        //api/publicResearchRepository/search
+        //api/repository/getById
         [HttpPost("getById")]
         public async Task<IActionResult> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model)
         {
@@ -113,21 +129,24 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for delete"); //status code: 400
         }
 
-        // /api/publicResearchRepository/update
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] PublicResearchRepositoryUpdateViewModel model)
+        //api/repository/approveResearch
+        [HttpPost("approveResearch")]
+        public async Task<IActionResult> ApproveAsync(PublicResearchRepositoryApproveViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _publicResearchRepositoryService.UpdatePublicResearchRepositoryAsync(model);
+                var result = await _publicResearchRepositoryService.ApproveAsync(model);
 
                 if (result.IsSuccess)
-                    return Ok(result); // Status code: 200
+                    return Ok(result); //Status code: 200
 
                 return BadRequest(result);
             }
-            return BadRequest("Some properties are not valid for update"); // Status code: 400
+            return BadRequest("Some properties are not valid"); //status code: 400
         }
+
+        
+
 
 
     }
