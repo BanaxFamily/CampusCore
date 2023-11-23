@@ -2,8 +2,12 @@ using CampusCore.API;
 using CampusCore.API.Models;
 using CampusCore.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +18,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureIdentity();
 
 builder.Services.AddCors(options =>
 {
@@ -30,6 +35,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.EnableSensitiveDataLogging();
 });
 
 
@@ -51,9 +57,25 @@ builder.Services.AddAuthentication(auth =>
         ValidateIssuerSigningKey = true
     };
 });
-builder.Services.ConfigureIdentity();
+
+
+
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserLogService, UserLogService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
+builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
+builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
+builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
+builder.Services.AddScoped<IAnnouncementCommentService, AnnouncementCommentService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
+builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
+builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
+builder.Services.AddScoped<IIssueService, IssueService>();
+builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+
 
 var app = builder.Build();
 
@@ -64,6 +86,52 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+#region "seed"
+// Add your role and permission configuration code here
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+
+    var roles = new[] { "Admin", "Dean", "Faculty", "Student", "PRC" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+    
+
+
+
+
+    //seeding admin account
+    string username = "admin";
+    string password = "AdminPas$123";
+    string email = "admin@campuscore.com";
+    if (await userManager.FindByNameAsync(username) == null)
+    {
+        var user = new User();
+        user.UserName = username;
+        user.Email = email;
+
+        await userManager.CreateAsync(user, password);
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+
+}
+#endregion
+
+
+
+
+
+
+app.UseDeveloperExceptionPage();
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Use CORS middleware
@@ -73,7 +141,7 @@ app.MapControllers();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+
 
 app.MapControllers();
 

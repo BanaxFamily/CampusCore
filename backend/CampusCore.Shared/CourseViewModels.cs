@@ -15,18 +15,31 @@ namespace CampusCore.Shared
 
     }
 
-    //public class CourseListViewModel
-    //{
+    public class CourseSearchViewModel
+    {
 
-    //    public string Name { get; set; }
-    //    public string Status { get; set; }
-    //    public string Description { get; set; }
-    //}
+        public string SearchKey { get; set; }
+    }
+
+    public class CourseListViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public string Description { get; set; }
+
+    }
 
     public class CourseDeleteModel
     {
         public int Id { get; set; }
     }
+    
+    public class GetByIdModel
+    {
+        public int Id { get; set; }
+    }
+
 
     public class CourseUpdateViewModel
     {

@@ -1,41 +1,131 @@
 // eslint-disable-next-line no-unused-vars
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import Home from "./components/Home";
-import Login from './components/Login';
-import NotFound from './components/NotFound';
-import CoursesAdmin from './components/administrator/CoursesAdmin';
-import AuthContainer from "./pages/AuthContainer";
+import {
+  Navigate,
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements
+} from "react-router-dom";
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import ManageRepo from "./components/administrator/ManageRepo";
+import ManageCourse from "./components/administrator/course-layout/ManageCourse";
+import CourseLoad from "./components/administrator/courseloads/CourseLoad";
+import CourseLoadLayout from "./components/administrator/courseloads/CourseLoadLayout";
+import EnrolledStudents from "./components/administrator/courseloads/EnrolledStudents";
+import GenerateReport from "./components/administrator/report/GenerateReport";
+import ManageUsers from "./components/administrator/user-wrapper/ManageUsers";
+import CourseLayout from "./components/dean/courses/CourseLayout";
+import DeanCourses from "./components/dean/courses/DeanCourses";
+import Submission from "./components/dean/courses/submission/Submissions";
+import View from "./components/dean/courses/submission/View";
+import DeanDeliverables from "./components/dean/deliverables/DeanDeliverables";
+import Deliverables from "./components/dean/deliverables/Deliverables";
+import DeanSetting from "./components/dean/settings/DeanSetting";
+import CourseAssigned from "./components/faculty/CourseAssigned";
+import Login from "./components/reusable/Login";
+import NotFound from "./components/reusable/NotFound";
+import ManageProfile from "./components/shared-route/ManageProfile";
+import Home from "./components/shared-route/home/Home";
+import CourseStudent from "./components/student/courses/CourseStudent";
+import LayoutCourse from "./components/student/courses/LayoutCourse";
+import DeliverableWrapper from "./components/student/courses/deliverable/DeliverableWrapper";
+import ViewSpecificDeliverable from "./components/student/courses/deliverable/ViewSpecificDeliverable";
+import Issues from "./components/student/issues/Issues";
+import ResearchRepo from "./components/student/repo/ResearchRepo";
+import UserSetting from "./components/student/settings/UserSetting";
+import Timetable from "./components/student/timetable/Timetable";
+import * as CourseApi from "./network/course_api";
+import * as UserApi from "./network/user_api";
+import MainContents from "./pages/MainConents";
+import { useAuth } from "./utils/AuthContext";
+
 
 export default function App() {
-  const state = true
-  const user = {
-    'admin': false,
-    'student': true,
-    'dean': false,
-    'faculty': false,
-  }
+  const { userRole } = useAuth()
+
+  const theme = createTheme({
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 640, // Adjusted value for small screens
+        md: 768, // Adjusted value for medium screens
+        lg: 1024, // Adjusted value for large screens
+        xl: 1200, // Adjusted value for extra-large screens
+      },
+    },
+  });
+
   const router = createBrowserRouter(
     createRoutesFromElements(
-
-      <Route path="/" >
-        
-        <Route path="login" element={<Login state={state}/>} />
-
-        <Route element={<AuthContainer state={state}/>}>
-          <Route index element={<Home />} />
-          {/* ADD ROUTES THAT BASED ON USER TYPES */}
-          <Route path="courses" element={<CoursesAdmin />} />
+      <Route>
+        <Route path="/login" element={<Login />} />
+        <Route element={<MainContents />}>
+          <Route path={`/`} element={<Home />} />
+          <Route path={`/home`} element={<Home />} />
+          <Route path={`/manage/profile`} element={<ManageProfile />} />
+          {userRole === "Faculty" && (
+            <>
+              <Route path={`course/assigned`} element={<CourseAssigned />} />
+            </>
+          )}
+          {userRole === "Student" && (
+            <>
+              <Route path={`/research`} element={<ResearchRepo />} />
+              <Route path={`/course/*`} element={<LayoutCourse />}>
+                <Route index element={<CourseStudent />} />
+                <Route path={`deliverable/:courseName/:courseId/*`} element={<LayoutCourse />} >
+                  <Route index element={<DeliverableWrapper/>}/>
+                  <Route path="view/:deliverableName/:deliverableId/:courseDeliverabelId" element={<ViewSpecificDeliverable/>}/>
+                </Route>
+              </Route>
+              <Route path={`/issues`} element={<Issues />} />
+              <Route path={`/timetable`} element={<Timetable />} />
+              <Route path={`/settings`} element={<UserSetting />} />
+            </>
+          )}
+          {userRole === "Admin" && (
+            <>
+              <Route path={`manage/course`} loader={async () => { return CourseApi.viewCourse(); }} element={<ManageCourse />} />
+              <Route path={`manage/user`} loader={async () => { return UserApi.viewUser(); }} element={<ManageUsers />} />
+              <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
+                <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
+                <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
+              </Route>
+              <Route path={`manage/repository/*`} element={<ManageRepo />} />
+              <Route path={`reports`} element={<GenerateReport />}></Route>
+            </>
+          )}
+          {userRole === "Dean" && (
+            <>
+              <Route path={`/deliverable-management/*`} element={<CourseLayout />}>
+                <Route index element={<DeanDeliverables />} />
+                <Route path=":courseName/deliverables/:courseId?" element={<Deliverables />} />
+              </Route>
+              <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
+                <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
+                <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
+              </Route>
+              <Route path={`/courses/*`} element={<CourseLayout />}>
+                <Route index element={<DeanCourses />} />
+                <Route path={`submission`} element={<Submission />} />
+                <Route path={`submission/view/file/:id`} element={<View />} />
+              </Route>
+              <Route path={`/settings`} element={<DeanSetting />} />
+            </>
+          )}
+          <Route path="/logout" element={<Navigate to="/login" />} />
         </Route>
 
-        <Route path='*' element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
-
     )
-  )
-
-
+  );
 
   return (
-    <RouterProvider router={router} />
-  )
+    <ThemeProvider theme={theme}>
+
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }
