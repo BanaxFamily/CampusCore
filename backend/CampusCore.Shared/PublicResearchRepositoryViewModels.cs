@@ -18,7 +18,7 @@ namespace CampusCore.Shared
 
     }
 
-    
+
 
     public class PublicResearchRepositoryListViewModel
     {
@@ -27,14 +27,15 @@ namespace CampusCore.Shared
         public string Authors { get; set; }
         public string FilePath { get; set; }
         public DateTime DateUploaded { get; set; }
-        public DateTime DateApproved { get; set; }
+        public DateTime? DateApproved { get; set; }
         public string Status { get; set; }
         public int ViewCount { get; set; }
 
     }
 
-    
-
-
-   
+    public class PublicResearchRepositoryApproveViewModel
+    {
+        public int RequestId { get; set; }
+        public string ApprovedBy { get; set; }
+    }
 }

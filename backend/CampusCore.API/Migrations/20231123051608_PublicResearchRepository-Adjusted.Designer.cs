@@ -4,6 +4,7 @@ using CampusCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123051608_PublicResearchRepository-Adjusted")]
+    partial class PublicResearchRepositoryAdjusted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +56,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Announcements", (string)null);
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.AnnouncementComment", b =>
@@ -85,7 +87,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AnnouncementComments", (string)null);
+                    b.ToTable("AnnouncementComments");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Course", b =>
@@ -110,7 +112,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.CourseDeliverable", b =>
@@ -136,7 +138,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("OfferedCourseId");
 
-                    b.ToTable("CourseDeliverables", (string)null);
+                    b.ToTable("CourseDeliverables");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.CourseDeliverableSubmission", b =>
@@ -159,7 +161,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("SubmissionId");
 
-                    b.ToTable("CourseDeliverableSubmissions", (string)null);
+                    b.ToTable("CourseDeliverableSubmissions");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.CourseEnrollment", b =>
@@ -183,7 +185,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("CourseEnrollments", (string)null);
+                    b.ToTable("CourseEnrollments");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Deliverable", b =>
@@ -208,7 +210,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deliverables", (string)null);
+                    b.ToTable("Deliverables");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Group", b =>
@@ -239,7 +241,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("OfferedCourseId");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Issue", b =>
@@ -272,7 +274,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Issues", (string)null);
+                    b.ToTable("Issues");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.IssueComment", b =>
@@ -303,7 +305,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("IssueComments", (string)null);
+                    b.ToTable("IssueComments");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Notification", b =>
@@ -336,7 +338,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.OfferedCourse", b =>
@@ -373,7 +375,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("OfferedCourses", (string)null);
+                    b.ToTable("OfferedCourses");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.PublicResearchRepository", b =>
@@ -425,7 +427,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("SubmissionId");
 
-                    b.ToTable("ResearchRepository", (string)null);
+                    b.ToTable("ResearchRepository");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.ResearchViewLog", b =>
@@ -452,7 +454,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ResearchViewLogs", (string)null);
+                    b.ToTable("ResearchViewLogs");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.StudentGroup", b =>
@@ -476,7 +478,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentGroups", (string)null);
+                    b.ToTable("StudentGroups");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Submission", b =>
@@ -528,7 +530,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("SubmitterId");
 
-                    b.ToTable("Submissions", (string)null);
+                    b.ToTable("Submissions");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.SubmissionIssue", b =>
@@ -551,7 +553,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("SubmissionId");
 
-                    b.ToTable("SubmissionIssues", (string)null);
+                    b.ToTable("SubmissionIssues");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>
@@ -577,7 +579,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogs", (string)null);
+                    b.ToTable("UserLogs");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserPublishedResearch", b =>
@@ -597,7 +599,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserPublishedResearch", (string)null);
+                    b.ToTable("UserPublishedResearch");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

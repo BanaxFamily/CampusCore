@@ -1,4 +1,6 @@
-﻿namespace CampusCore.API.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CampusCore.API.Models
 {
     public class PublicResearchRepository
     {
@@ -11,6 +13,10 @@
         public string FilePath { get; set; } 
         public DateTime DateUploaded { get; set;}
         public DateTime? DateApproved { get; set;}
-        public int ViewCount { get; set; }
+        public string Status { get; set; }
+
+        [ForeignKey("UserId")]
+        public string ApproverId { get; set; }
+        public string Approver {  get; set; }
     }
 }
