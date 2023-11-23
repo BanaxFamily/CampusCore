@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Delete, Edit, Folder } from "@mui/icons-material";
+import { Edit, Folder } from "@mui/icons-material";
 import { Alert, Button, Divider, IconButton, LinearProgress, Stack, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,7 @@ import BackNav from "../../reusable/BackNav";
 import BreadCrumb from "../../reusable/BreadCrumb";
 import DynamicTable from '../../reusable/DynamicTable';
 import AddDeliverable from "./AddDeliverable";
+import ConfirmDialog from "./ConfirmDialog";
 import UpdateDeliverable from "./UpdateDeliverable";
 
 
@@ -19,6 +20,7 @@ export default function Deliverables() {
     const [deliverables, setDeliverables] = useState([])
     const [deliverableToUpdate, setDeliverableToUpdate] = useState([])
     const [loading, setLoading] = useState(true)
+    // const [open, setOpen] = useState(true)
     const [deliverableError, setDeliverableError] = useState(false)
     const breadCrumbUrl = [
         {
@@ -100,9 +102,7 @@ export default function Deliverables() {
                                                                 </IconButton>
                                                             </TableCell>
                                                             <TableCell className="border !text-center" >
-                                                                <IconButton type="submit" size="small" className="group hover:!bg-red-300">
-                                                                    <Delete fontSize="inherit" className="group-hover:!text-black text-red-400" />
-                                                                </IconButton>
+                                                                    <ConfirmDialog deliverableId={data.deliverableId} courseDeliverableId={data.id}/>
                                                             </TableCell>
                                                         </TableRow>
                                                     )
