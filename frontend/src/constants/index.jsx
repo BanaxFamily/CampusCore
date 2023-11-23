@@ -86,8 +86,8 @@ export const adminLinks = [
 
   {
     id: "repository",
-    link: "/faculty/course/loads",
-    title: "Faculty course loads",
+    link: "/faculty/course-loads/subjects",
+    title: "Offered courses",
     icon: <LocalPostOffice />,
   },
   {
@@ -148,6 +148,12 @@ export const deanLink = [
   },
 
   {
+    id: "repository",
+    link: "/faculty/course-loads/subjects",
+    title: "Offered courses",
+    icon: <LocalPostOffice />,
+  },
+  {
     id: "groups",
     link: "/student-groups",
     title: "Manage student groups",
@@ -160,3 +166,19 @@ export const deanLink = [
     icon: <Settings/>,
   },
 ];
+
+
+export const facultyLinks = [
+  {
+    id: "home",
+    link: "/",
+    title: "Home",
+    icon: <Home />,
+  },
+  {
+    id: "courloads",
+    link: "course/assigned",
+    title: "Course assigned",
+    icon: <Book />,
+  }
+]

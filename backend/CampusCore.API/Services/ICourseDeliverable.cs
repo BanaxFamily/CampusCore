@@ -30,7 +30,7 @@ namespace CampusCore.API.Services
 
             var courseDeliverable = new CourseDeliverable
             {
-                OfferedCourseId = model.OfferedCourseId,
+                CourseId = model.CourseId,
                 DeliverableId = model.DeliverableId,
                 DeliverableDeadline = model.DeliverableDeadline
             };
@@ -141,7 +141,7 @@ namespace CampusCore.API.Services
                 {
                     var result = await _context.CourseDeliverables
                                                .Include(cd => cd.Deliverable)
-                                               .Where(ce => ce.OfferedCourseId == model.Id)
+                                               .Where(ce => ce.CourseId == model.Id)
                                                .ToListAsync();
 
                     return new DataResponseManager

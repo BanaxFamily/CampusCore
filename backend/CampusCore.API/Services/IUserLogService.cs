@@ -45,7 +45,7 @@ namespace CampusCore.API.Services
                             Log = item.Log, 
                             Action = item.Action, 
                             UserId = item.UserId, 
-                            Idno = item.User.Id, 
+                            Idno = item.User.Idno, 
                             UserName = item.User.UserName, 
                             FullName = item.User.FullName, 
                             Role = role

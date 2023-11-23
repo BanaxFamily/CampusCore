@@ -8,7 +8,6 @@ import Route from "../components/reusable/Route";
 import { Status } from "../components/reusable/Status";
 import { useAuth } from "../utils/AuthContext";
 import { Button } from "@mui/material";
-
 const ProtectedContainer = (props) => {
   const { userRole, logOutUser } = useAuth()
   const location = useLocation()

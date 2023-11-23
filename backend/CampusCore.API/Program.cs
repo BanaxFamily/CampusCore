@@ -84,7 +84,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-#region "creating roles"
+#region "seed"
 // Add your role and permission configuration code here
 using (var scope = app.Services.CreateScope())
 {

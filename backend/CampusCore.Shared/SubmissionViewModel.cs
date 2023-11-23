@@ -10,9 +10,9 @@ namespace CampusCore.Shared
             public string Title { get; set; }
             public string Status { get; set; } = "Unapproved";
             public string SubmitterId { get; set; } 
-            public int GroupId { get; set; }
+            public int? GroupId { get; set; } = null;
             public int ForCourseDeliverable { get; set; }
-            public IFormFile File { get; set; }
+            public IFormFile? File { get; set; } = null;
         }
         public class SubmissionGetAllViewModel
         {
