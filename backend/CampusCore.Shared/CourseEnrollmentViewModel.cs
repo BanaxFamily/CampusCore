@@ -21,6 +21,8 @@ namespace CampusCore.Shared
         public string Sem {  get; set; }
         public int AcadYear { get; set; }
 
+        public string FacultyAssigned { get; set; }
+
     }
    
 
