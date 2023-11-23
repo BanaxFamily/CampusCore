@@ -17,6 +17,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/announcement/create
+        [Authorize(Roles = "Admin,Dean,Faculty,PRC")]
         [HttpPost("add")]
         public async Task<IActionResult> CreateAsync(AnnouncementAddViewModel model)
         {
@@ -32,6 +33,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
         //api/announcement/getById
+        [Authorize(Roles = "Dean,Faculty,Student,PRC")]
         [HttpPost("getById")]
         public async Task<IActionResult> GetByIdAsync(IntIdViewModel model)
         {
@@ -49,6 +51,7 @@ namespace CampusCore.API.Controllers
 
         // /api/announcement/viewList
         //insert method here
+        [Authorize(Roles = "Admin,Dean,Faculty,Student,PRC")]
         [HttpGet("viewList")]
         public async Task<IActionResult> ViewListAsync()
         {
@@ -64,6 +67,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
+        [Authorize(Roles = "Admin,Dean,Faculty,PRC")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
@@ -81,6 +85,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/announcement/update
+        [Authorize(Roles = "Admin,Dean,Faculty,PRC")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] AnnouncementUpdateViewModel model)
         {

@@ -18,7 +18,7 @@ namespace CampusCore.API.Controllers
 
         // /api/course-deliverable/create
         [HttpPost("create")]
-        //[Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean")]
         public async Task<IActionResult> CreateAsync(CourseDeliverableAddViewModel model)
         {
             if (ModelState.IsValid)
@@ -37,7 +37,7 @@ namespace CampusCore.API.Controllers
         
 
         [HttpDelete("delete")]
-        // [Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean")]
         public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -55,7 +55,7 @@ namespace CampusCore.API.Controllers
 
         // /api/course-deliverable/getAll
         [HttpGet("getAll")]
-        //[Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean")]
         public async Task<IActionResult> GetAllAsync()
         {
             if (ModelState.IsValid)
@@ -72,8 +72,8 @@ namespace CampusCore.API.Controllers
 
 
         // /api/course-deliverable/getById
-        [HttpPost("getByCourse")]
-        //[Authorize(Roles = "Dean")]
+        [HttpGet("getByCourse")]
+        [Authorize(Roles = "Dean,Faculty,Student")]
         public async Task<IActionResult> GetByCourseAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -90,7 +90,7 @@ namespace CampusCore.API.Controllers
 
         // /api/course-deliverable/update
         [HttpPut("update")]
-        //[Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty")]
         public async Task<IActionResult> UpdateAsync([FromBody] CourseDeliverableUpdateViewModel model)
         {
             if (ModelState.IsValid)

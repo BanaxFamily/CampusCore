@@ -19,7 +19,7 @@ namespace CampusCore.API.Controllers
 
             // /api/course/create
             [HttpPost("create")]
-            //[Authorize(Roles = "Admin")]
+            [Authorize(Roles = "Admin")]
             public async Task<IActionResult> CreateAsync(CourseAddViewModel model)
             {
                 if (ModelState.IsValid)
@@ -36,6 +36,7 @@ namespace CampusCore.API.Controllers
 
             // /api/course/viewList
             //insert method here
+            [Authorize(Roles = "Admin")]
             [HttpGet("viewList")]
             public async Task<IActionResult> ViewListAsync()
             {
@@ -51,6 +52,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("getAllOpen")]
         public async Task<IActionResult> ViewListOpenAsync()
         {
@@ -67,6 +69,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/course/search
+        [Authorize(Roles = "Admin")]
         [HttpPost("search")]
             public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
             {
@@ -84,6 +87,7 @@ namespace CampusCore.API.Controllers
 
 
         //api/course/search
+        [Authorize(Roles = "Admin")]
         [HttpPost("getById")]
         public async Task<IActionResult> CourseGetByIdAsync(IntIdViewModel model)
         {
@@ -99,7 +103,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-
+            [Authorize(Roles = "Admin")]
             [HttpDelete("delete")]
             //  [Authorize(Roles = "Admin")]
             public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
@@ -119,7 +123,7 @@ namespace CampusCore.API.Controllers
 
                 // /api/course/update
             [HttpPut("update")]
-            //[Authorize(Roles = "Admin")]
+            [Authorize(Roles = "Admin")]
             public async Task<IActionResult> UpdateAsync([FromBody] CourseUpdateViewModel model)
             {
                 if (ModelState.IsValid)
