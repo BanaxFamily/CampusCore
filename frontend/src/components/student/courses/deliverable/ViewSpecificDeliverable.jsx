@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Divider, IconButton, LinearProgress, Stack, Typography } from "@mui/material";
+import { Alert, CircularProgress, Divider, IconButton, LinearProgress, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as Deliverable from "../../../../network/deliverable";
@@ -82,7 +82,7 @@ export default function ViewSpecificDeliverable() {
             <DashBoardHeading title={`Viewing ${deliverableName} details`} />
 
             <Stack className="w-full border-2 " direction={'row'}>
-                <Stack className="w-3/4">
+                <Stack className="w-4/6 border-r-2">
 
                     {loading && <LinearProgress />}
                     {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
@@ -93,12 +93,12 @@ export default function ViewSpecificDeliverable() {
                         </>
                     }
                 </Stack>
-                <Stack className="border-5 border-red-400 w-1/2 overflow-hidden">
+                <Stack className="w-1/2 px-1 overflow-hidden">
                     <Stack className="my-2">
                         <Typography variant="h6" className="!text-lg !font-semibold tracking-wide underline underline-offset-4">Submitted files</Typography>
                     </Stack>
-                    <Stack className="">
-                        {loading && <LinearProgress />}
+                    <Stack>
+                        {loading && <CircularProgress color="inherit"/>}
                         {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
                         {
                             !loading && !error &&
