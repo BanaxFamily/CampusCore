@@ -20,8 +20,8 @@ const ProtectedContainer = (props) => {
       <div className="sticky w-full top-0 h-16"/>
       <div className="antialiased text-slate-600">
 
-        <div className="bg-gray-100 h-screen">
-          <div className="mx-auto static 2xl:relative bg-gray-50">
+        <div className=" h-screen">
+          <div className="mx-auto static 2xl:relative">
             <div className="flex sm:flex-col-reverse sm:justify-center md:flex-row">
               <div className="hidden md:block w-full sm:w-1/2  md:w-[28%] lg:w-[25%] ">
                 <div

@@ -3,7 +3,6 @@ import { Divider, IconButton, Stack, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
 export default function ListOfDeliverables({ data }) {
-    // useEffect(() => {console.log(data)}, [])
     return (
         data.map((info, index) => (
             <Stack key={index} className="px-4 rounded-t-md group">

@@ -16,7 +16,7 @@ export default function Submissions() {
     }
   ]
   return (
-    <>
+    <Stack>
       <Stack>
         <BackNav>
           <BreadCrumb data={breadCrumbUrl} />
@@ -32,6 +32,6 @@ export default function Submissions() {
       {
         showApproved && <div className="mt-8"><Approved /></div>
       }
-    </>
+    </Stack>
   )
 }
