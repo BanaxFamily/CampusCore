@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.API.Controllers
@@ -16,6 +17,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/issueComment/create
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("add")]
         public async Task<IActionResult> CreateAsync(IssueCommentAddViewModel model)
         {
@@ -33,6 +35,7 @@ namespace CampusCore.API.Controllers
 
         // /api/issueComment/viewList
         //insert method here
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpGet("viewList")]
         public async Task<IActionResult> ViewListAsync()
         {
@@ -49,6 +52,7 @@ namespace CampusCore.API.Controllers
         }
 
         //api/issueComment/search
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("search")]
         public async Task<IActionResult> SearchAsync(IssueCommentSearchViewModel model)
         {
@@ -66,6 +70,7 @@ namespace CampusCore.API.Controllers
 
 
         //api/issueComment/search
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("getById")]
         public async Task<IActionResult> IssueCommentGetByIdAsync(GetByIdModel model)
         {
@@ -81,7 +86,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(IssueCommentDeleteModel model)
         {
@@ -99,6 +104,7 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/issueComment/update
+        [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync([FromBody] IssueCommentUpdateViewModel model)
         {
