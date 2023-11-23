@@ -66,7 +66,7 @@ namespace CampusCore.API.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync([FromBody] UserDeleteViewModel model)
+        public async Task<IActionResult> DeleteAsync([FromBody] StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -113,10 +113,25 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid");
         }
 
+        // /api/auth/logout
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.LogoutAsync(id);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+
         // api/auth/getById
         [Authorize(Roles = "Admin")]
         [HttpPost("getById")]
-        public async Task<IActionResult> GetByIdAsync(UserGetByIdViewModel model)
+        public async Task<IActionResult> GetByIdAsync(StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {

@@ -15,11 +15,13 @@ namespace CampusCore.Shared
     public class CourseEnrolledViewModel
     {
         public int Id { get; set; }
-        public int Name { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
         public string Schedule {  get; set; }
         public string Sem {  get; set; }
         public int AcadYear { get; set; }
+
+        public string FacultyAssigned { get; set; }
 
     }
    

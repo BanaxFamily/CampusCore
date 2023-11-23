@@ -54,7 +54,7 @@ namespace CampusCore.API.Controllers
         //api/issueComment/search
         [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("search")]
-        public async Task<IActionResult> SearchAsync(IssueCommentSearchViewModel model)
+        public async Task<IActionResult> SearchAsync(StringSearchViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace CampusCore.API.Controllers
         //api/issueComment/search
         [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpPost("getById")]
-        public async Task<IActionResult> IssueCommentGetByIdAsync(GetByIdModel model)
+        public async Task<IActionResult> IssueCommentGetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +88,7 @@ namespace CampusCore.API.Controllers
 
         [Authorize(Roles = "Dean,Faculty,Student")]
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync(IssueCommentDeleteModel model)
+        public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {

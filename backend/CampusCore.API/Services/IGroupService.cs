@@ -16,6 +16,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateDetailsAsync(GroupUpdateDetailsViewModel model);
         Task<ResponseManager> UpdateMembersAsync(GroupUpdateMembersViewModel model);
         Task<ResponseManager> UpdateStatusAsync(GroupUpdateStatusViewModel model);
+        Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
     }
 
     public class GroupService : IGroupService
@@ -434,5 +435,37 @@ namespace CampusCore.API.Services
                 Errors = new List<string>() { "Error creating group in DB" }
             };
         }
+
+        public async Task<ResponseManager> SearchAsync(StringSearchViewModel model)
+        {
+            string searchKey = model.SearchKey;
+
+            try
+            {
+
+                var searchResults = await _context.Groups
+                    .Where(oc => EF.Functions.Like(oc.Name, $"%{searchKey}%"))
+                    .ToListAsync();
+
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Searched group retrieved successfully",
+                    Data = searchResults
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching searched group",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
     }
 }

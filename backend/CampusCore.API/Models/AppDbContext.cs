@@ -21,7 +21,6 @@ namespace CampusCore.API.Models
         public DbSet<CourseDeliverable> CourseDeliverables { get; set; }
         public DbSet<Deliverable> Deliverables { get; set; }
         public DbSet<CourseDeliverableSubmission> CourseDeliverableSubmissions { get; set; }
-
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
@@ -30,6 +29,8 @@ namespace CampusCore.API.Models
         public DbSet<AnnouncementComment> AnnouncementComments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<PublicResearchRepository> ResearchRepository { get; set; }
+        public DbSet<UserPublishedResearch> UserPublishedResearch { get; set; }
+        public DbSet<ResearchViewLog> ResearchViewLogs { get; set; }
 
 
 
@@ -83,9 +84,9 @@ namespace CampusCore.API.Models
                 .WithMany()
                 .HasForeignKey(cd => cd.DeliverableId);
             builder.Entity<CourseDeliverable>()
-                .HasOne(oc => oc.OfferedCourse)
+                .HasOne(oc => oc.Course)
                 .WithMany()
-                .HasForeignKey(oc => oc.OfferedCourseId);
+                .HasForeignKey(oc => oc.CourseId);
             
             
             builder.Entity<Submission>()

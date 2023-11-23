@@ -100,9 +100,6 @@ namespace CampusCore.Shared
 
     public class UserUpdateViewModel
     {
-
-        
-
         public string Id { get; set; }
 
         [Required]

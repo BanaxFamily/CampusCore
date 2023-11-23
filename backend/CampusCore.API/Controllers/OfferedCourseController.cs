@@ -35,7 +35,7 @@ namespace CampusCore.API.Controllers
             }
 
         [Authorize(Roles = "Admin,Dean")]
-        [HttpPost("update")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateOfferedCourseAsync([FromBody] OfferedCourseUpdateViewModel model)
         {
             if (ModelState.IsValid)
@@ -103,7 +103,7 @@ namespace CampusCore.API.Controllers
         //insert method here
         [Authorize(Roles = "Admin,Dean,Faculty,Student")]
         [HttpPost("getById")]
-        public async Task<IActionResult> GetByIdAsync(OfferedCourseGetByIdModel model)
+        public async Task<IActionResult> GetByIdAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -119,7 +119,7 @@ namespace CampusCore.API.Controllers
 
         [Authorize(Roles = "Admin,Dean")]
         [HttpDelete("delete")]
-            public async Task<IActionResult> DeleteAsync([FromBody] OfferedCourseDeleteModel model)
+            public async Task<IActionResult> DeleteAsync([FromBody] IntIdViewModel model)
             {
                 if (ModelState.IsValid)
                 {

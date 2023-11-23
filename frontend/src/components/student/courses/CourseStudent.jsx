@@ -1,47 +1,39 @@
-import { useEffect } from "react";
-import DashBoardHeading from "../../reusable/DashBoardHeading";
-import * as CourseApi from "../../../network/course_api";
-import EnrolledCourse from "../../reusable/EnrolledCourse";
-import Semester from "../../reusable/Semester";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Alert, LinearProgress, Stack } from '@mui/material'
+import { useEffect, useState } from 'react'
+import * as CourseEnrollment from '../../../network/courseEnrollment_api'
+import { useAuth } from '../../../utils/AuthContext'
+import DashBoardHeading from '../../reusable/DashBoardHeading'
+import CardCoursesStudent from './CardCoursesStudent'
 
-const course = [
-  "rescom",
-  "lit",
-  "english",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "capstone",
-  "practicum",
-];
-
-const CourseStudent = () => {
+export default function CourseStudent() {
+  const { userId } = useAuth()
+  const [data, setData] = useState(null)
+  // const [error, setError] = useState(null)
   useEffect(() => {
-    async function loadCourse() {
-      const response = await CourseApi.getCourse();
-      const course = await response.json();
-      console.log(course);
+    async function showCoursesEnrolled() {
+      try {
+        const response = await CourseEnrollment.getEnrolledCourses({ "studentId": userId })
+        if (response.isSuccess) {
+          setData(response.data)
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
-    loadCourse();
-  }, []);
-  return (
-    <div className=" border-x">
-      <DashBoardHeading title="student courses" />
-      <Semester sem="1st SEMESTER" />
-      <div className="w-full rounded-sm">
-        <div className="h-fit  my-4 mx-4 ">
-          <EnrolledCourse subject={course} />
-        </div>
-      </div>
-    </div>
-  );
-};
+    showCoursesEnrolled()
+  }, [])
 
-export default CourseStudent;
+  return (
+    <Stack>
+      <DashBoardHeading title="Your enrolled courses" desc="" />
+      <Stack className='my-2 w-full'>
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {!data ? <LinearProgress /> : (
+            data.length > 0 ? <CardCoursesStudent data={data} /> : (<Alert severity='info' className='!rounded-lg'>No currently enrolled courses</Alert>)
+          )}
+        </div>
+      </Stack>
+    </Stack>
+  )
+}

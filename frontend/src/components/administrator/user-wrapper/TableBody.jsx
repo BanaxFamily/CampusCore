@@ -10,12 +10,12 @@ import { MdDeleteForever } from "react-icons/md";
 export default function TableBodyUser(props) {
   return (
     <TableRow className="hover:bg-slate-200">
-      <TableCell className={props.className}>{props.index}</TableCell>
-      <TableCell className={props.className}>{props.user.idno}</TableCell>
-      <TableCell className={props.className}>{props.user.username}</TableCell>
-      <TableCell className={props.className}>{props.user.firstName}</TableCell>
-      <TableCell className={props.className}>{props.user.lastName}</TableCell>
-      <TableCell className={props.className}>{props.user.email}</TableCell>
+      <TableCell className={`${props.className}`}>{props.index}</TableCell>
+      <TableCell className={`${props.className}`}>{props.user.idno}</TableCell>
+      <TableCell className={`${props.className}`}>{props.user.username}</TableCell>
+      <TableCell className={`${props.className}`}>{props.user.firstName}</TableCell>
+      <TableCell className={`${props.className}`}>{props.user.lastName}</TableCell>
+      <TableCell className={`${props.className}`}>{props.user.email}</TableCell>
 
       <TableCell>
         {props.user.status === "active" ? (

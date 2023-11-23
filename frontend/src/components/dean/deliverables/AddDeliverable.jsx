@@ -1,15 +1,22 @@
 /* eslint-disable react/prop-types */
 import styled from '@emotion/styled'
 import { FileUpload } from '@mui/icons-material'
-import { Button, Stack, TextField, Typography } from '@mui/material'
+import { Alert, Button, Stack, TextField, TextareaAutosize, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Modal from '../../administrator/Modal'
 import DashBoardHeading from '../../reusable/DashBoardHeading'
+import { useNavigate, useParams } from 'react-router-dom'
+import * as Deliverable from '../../../network/deliverable'
+import * as CourseDeliverable from '../../../network/courseDeliverable_api'
 
 export default function AddDeliverable(props) {
+    let { courseName, courseId } = useParams()
+    const navigate = useNavigate()
     const [file, setSelectedFile] = useState(null)
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+    const [error, setError] = useState(false)
+    const [successMessage, setSuccessMessage] = useState("")
+    const { register, reset, handleSubmit, formState: { isSubmitting } } = useForm();
 
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
@@ -28,41 +35,97 @@ export default function AddDeliverable(props) {
         console.log(file)
 
     }
+    async function addDeliverableToCourse(data) {
+        const formData = {
+            'CourseId': courseId,
+            'deliverableId': data,
+            'deliverableDeadline': null
+        }
+        try {
 
-    function addDeliverable(credentials) {
-        console.log(credentials)
+            const response = await CourseDeliverable.createCourseDeliverable(formData)
+            console.log(response)
 
+            if(response.isSuccess){
+                setSuccessMessage(response.message)
+                reset()
+                return
+            }
+
+            if (!response.ok) {
+                setError('Fail to create deliverable. Check your inputs')
+                return
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    async function addDeliverable(credentials) {
+        const response = await Deliverable.addDeliverable(credentials);
+        if (response.isSuccess) {
+            const deliverableId = response.data
+            addDeliverableToCourse(deliverableId);
+        }
     }
 
     return (
         <>
             <Modal
-                onDismiss={props.onDismiss}
+                onDismiss={() => {
+                    props.onDismiss
+                    navigate(0)
+                }}
                 heading={<DashBoardHeading title="Add deliverables" desc="" />}
                 width="md:w-[35rem]"
             >
+                <Stack className="mb-2">
+                    {error && <Alert severity='error'>{error}</Alert>}
+                    {!error && successMessage && <Alert severity='success'>{successMessage}</Alert>}
+                </Stack>
+                <Stack spacing={1}>
+                    <Typography className="text-black">Course: <span className="underline font-semibold">{courseName}</span></Typography>
+                </Stack>
                 <form action="" onSubmit={handleSubmit(addDeliverable)}>
 
-                    <Stack className="border-2 w-full items-center mt-5 rounded-md shadow-md" paddingY={4}>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                    <Stack className="w-full items-center mt-2 rounded-md" paddingBottom={4}>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Title</Typography>
-                            <TextField variant="outlined" size="small" className="flex flex-grow" name="title" {...register('name')} />
+                            <TextField
+                                variant="outlined"
+                                label="Title"
+                                size="small"
+                                className="flex flex-grow"
+                                name="name"
+                                {...register('name')} />
                         </Stack>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                            <Typography className="w-1/6 " >Description</Typography>
+                            <TextField
+                                variant="outlined"
+                                label="Description"
+                                size="small"
+                                className="flex flex-grow"
+                                name="description"
+                                {...register('description')} />
+                        </Stack>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Instructions</Typography>
-                            <TextField variant="outlined" size="small" className="flex flex-grow" name="instruction" {...register('instruction')} />
+                            <TextareaAutosize
+                                aria-label="minimum height"
+                                minRows={3}
+                                placeholder="Instructions"
+                                className="!pl-4 flex flex-grow border-[1.5px] border-gray-300 rounded-md"
+                                name="instruction"
+                                {...register('instruction')} />
                         </Stack>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Resources</Typography>
-                            <Button component="label" variant="contained" className="flex flex-grow" startIcon={<FileUpload />}  >
+                            <Button disabled component="label" variant="contained" className="flex flex-grow" startIcon={<FileUpload />}  >
                                 {file ? file.name : 'Upload file'} (conditional rendering title not working yet)
-                                <VisuallyHiddenInput type="file" onChange={selectFileUpload} {...register('file')} />
+                                <VisuallyHiddenInput type="file" onChange={selectFileUpload} />
                             </Button>
 
-                        </Stack>
-                        <Stack className=" my-2 p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
-                            <Typography className="w-1/6 ">Due date</Typography>
-                            <TextField variant="outlined" size="small" className="flex flex-grow" name="date" {...register('date')} />
                         </Stack>
                         <Stack className="w-full px-2">
                             <Button type="submit" disabled={isSubmitting} variant="outlined" className="flex self-end w-32">Add</Button>
