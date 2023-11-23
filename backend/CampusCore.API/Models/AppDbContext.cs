@@ -84,9 +84,9 @@ namespace CampusCore.API.Models
                 .WithMany()
                 .HasForeignKey(cd => cd.DeliverableId);
             builder.Entity<CourseDeliverable>()
-                .HasOne(oc => oc.OfferedCourse)
+                .HasOne(oc => oc.Course)
                 .WithMany()
-                .HasForeignKey(oc => oc.OfferedCourseId);
+                .HasForeignKey(oc => oc.CourseId);
             
             
             builder.Entity<Submission>()

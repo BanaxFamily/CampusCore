@@ -42,10 +42,12 @@ namespace CampusCore.API.Services
 
             if (result > 0)
             {
-                return new ResponseManager
+                var deliverableId = deliverable.Id;
+                return new DataResponseManager
                 {
                     Message = "Deliverable created successfully!",
-                    IsSuccess = true
+                    IsSuccess = true,
+                    Data = deliverableId
                 };
 
             }

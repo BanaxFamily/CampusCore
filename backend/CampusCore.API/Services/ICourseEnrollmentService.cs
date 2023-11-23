@@ -122,11 +122,12 @@ namespace CampusCore.API.Services
                     data.Add(new CourseEnrolledViewModel
                     {
                         Id = item.Id,
-                        Name = item.OfferedCourse.FacultyAssigned.FullName,
+                        Name = item.OfferedCourse.Course.Name,
                         Description = item.OfferedCourse.Course.Description,
                         Schedule = item.OfferedCourse.Schedule,
                         Sem = item.OfferedCourse.Sem,
                         AcadYear = item.OfferedCourse.AcadYear,
+                        FacultyAssigned = item.OfferedCourse.FacultyAssigned.FullName
                     }) ;
                 }
 

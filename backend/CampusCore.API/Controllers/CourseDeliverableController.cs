@@ -72,7 +72,7 @@ namespace CampusCore.API.Controllers
 
 
         // /api/course-deliverable/getById
-        [HttpGet("getByCourse")]
+        [HttpPost("getByCourse")]
         //[Authorize(Roles = "Dean")]
         public async Task<IActionResult> GetByCourseAsync(IntIdViewModel model)
         {
