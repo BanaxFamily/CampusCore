@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
 import { FileUpload } from "@mui/icons-material";
 import { Alert, Button, Stack, TextField, Typography } from "@mui/material";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import * as Submission from "../../../../network/submission_api";
 import { useAuth } from "../../../../utils/AuthContext";
 import Modal from "../../../administrator/Modal";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
-import * as Submission from "../../../../network/submission_api"
-import { useState } from "react";
 
 export default function AddDeliverableModal({onDismiss}) {
     let { courseDeliverabelId } = useParams()
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
     const { userId } = useAuth()
     const { register, handleSubmit } = useForm()
     const [errorMessage, setErrorMessage] = useState("")
@@ -24,10 +24,12 @@ export default function AddDeliverableModal({onDismiss}) {
         formData.append("forCourseDeliverable", data.forCourseDeliverable)
         formData.append("file", data.file[0])
 
+        console.log(data)
         try {
             const response = await Submission.submissionOfDeliverable(formData)
+            console.log(response)
             if(response.isSuccess){
-                navigate(0)
+                // navigate(0)
                 return
             }
 
