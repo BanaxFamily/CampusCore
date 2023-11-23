@@ -37,7 +37,7 @@ namespace CampusCore.API.Controllers
 
         // /api/course/create
         [HttpPost("courseEnrolled")]
-        //[Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> ViewCourseEnrolledAsync(GetEnrolledCourseViewModel model)
         {
             if (ModelState.IsValid)
@@ -52,7 +52,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
         [HttpPost("enrolledStudents")]
-        //[Authorize(Roles = "Admin,Dean,Faculty")]
+        [Authorize(Roles = "Admin,Dean,Faculty")]
         public async Task<IActionResult> GetEnrolledStudents(GetEnrolledStudentsViewModel model)
         {
             if (ModelState.IsValid)
