@@ -6,12 +6,11 @@
         public string Title { get; set; }
         public string Description { get; set; }
         public string Authors { get; set; }
-        public int? SubmissionId { get; set; } // lacking foreign key from SubmissionTable
+        public int? SubmissionId { get; set; } 
         public Submission? Submission { get; set; }
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } 
         public DateTime DateUploaded { get; set;}
-        public DateTime DateApproved { get; set;}
-        public string Status { get; set;}
+        public DateTime? DateApproved { get; set;}
         public int ViewCount { get; set; }
     }
 }

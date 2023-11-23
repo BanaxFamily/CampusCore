@@ -7,13 +7,12 @@ namespace CampusCore.API.Services
 {
     public interface IPublicResearchRepositoryService
     {
-        Task<ResponseManager> CreatePublicResearchRepositoryAsync(PublicResearchRepositoryAddViewModel model);
-        Task<ResponseManager> ViewPublicResearchRepositoryListAsync();
-        //Task<ResponseManager> ViewPublicResearchRepositoryListOpenAsync();
-        Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(GetByIdModel model);
-        Task<ResponseManager> DeletePublicResearchRepositoryAsync(PublicResearchRepositoryDeleteModel model);
-        Task<ResponseManager> UpdatePublicResearchRepositoryAsync(PublicResearchRepositoryUpdateViewModel model);
-        Task<ResponseManager> SearchPublicResearchRepositoryAsync(PublicResearchRepositorySearchViewModel model);
+        Task<ResponseManager> RequestUploadAsync(PublicResearchRepositoryAddViewModel model);
+        Task<ResponseManager> ListApprovedAsync();
+        Task<ResponseManager> ListRequestAsync();
+        Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model);
+        Task<ResponseManager> DeletePublicResearchRepositoryAsync(IntIdViewModel model);
+        Task<ResponseManager> SearchPublicResearchRepositoryAsync(StringSearchViewModel model);
 
     }
 
@@ -24,24 +23,26 @@ namespace CampusCore.API.Services
         {
             _context = context;
         }
-        public async Task<ResponseManager> CreatePublicResearchRepositoryAsync(PublicResearchRepositoryAddViewModel model)
+        public async Task<ResponseManager> RequestUploadAsync(PublicResearchRepositoryAddViewModel model)
         {
             if (model == null)
                 throw new NullReferenceException("Register Model is null");
 
-
+            var submission = await _context.Submissions.FindAsync(model.SubmissionId);
+            //to get authors
+            var members = await _context.StudentGroups
+                                        .Where(sg => sg.Id == submission.GroupId)
+                                        .ToListAsync();
+            
+           
             var publicResearchRepository = new PublicResearchRepository
             {
                 Title = model.Title,
                 Description = model.Description,
-                Authors = model.Authors,
+                Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
                 SubmissionId = model.SubmissionId,
-                FilePath = model.FilePath,
-                DateUploaded = model.DateUploaded,
-                DateApproved = model.DateApproved,
-                Status = model.Status,
-                ViewCount = model.ViewCount,
-
+                FilePath = submission.FilePath,
+                DateUploaded = DateTime.Now,
             };
 
 
@@ -52,7 +53,7 @@ namespace CampusCore.API.Services
             {
                 return new ResponseManager
                 {
-                    Message = "Research repository created successfully!",
+                    Message = "Request for final research upload added successfully!",
                     IsSuccess = true
                 };
 
@@ -62,14 +63,10 @@ namespace CampusCore.API.Services
 
             return new ErrorResponseManager
             {
-                Message = "Research repository is not created",
+                Message = "Failed to create request for final research upload",
                 IsSuccess = false,
                 Errors = new List<string>() { "Error updating adding research repository in DB" }
             };
-
-
-
-
 
         }
         public async Task<ResponseManager> SearchPublicResearchRepositoryAsync(PublicResearchRepositorySearchViewModel model)
@@ -105,7 +102,6 @@ namespace CampusCore.API.Services
 
         public async Task<ResponseManager> ViewPublicResearchRepositoryListAsync()
         {
-
 
             try
             {
@@ -297,6 +293,29 @@ namespace CampusCore.API.Services
             }
         }
 
+        public Task<ResponseManager> ListApprovedAsync()
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<ResponseManager> ListRequestAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResponseManager> PublicResearchRepositoryGetByIdAsync(IntIdViewModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResponseManager> DeletePublicResearchRepositoryAsync(IntIdViewModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResponseManager> SearchPublicResearchRepositoryAsync(StringSearchViewModel model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
