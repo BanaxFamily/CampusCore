@@ -1,46 +1,56 @@
-import styled from "@emotion/styled";
+/* eslint-disable react/prop-types */
 import { FileUpload } from "@mui/icons-material";
-import { Button, Stack, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { Alert, Button, Stack, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../../utils/AuthContext";
 import Modal from "../../../administrator/Modal";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
-import { useParams } from "react-router-dom";
+import * as Submission from "../../../../network/submission_api"
+import { useState } from "react";
 
-export default function AddDeliverableModal() {
+export default function AddDeliverableModal({onDismiss}) {
     let { courseDeliverabelId } = useParams()
+    const navigate = useNavigate()
     const { userId } = useAuth()
-    const [file, setSelectedFile] = useState(null)
-    const [fileEmpty, setFileEmpty] = useState(true)
-    const { register, handleSubmit, formState: { isSubmitting } } = useForm()
-    const VisuallyHiddenInput = styled('input')({
-        clip: 'rect(0 0 0 0)',
-        clipPath: 'inset(50%)',
-        height: 1,
-        overflow: 'hidden',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        whiteSpace: 'nowrap',
-        width: 1,
-    });
+    const { register, handleSubmit } = useForm()
+    const [errorMessage, setErrorMessage] = useState("")
+    const [error, setError] = useState(false)
 
     async function submitDeliverable(data) {
-        console.log(data)
+        const formData = new FormData()
+        formData.append("title", data.title)
+        formData.append("submitterId", data.submitterId)
+        formData.append("forCourseDeliverable", data.forCourseDeliverable)
+        formData.append("file", data.file[0])
 
+        try {
+            const response = await Submission.submissionOfDeliverable(formData)
+            if(response.isSuccess){
+                navigate(0)
+                return
+            }
+
+            if(!response.ok){
+                const errorValues = Object.values(data.errors).reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+                // Set the error state with values
+                setErrorMessage(errorValues.join(', '));
+            }
+        } catch (error) {
+            console.error(error)
+            setError(true)
+        }
     }
 
-    function selectedFileUpload(event) {
-        setSelectedFile(event.target.files[0])
-        setFileEmpty(false)
-    }
 
     return (
         <Modal
+            onDismiss={onDismiss}
             heading={<DashBoardHeading title="Upload your files here" desc="" />}
             width="md:w-[35rem]"
         >
+            {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <form action="" onSubmit={handleSubmit(submitDeliverable)}>
 
                 <Stack className="w-full items-center mt-2 rounded-md" paddingBottom={4}>
@@ -60,8 +70,8 @@ export default function AddDeliverableModal() {
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                         <Typography className="w-1/6 ">Resources</Typography>
                         <Button component="label" variant="contained" className="flex flex-grow" startIcon={<FileUpload />}  >
-                            <VisuallyHiddenInput onChange={selectedFileUpload} type="file" {...register('file')} />
-                            {fileEmpty ? <Typography fontSize={'small'}>Upload File</Typography> : <Typography fontSize={'small'}>{file.name}</Typography>}
+                            <input type="file" {...register('file')} hidden />
+                            Upload file
                         </Button>
 
                     </Stack>

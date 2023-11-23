@@ -9,7 +9,7 @@ export default function ListOfDeliverables({ data }) {
                 <Stack className="w-3/4 mx-auto">
                     <Stack direction={'row'} className="items-center">
                         <Stack className="w-full">
-                            <Typography fontSize={'medium'} className="!font-bold">{info.deliverable.name}</Typography>
+                            <Typography className="!font-bold !text-xl">{info.deliverable.name}</Typography>
                             <Typography fontSize={'small'}>{info.deliverable.description}</Typography>
                         </Stack>
                         <Stack>

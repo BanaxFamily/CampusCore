@@ -22,8 +22,10 @@ namespace CampusCore.API.Controllers
         //CreateAsync(SubmissionAddViewModel model);
         [HttpPost("create")]
         //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> CreateAsync(SubmissionAddViewModel model)
+
+        public async Task<IActionResult> CreateAsync([FromForm] SubmissionAddViewModel model)
         {
+            var models = model;
             if (ModelState.IsValid)
             {
                 var result = await _submissionService.CreateAsync(model);

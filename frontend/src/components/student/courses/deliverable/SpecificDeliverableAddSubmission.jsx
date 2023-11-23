@@ -7,7 +7,7 @@ export default function SpecificDeliverableAddSubmission({ deliverable }) {
     const [openSubmission, setOpenSubmission] = useState(false);
     return (
         <Stack className="mt-2 " >
-            <Stack className="w-3/4 py-4 px-2 mx-auto gap-3">
+            <Stack className="w-full py-4 px-10 mx-auto gap-3">
                 <Stack className="!flex-row items-center gap-2">
                     <Typography>Description :</Typography>
                     <Typography className="underline underline-offset-4 !font-semibold !tracking-wide">{deliverable.description}</Typography>
@@ -25,7 +25,7 @@ export default function SpecificDeliverableAddSubmission({ deliverable }) {
                 </Stack>
             </Stack>
 
-            {openSubmission && <AddDeliverableModal />}
+            {openSubmission && <AddDeliverableModal onDismiss={() => setOpenSubmission(false)}/>}
         </Stack >
     )
 }

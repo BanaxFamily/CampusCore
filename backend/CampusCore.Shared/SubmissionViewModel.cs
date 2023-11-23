@@ -23,7 +23,7 @@ namespace CampusCore.Shared
             public DateTime? DADean { get; set; } = null;
             public DateTime? DAPRC { get; set; } = null;
             public string Submitter { get; set; }
-            public string GroupName { get; set; }
+            public string? GroupName { get; set; }
             public string Authors { get; set; }
             public IFormFile File { get; set; }
             public string Version { get; set; }

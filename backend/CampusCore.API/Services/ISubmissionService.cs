@@ -183,6 +183,7 @@ namespace CampusCore.API.Services
             {
                 var submissionsByStudent = await _context.Submissions
                                                 .Include(cds => cds.Group)
+                                                .Include(cds => cds.Submitter)
                                                 .Where(cds => cds.SubmitterId == studentId)
                                                 .ToListAsync();
 
@@ -194,10 +195,7 @@ namespace CampusCore.API.Services
 
                     foreach (var item in submissionsByStudent)
                     {
-                        //to get authors
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
+                        
                         //to get course deliverable to which this submission is submitted
                         var cdsBySubmission = _context.CourseDeliverableSubmissions
                                                         .Include(cds => cds.Submission)
@@ -206,7 +204,24 @@ namespace CampusCore.API.Services
                                                         .Where(cd => cd.Submission.GroupId == item.GroupId || cd.Submission.SubmitterId == item.SubmitterId)
                                                         .First();
                         var coursedeliverable = cdsBySubmission.CourseDeliverable.Deliverable.Name;
-
+                        //to get authors
+                        string authors, groupname;
+                        if(item.GroupId != null)
+                        {
+                            var members = await _context.StudentGroups
+                                                        .Include(sg => sg.Group)
+                                                        .Include(sg => sg.Student)
+                                                        .Where(sg => sg.Id == item.GroupId)
+                                                        .ToListAsync();
+                            authors = string.Join(", ", members.Select(group => group.Student.FullName));
+                            groupname = item.Group.Name;
+                        }
+                        else
+                        {
+                            authors = item.Submitter.FullName;
+                            groupname = "No group";
+                        }
+                        
 
                         var filePath = item.FilePath;
 
@@ -220,12 +235,12 @@ namespace CampusCore.API.Services
                             ContentType = "application/octet-stream" // Set the content type based on your file type
                         };
 
-                        var submission = new SubmissionGetAllViewModel()
+                        var submission = new SubmissionGetAllViewModel
                         {
                             Id = item.Id,
                             Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
+                            Authors = authors,
+                            GroupName = groupname,
                             ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
                             Status = item.Status,
@@ -303,7 +318,7 @@ namespace CampusCore.API.Services
                         var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
                         // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
+                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, filePath)
                         {
                             Headers = new HeaderDictionary(),
                             ContentType = "application/octet-stream" // Set the content type based on your file type
