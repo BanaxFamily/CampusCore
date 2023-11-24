@@ -41,6 +41,18 @@ export async function updateUser(data) {
   return response;
 }
 
+export async function updateUserDetails(data) {
+  const response = await fetchData("api/auth/updateDetails", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return response;
+}
+
 export async function viewUser(searchKey) {
   const response = await fetchData("api/auth/viewList", {
     method: "GET",
@@ -66,6 +78,18 @@ export async function deleteUser(id) {
 
 export async function searchUser(key) {
   const response = await fetchData("api/auth/search", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(key),
+  });
+
+  return response;
+}
+
+export async function getUserById(key) {
+  const response = await fetchData("api/auth/getById", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

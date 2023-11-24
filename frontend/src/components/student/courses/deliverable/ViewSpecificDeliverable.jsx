@@ -1,20 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { MoreHoriz } from "@mui/icons-material";
 import { Alert, CircularProgress, Divider, IconButton, LinearProgress, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import * as Deliverable from "../../../../network/deliverable";
-import * as Submission from "../../../../network/submission_api"
+import * as Submission from "../../../../network/submission_api";
+import { useAuth } from "../../../../utils/AuthContext";
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
+import PdfViewer from "./PdfViewer";
 import SpecificDeliverableAddSubmission from "./SpecificDeliverableAddSubmission";
-import { useAuth } from "../../../../utils/AuthContext";
-import { MoreHoriz } from "@mui/icons-material";
 
 export default function ViewSpecificDeliverable() {
     let { courseId, deliverableName, deliverableId, courseDeliverabelId } = useParams()
     const { userId } = useAuth()
+    // const navigate = useNavigate()
     const [deliverable, setDeliverable] = useState([])
+    // const [pdfFile, setPdfFile] = useState(null);
     const [submittedFiles, setSubmittedFiles] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
@@ -59,6 +62,7 @@ export default function ViewSpecificDeliverable() {
                 const response = await Submission.getSubmissionList(data)
                 if (response.isSuccess) {
                     setSubmittedFiles(response.data)
+                    console.log(response.data)
                     return
                 }
             } catch (error) {
@@ -98,7 +102,7 @@ export default function ViewSpecificDeliverable() {
                         <Typography variant="h6" className="!text-lg !font-semibold tracking-wide underline underline-offset-4">Submitted files</Typography>
                     </Stack>
                     <Stack>
-                        {loading && <CircularProgress color="inherit"/>}
+                        {loading && <CircularProgress color="inherit" />}
                         {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
                         {
                             !loading && !error &&
@@ -110,7 +114,8 @@ export default function ViewSpecificDeliverable() {
                                                 <Stack key={index} className="gap-1 hover:bg-gray-300">
                                                     <Stack className=" w-full px-2 justify-between items-center !flex-row ">
                                                         <Typography className="!text-[14px] ">{data.title}</Typography>
-                                                        <IconButton className="hover:!text-blue-500 hover:!rounded-none "><Typography variant="subtitle2">view</Typography><MoreHoriz /></IconButton>
+                                                        <NavLink to={`${data.file}`} className="hover:!text-blue-500 hover:!rounded-none "><Typography variant="subtitle2">view</Typography><MoreHoriz /></NavLink>
+                                                        {/* ERROR : FILE IS DISPLAYING */}
                                                     </Stack>
                                                 </Stack>
                                             )
