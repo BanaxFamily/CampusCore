@@ -190,7 +190,7 @@ export default function Edit() {
                   w-full md:w-3/4 flex place-self-end justify-end  rounded-lg
                   py-4 mt-4 tracking-wider md:py-2"
                 >
-                  Add account
+                  Update
                 </Button>
               </div>
             </div>
