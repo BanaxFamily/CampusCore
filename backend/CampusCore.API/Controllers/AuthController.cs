@@ -92,6 +92,23 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for update"); //status code: 400
         }
 
+        [HttpPut("updateDetails")]
+        public async Task<IActionResult> UpdateDetailsAsync([FromBody] UpdateDetailsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var result = await _userService.UpdateDetailsAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); //status code: 400
+        }
+       
+
         // /api/auth/login
         [HttpPost ("login")]
         public async Task<IActionResult> LoginAsync([FromBody] UserLoginViewModel model)
@@ -150,7 +167,22 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid");
         }
-       
+
+        // api/auth/getByRole
+        [HttpPost("updatePassword")]
+        public async Task<IActionResult> UpdatePasswordAsync(UpdatePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.UpdatePasswordAsync(model);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+
 
 
     }
