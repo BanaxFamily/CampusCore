@@ -23,7 +23,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
         Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model);
         Task<ResponseManager> UpdateDetailsAsync(UpdateDetailsViewModel model);
-        // Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model);
+        Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model);
         Task<ResponseManager> LogoutAsync(string userId);
 
     }
@@ -334,6 +334,7 @@ public class UserService : IUserService
     }
 
     //method to get user by id ("id" means id in database)
+
     public async Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model)
     {
         try
@@ -420,8 +421,9 @@ public class UserService : IUserService
                 };
             }
 
-            // Update the user properties from the model
-            user.Email = model.Email;
+           // Update the user properties from the model
+
+           user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
@@ -435,8 +437,8 @@ public class UserService : IUserService
             }
 
 
-            // Save changes to the database
-            await _userManager.UpdateAsync(user);
+           // Save changes to the database
+           await _userManager.UpdateAsync(user);
 
             return new ResponseManager
             {
@@ -472,14 +474,15 @@ public class UserService : IUserService
                 };
             }
 
-            // Update the user properties from the model
-            user.Email = model.Email;
+            //Update the user properties from the model
+
+           user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
 
 
 
-            // Save changes to the database
-            await _userManager.UpdateAsync(user);
+            //Save changes to the database
+           await _userManager.UpdateAsync(user);
 
             return new ResponseManager
             {
@@ -497,6 +500,51 @@ public class UserService : IUserService
             };
         }
     }
+
+    public async Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while updating the user",
+                    Errors = new List<string> { "User not found"}
+                }; ;
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return new ResponseManager 
+                { IsSuccess = true, Message = "Password changed successfully" };
+            }
+            else
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "Failed to change password",
+                    Errors = result.Errors.Select(error => error.Description).ToList()
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while updating the user",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+
+
 
     //public async Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model)
     //{

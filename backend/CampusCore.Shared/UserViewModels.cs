@@ -160,14 +160,23 @@ namespace CampusCore.Shared
     public class UpdatePasswordViewModel
     {
         public string Id { get; set; }
+
         [Required]
         [MinLength(6, ErrorMessage = "Password must not be less than 6 characters")]
         [MaxLength(30, ErrorMessage = "Password must not be more than 30 characters")]
         public string Password { get; set; }
+
         [Required]
-        [Compare("Password", ErrorMessage = "Password and Confirmation Password must match.")]
+        [MinLength(6, ErrorMessage = "Password must not be less than 6 characters")]
+        [MaxLength(30, ErrorMessage = "Password must not be more than 30 characters")]
+        public string NewPassword { get; set; }
+        [Required]
+        [Compare("NewPassword", ErrorMessage = "Password and Confirmation Password must match.")]
+
         public string RePassword { get; set; }
     }
+
+
 
 
 }
