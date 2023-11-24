@@ -333,7 +333,8 @@ public class UserService : IUserService
 
     }
 
-    //method to get user by id("id" means id in database)
+    //method to get user by id ("id" means id in database)
+
     public async Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model)
     {
         try
