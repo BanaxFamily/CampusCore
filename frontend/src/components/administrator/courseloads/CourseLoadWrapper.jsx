@@ -81,8 +81,9 @@ export default function CourseLoadWrapper() {
                     {...register("sem", { required: "select one option" })}
                   >
                     <option value=""></option>
-                    <option value="first">1st</option>
-                    <option value="second">2st</option>
+                    <option value="first">first</option>
+                    <option value="second">second</option>
+                    <option value="summer">summer</option>
                   </TextField>
                   <TextField
                     sx={{

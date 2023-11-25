@@ -37,12 +37,9 @@ namespace CampusCore.API.Services
             _context = context;
             _userManager = userManager;
 
-            // Get the root directory of your application
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
 
-            // Combine it with the 'Uploads' directory
-            _uploadPath = Path.Combine(basePath, "Uploads");
-
+            // Combine it with the 'Uploads' directory by going up two levels
+            _uploadPath = "H:\\Campuscore system\\CampusCore\\CampusCore\\backend\\Uploads";
             // Check if the directory exists; create it if not
             if (!Directory.Exists(_uploadPath))
             {
@@ -265,15 +262,7 @@ namespace CampusCore.API.Services
 
                         var filePath = item.Submission.FilePath;
 
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                        {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
-                        };
+                        
 
                         var submission = new SubmissionGetAllViewModel
                         {
@@ -286,7 +275,7 @@ namespace CampusCore.API.Services
                             DAFaculty = item.Submission.DAFaculty,
                             DADean = item.Submission.DADean,
                             DAPRC = item.Submission.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Submission.Version,
                             DateSubmitted = item.Submission.DateSubmitted
                         };
@@ -388,7 +377,7 @@ namespace CampusCore.API.Services
                             DAFaculty = item.Submission.DAFaculty,
                             DADean = item.Submission.DADean,
                             DAPRC = item.Submission.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Submission.Version,
                             DateSubmitted = item.Submission.DateSubmitted
                         };
@@ -472,7 +461,7 @@ namespace CampusCore.API.Services
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -558,7 +547,7 @@ namespace CampusCore.API.Services
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -642,7 +631,7 @@ namespace CampusCore.API.Services
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -717,7 +706,7 @@ namespace CampusCore.API.Services
                         DAFaculty = item.DAFaculty,
                         DADean = item.DADean,
                         DAPRC = item.DAPRC,
-                        File = formFile,
+                        File = filePath,
                         Version = item.Version,
                         DateSubmitted = item.DateSubmitted
                     };
@@ -802,7 +791,7 @@ namespace CampusCore.API.Services
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -921,7 +910,7 @@ namespace CampusCore.API.Services
                         DAFaculty = item.DAFaculty,
                         DADean = item.DADean,
                         DAPRC = item.DAPRC,
-                        File = formFile,
+                        File = filePath,
                         Version = item.Version,
                         DateSubmitted = item.DateSubmitted
                     };

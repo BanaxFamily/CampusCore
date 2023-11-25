@@ -24,7 +24,7 @@ namespace CampusCore.Shared
             public string Submitter { get; set; }
             public string? GroupName { get; set; }
             public string Authors { get; set; }
-            public IFormFile File { get; set; }
+            public string File { get; set; }
             public string Version { get; set; }
             public string Status { get; set; }
             public DateTime DateSubmitted { get; set; }

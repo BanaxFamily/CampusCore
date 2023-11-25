@@ -22,6 +22,8 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UserDeleteAsync(StringIdViewModel model);
         Task<ResponseManager> LoginAsync(UserLoginViewModel model);
         Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model);
+        Task<ResponseManager> UpdateDetailsAsync(UpdateDetailsViewModel model);
+        Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model);
         Task<ResponseManager> LogoutAsync(string userId);
 
     }
@@ -38,13 +40,13 @@ public class UserService : IUserService
         _userManager = userManager;
         _configuration = configuration;
         _context = context;
-       
-    }
-  
-      
 
-    
-    public  async Task<ResponseManager> LoginAsync(UserLoginViewModel model)
+    }
+
+
+
+
+    public async Task<ResponseManager> LoginAsync(UserLoginViewModel model)
     {
         if (model == null)
             throw new NullReferenceException("Login Model is null");
@@ -60,15 +62,15 @@ public class UserService : IUserService
         }
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
-        
 
-        if(!result)
+
+        if (!result)
         {
             return new ErrorResponseManager
             {
                 Message = "Invalid login",
                 IsSuccess = false,
-                Errors = new List<string>() {"Invalid login credentials"}
+                Errors = new List<string>() { "Invalid login credentials" }
             };
         }
 
@@ -92,7 +94,7 @@ public class UserService : IUserService
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
 
             string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
-            
+
             _context.UserLogs.Add(new UserLog
             {
                 UserId = user.Id,
@@ -119,11 +121,11 @@ public class UserService : IUserService
                 Errors = new List<string>() { "Token creation error" }
             };
         }
-        
 
-        
-        
-        
+
+
+
+
 
 
     }
@@ -146,7 +148,7 @@ public class UserService : IUserService
     }
     public async Task<ResponseManager> UserAddAsync(UserAddViewModel model)
     {
-        if( model == null)
+        if (model == null)
             throw new NullReferenceException("Register Model is null");
 
         if (model.Password != model.RePassword)
@@ -169,10 +171,10 @@ public class UserService : IUserService
 
         var result = await _userManager.CreateAsync(user, model.Password);
 
-        if(result.Succeeded)
+        if (result.Succeeded)
         {
-           await  _userManager.AddToRoleAsync(user, model.Role);
-                return new ResponseManager
+            await _userManager.AddToRoleAsync(user, model.Role);
+            return new ResponseManager
             {
                 Message = "User created successfully!",
                 IsSuccess = true
@@ -186,7 +188,7 @@ public class UserService : IUserService
             Errors = result.Errors.Select(e => e.Description)
         };
 
-        
+
     }
 
     public async Task<ResponseManager> UserDeleteAsync(StringIdViewModel model)
@@ -194,7 +196,7 @@ public class UserService : IUserService
         try
         {
             var deleteUser = await _userManager.FindByIdAsync(model.Id);
-            
+
 
             if (deleteUser == null)
             {
@@ -243,7 +245,7 @@ public class UserService : IUserService
         {
             var result = new List<UserListViewModel>(); // Adding this model just to have it in a nice list.
             var users = _userManager.Users;
-            
+
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -258,7 +260,7 @@ public class UserService : IUserService
                         Status = user.Status,
                         Idno = user.Idno,
                         Role = string.Join(", ", roles)
-                });
+                    });
                 }
             }
 
@@ -285,67 +287,73 @@ public class UserService : IUserService
         string searchKey = model.SearchKey;
         string option = model.Option;
 
-       
-            try
-            {
-                List<User> searchResults = null;
 
-                if(option == "Name")
-                {
-                   searchResults = await _userManager.Users
-                                        .Where(oc => EF.Functions.Like(oc.FullName, $"%{model.SearchKey}%") )
-                                        .ToListAsync();
-                }
-                else if (option == "Username")
-                {
-                   searchResults = await _userManager.Users
-                                        .Where(oc => EF.Functions.Like(oc.UserName, $"%{model.SearchKey}%"))
-                                        .ToListAsync();
-                }
-                else if (option == "Id")
-                {
-                   searchResults = await _userManager.Users
-                                        .Where(oc => EF.Functions.Like(oc.Idno, $"%{model.SearchKey}%"))
-                                        .ToListAsync();
-                }
-
-
-
-
-                return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "users retrieved successfully",
-                        Data = searchResults
-                    };
-            }
-            catch (Exception ex)
-            {
-                return new ErrorResponseManager
-                {
-                    IsSuccess = false,
-                    Message = "An error occurred while fetching users",
-                    Errors = new List<string> { ex.Message }
-                };
-            }
-        
-    }
-
-    //method to get user by id ("id" means id in database)
-    public async Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model)
-    {
         try
         {
+            List<User> searchResults = null;
 
-            var user = await _userManager.FindByIdAsync(model.Id);
+            if (option == "Name")
+            {
+                searchResults = await _userManager.Users
+                                     .Where(oc => EF.Functions.Like(oc.FullName, $"%{model.SearchKey}%"))
+                                     .ToListAsync();
+            }
+            else if (option == "Username")
+            {
+                searchResults = await _userManager.Users
+                                     .Where(oc => EF.Functions.Like(oc.UserName, $"%{model.SearchKey}%"))
+                                     .ToListAsync();
+            }
+            else if (option == "Id")
+            {
+                searchResults = await _userManager.Users
+                                     .Where(oc => EF.Functions.Like(oc.Idno, $"%{model.SearchKey}%"))
+                                     .ToListAsync();
+            }
+
 
 
 
             return new DataResponseManager
             {
                 IsSuccess = true,
+                Message = "users retrieved successfully",
+                Data = searchResults
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while fetching users",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+
+    }
+
+    //method to get user by id ("id" means id in database)
+
+    public async Task<ResponseManager> UserGetByIdAsync(StringIdViewModel model)
+    {
+        try
+        {
+
+            var users = await _userManager.FindByIdAsync(model.Id);
+            var role = await _userManager.GetRolesAsync(users);
+            var data = new
+            {
+                user = users,
+                roles = role
+            };
+
+
+            return new DataResponseManager
+            {
+                IsSuccess = true,
                 Message = "User retrieved successfully",
-                Data = user
+                Data = data
             };
         }
         catch (Exception ex)
@@ -364,11 +372,11 @@ public class UserService : IUserService
         var role = model.Role;
         try
         {
-            
+
             var searchResults = await _userManager.GetUsersInRoleAsync(role);
 
-            
-            if(searchResults.Count > 0)
+
+            if (searchResults.Count > 0)
             {
                 return new DataResponseManager
                 {
@@ -393,7 +401,7 @@ public class UserService : IUserService
             };
         }
     }
-    
+
 
     public async Task<ResponseManager> UserUpdateAsync(UserUpdateViewModel model)
     {
@@ -413,8 +421,9 @@ public class UserService : IUserService
                 };
             }
 
-            // Update the user properties from the model
-            user.Email = model.Email;
+           // Update the user properties from the model
+
+           user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
@@ -426,17 +435,17 @@ public class UserService : IUserService
                 await _userManager.RemoveFromRoleAsync(user, userRole.First());
                 await _userManager.AddToRoleAsync(user, model.Role);
             }
-            
 
-            // Save changes to the database
-            await _userManager.UpdateAsync(user);
-            
+
+           // Save changes to the database
+           await _userManager.UpdateAsync(user);
+
             return new ResponseManager
             {
                 IsSuccess = true,
                 Message = "user updated successfully"
             };
-        }   
+        }
         catch (Exception ex)
         {
             return new ErrorResponseManager
@@ -447,4 +456,136 @@ public class UserService : IUserService
             };
         }
     }
+
+    public async Task<ResponseManager> UpdateDetailsAsync(UpdateDetailsViewModel model)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+
+            if (user == null)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "user not found",
+                    Errors = new List<string> { "user with the specified ID does not exist" }
+
+                };
+            }
+
+            //Update the user properties from the model
+
+           user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+
+
+            //Save changes to the database
+           await _userManager.UpdateAsync(user);
+
+            return new ResponseManager
+            {
+                IsSuccess = true,
+                Message = "user updated successfully"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while updating the user",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+
+    public async Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while updating the user",
+                    Errors = new List<string> { "User not found"}
+                }; ;
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return new ResponseManager 
+                { IsSuccess = true, Message = "Password changed successfully" };
+            }
+            else
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "Failed to change password",
+                    Errors = result.Errors.Select(error => error.Description).ToList()
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                IsSuccess = false,
+                Message = "An error occurred while updating the user",
+                Errors = new List<string> { ex.Message }
+            };
+        }
+    }
+
+
+
+    //public async Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model)
+    //{
+    //    try
+    //    {
+    //        var user = await _userManager.FindByIdAsync(model.Id);
+
+    //        if (user == null)
+    //        {
+    //            return new ErrorResponseManager
+    //            {
+    //                IsSuccess = false,
+    //                Message = "user not found",
+    //                Errors = new List<string> { "user with the specified ID does not exist" }
+
+    //            };
+    //        }
+
+    //        // Update the user properties from the model
+    //        user.Email = model.Email;
+    //        user.PhoneNumber = model.PhoneNumber;
+
+
+
+    //        // Save changes to the database
+    //        await _userManager.UpdateAsync(user);
+
+    //        return new ResponseManager
+    //        {
+    //            IsSuccess = true,
+    //            Message = "user updated successfully"
+    //        };
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return new ErrorResponseManager
+    //        {
+    //            IsSuccess = false,
+    //            Message = "An error occurred while updating the user",
+    //            Errors = new List<string> { ex.Message }
+    //        };
+    //    }
+    //}
 }
