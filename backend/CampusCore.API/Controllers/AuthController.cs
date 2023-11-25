@@ -168,6 +168,20 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid");
         }
 
+        [HttpPost("updatePassword")]
+        public async Task<IActionResult> UpdatePasswordAsync(UpdatePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.UpdatePasswordAsync(model);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+
 
 
     }
