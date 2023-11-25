@@ -15,21 +15,7 @@ namespace CampusCore.API.Controllers
             _offeredCourseDeliverableService = offeredCourseDeliverableService;
         }
 
-        // /api/offeredCourseDeliverable/create
-        [HttpPost("add")]
-        public async Task<IActionResult> CreateAsync(OfferedCourseDeliverableAddViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _offeredCourseDeliverableService.CreateOfferedCourseDeliverableAsync(model);
-
-                if (result.IsSuccess)
-                    return Ok(result); //Status code: 200
-
-                return BadRequest(result);
-            }
-            return BadRequest("Some properties are not valid"); //status code: 400
-        }
+ 
 
         // /api/offeredCouseDeliverable/getAll
         //insert method here
@@ -54,7 +40,7 @@ namespace CampusCore.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _offeredCourseDeliverableService.GetByIdOfferedCourseDeliverableAsync(model);
+                var result = await _offeredCourseDeliverableService.GetByIdAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
