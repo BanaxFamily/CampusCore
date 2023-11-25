@@ -12,6 +12,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateOfferedCourseAsync(OfferedCourseUpdateViewModel model);
         Task<ResponseManager> ViewOfferedCourseBySemAsync(OfferedCourseBySem model);
         Task<ResponseManager> OfferedCourseGetByIdAsync(IntIdViewModel model);
+        Task<ResponseManager> FacultyCourseLoadAsync(StringIdViewModel model);
         Task<ResponseManager> OfferedCourseGetNeedDeansApprovalAsync();
 
 
@@ -303,9 +304,33 @@ namespace CampusCore.API.Services
                 };
             }
         }
-        
-        
-    
 
+        public async Task<ResponseManager> FacultyCourseLoadAsync(StringIdViewModel model)
+        {
+            try
+            {
+                var result = await _context.OfferedCourses
+                                            .Include(oc => oc.Course)
+                                            .Include(oc => oc.FacultyAssigned)
+                                            .Where(oc => oc.FacultyId  == model.Id)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Course loads retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching course loads",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
     }
 }
