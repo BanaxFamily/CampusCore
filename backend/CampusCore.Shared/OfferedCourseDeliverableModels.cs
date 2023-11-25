@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace CampusCore.Shared
 {
-    public class OfferedCourseDeliverableAddViewModel
-    {
-        public int DeliverableId { get; set; } // foreign key
-        public DateTime? Deadline { get; set; }
-        public int OfferedCourseId { get; set; } // foreign key
-    }
+   
     public class OfferedCourseDeliverableListViewModel
     {
         public int Id { get; set; }
