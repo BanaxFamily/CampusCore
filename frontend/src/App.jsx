@@ -39,6 +39,7 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
+import FinalDeliverables from "./components/faculty/FinalDeliverables";
 
 
 export default function App() {
@@ -117,7 +118,11 @@ export default function App() {
                 <Route path={`submission`} element={<Submission />} />
                 <Route path={`submission/view/file/:id`} element={<View />} />
               </Route>
-              {/* <Route path={`/settings`} element={<DeanSetting />} /> */}
+            </>
+          )}
+          {userRole === "Faculty" && (
+            <>
+              <Route path="faculty/course-loads/subjects" element={<FinalDeliverables/>}/>
             </>
           )}
 

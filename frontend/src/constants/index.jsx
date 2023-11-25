@@ -1,4 +1,4 @@
-import { Book, CalendarMonth, DeveloperBoard, Groups, Home, LocalPostOffice, People, Person, Report, Settings, Storage, SyncProblem,Dashboard,BarChart, CollectionsBookmark } from "@mui/icons-material";
+import { Approval, BarChart, Book, CollectionsBookmark, Dashboard, DeveloperBoard, Groups, Home, LocalPostOffice, People, Settings, Storage } from "@mui/icons-material";
 import { BiRightArrowAlt } from "react-icons/bi";
 
 export const studentLinks = [
@@ -6,9 +6,9 @@ export const studentLinks = [
     id: "home",
     link: "/",
     title: "Home",
-    icon: <Home/>
+    icon: <Home />
   },
-  
+
   {
     id: "research",
     link: "/research",
@@ -21,8 +21,8 @@ export const studentLinks = [
     title: "Courses",
     icon: <Book />,
   },
-  
-  
+
+
   {
     id: "setting",
     link: "/settings",
@@ -44,7 +44,7 @@ export const adminLinks = [
     title: "Manage users",
     icon: <People />,
   },
- 
+
   {
     id: "course",
     link: "manage/course",
@@ -57,7 +57,7 @@ export const adminLinks = [
     title: "Offered courses",
     icon: <CollectionsBookmark />,
   },
-  
+
   {
     id: "repository",
     link: "manage/repository",
@@ -137,7 +137,7 @@ export const deanLink = [
     id: "setting",
     link: "/settings",
     title: "Settings",
-    icon: <Settings/>,
+    icon: <Settings />,
   },
 ];
 
@@ -154,5 +154,23 @@ export const facultyLinks = [
     link: "course/assigned",
     title: "Course assigned",
     icon: <Book />,
-  }
+  },
+  {
+    id: "repository",
+    link: "/faculty/course-loads/subjects",
+    title: "Offered courses",
+    icon: <LocalPostOffice />,
+  },
+  {
+    id: "approval",
+    link: "/faculty/course-loads/subjects/approval",
+    title: "Final deliverables",
+    icon: <Approval />,
+  },
+  {
+    id: "setting",
+    link: "/settings",
+    title: "Settings",
+    icon: <Settings />,
+  },
 ]

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Button, TableBody, TableCell, TableHead, TableRow,} from "@mui/material";
-import {LibraryBooks} from "@mui/icons-material";
+import { Button, TableBody, TableCell, TableHead, TableRow, } from "@mui/material";
+import { LibraryBooks } from "@mui/icons-material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineFolderAdd, } from "react-icons/ai";
@@ -32,8 +32,6 @@ export default function CourseWrapper({ courses }) {
 
   async function handleDeleteCourse(id) {
     const response = await CourseApi.deleteCourse(id);
-    console.log(id);
-    console.log(response)
   }
 
   async function handleCourseSearch(key) {
@@ -58,8 +56,8 @@ export default function CourseWrapper({ courses }) {
               <LibraryBooks
                 size={20}
               />
-              Add 
-              
+              Add
+
             </Button>
           </div>
         </div>

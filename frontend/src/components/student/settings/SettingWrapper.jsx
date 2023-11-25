@@ -4,6 +4,7 @@ import * as UserApi from "../../../network/user_api";
 import { useAuth } from "../../../utils/AuthContext";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
 import EditCredentials from "./EditCredentials";
+import ChangePassword from "./ChangePassword";
 
 export default function SettingWrapper() {
     let { userId } = useAuth()
@@ -11,6 +12,7 @@ export default function SettingWrapper() {
     const [error, setError] = useState(false)
     const [credentials, setCrdentials] = useState([])
     const [modalEditCredential, setModalEditCredentials] = useState(false)
+    const [modalChangePassword, setModalChangePassword] = useState(false)
 
     useEffect(() => {
         async function getUserCredentials() {
@@ -82,17 +84,20 @@ export default function SettingWrapper() {
                             <Typography className="!text-md w-[10%] !tracking-wider">Email</Typography>
                             <Typography className="border-2 rounded-md !text-md w-full px-3 py-2">{credentials.user.email ? credentials.user.email : "Not set"}</Typography>
                         </Stack>
+
+                        <Stack direction={'row'} className="pr-20 my-4 self-end">
+                            <Button size="small" onClick={() => setModalChangePassword(true)} className="!underline !text-sm">
+                                <Typography className="!text-sm !text-blue-400">Want to change password? &nbsp;
+                                    <span className="text-[13px]">Click HERE</span>
+                                </Typography>
+                            </Button>
+                        </Stack>
                     </Stack>
+
                 }
-                <Stack direction={'row'} className="pr-20 my-4 self-end">
-                    <Button size="small" className="!underline !text-sm">
-                        <Typography className="!text-sm !text-blue-400">Want to change password? &nbsp;
-                            <span className="text-[13px]">Click HERE</span>
-                        </Typography>
-                    </Button>
-                </Stack>
             </Stack>
             {modalEditCredential && <EditCredentials onClose={() => setModalEditCredentials(false)} data={credentials} />}
+            {modalChangePassword && <ChangePassword onClose={() => setModalChangePassword(false)} />}
         </div >
     )
 }

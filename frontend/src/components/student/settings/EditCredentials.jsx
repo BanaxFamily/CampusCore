@@ -1,18 +1,16 @@
 /* eslint-disable react/prop-types */
 
-import { Alert, Button, Stack, TextField, Typography } from "@mui/material";
+import { Button, Stack, TextField, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import * as UserApi from "../../../network/user_api";
+import { useAuth } from "../../../utils/AuthContext";
 import Modal from "../../administrator/Modal";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
-import { useForm } from "react-hook-form";
-import * as UserApi from "../../../network/user_api"
-import { useAuth } from "../../../utils/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 export default function EditCredentials({ onClose, data }) {
     let { userId } = useAuth()
     const navigate = useNavigate()
-    const [error , setError] = useState(false)
     const { register, handleSubmit, formState: { isSubmitting } } = useForm()
 
     async function onSaveUpdate(data) {
@@ -24,7 +22,6 @@ export default function EditCredentials({ onClose, data }) {
             }
         } catch (error) {
             console.error(error)
-            setError(true)
         }
     }
 
@@ -34,7 +31,6 @@ export default function EditCredentials({ onClose, data }) {
             heading={<DashBoardHeading title="Add offered course" desc="" />}
             width="md:w-[35rem]"
         >
-            {error & <Alert severity="error">Something went wrong try again later</Alert>}
             <div className="w-full pb-2">
                 <form action="" onSubmit={handleSubmit(onSaveUpdate)}>
                     <Stack className="w-full gap-2">

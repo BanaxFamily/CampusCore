@@ -52,6 +52,17 @@ export async function updateUserDetails(data) {
 
   return response;
 }
+export async function changePassword(data) {
+  const response = await fetchData("api/auth/updatePassword", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return response;
+}
 
 export async function viewUser(searchKey) {
   const response = await fetchData("api/auth/viewList", {
