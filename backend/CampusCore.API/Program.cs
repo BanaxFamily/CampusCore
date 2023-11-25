@@ -65,6 +65,7 @@ builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>(
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
 builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
+builder.Services.AddScoped<IOfferedCourseDeliverableService, OfferedCourseDeliverableService>();
 builder.Services.AddScoped<IAnnouncementCommentService, AnnouncementCommentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
