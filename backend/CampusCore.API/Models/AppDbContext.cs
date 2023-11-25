@@ -15,6 +15,7 @@ namespace CampusCore.API.Models
         public DbSet<UserLog> UserLogs { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<OfferedCourse> OfferedCourses { get; set; }
+        public DbSet<OfferedCourseDeliverable> OfferedCourseDeliverables { get; set; }
         public DbSet<CourseEnrollment> CourseEnrollments { get; set; }
         public DbSet<StudentGroup> StudentGroups { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -48,6 +49,14 @@ namespace CampusCore.API.Models
                 .HasOne(oc => oc.FacultyAssigned)
                 .WithMany()
                 .HasForeignKey(oc => oc.FacultyId).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<OfferedCourseDeliverable>()
+                .HasOne(ocd => ocd.Deliverable)
+                .WithMany()
+                .HasForeignKey(ocd => ocd.DeliverableId);
+            builder.Entity<OfferedCourseDeliverable>()
+                .HasOne(ocd => ocd.OfferedCourse)
+                .WithMany()
+                .HasForeignKey(ocd => ocd.OfferedCourseId);
 
             // Configure the many-to-many relationship between OfferedCourse and User through CourseEnrollment
             //builder.Entity<CourseEnrollment>()
