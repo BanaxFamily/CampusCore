@@ -9,6 +9,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateOfferedCourseDeliverableAsync(OfferedCourseDeliverableAddViewModel model);
         Task<ResponseManager> ViewOfferedCourseDeliverableListAsync(); // new method to get Offered Course Deliverable
         Task<ResponseManager> GetByIdOfferedCourseDeliverableAsync(IntIdViewModel model);
+        Task<ResponseManager> GetByOfferedCourseOfferedCourseDeliverableAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateOfferedCourseDeliverableAsync(OfferedCourseDeliverableUpdateViewModel model);
 
     }
@@ -94,6 +95,34 @@ namespace CampusCore.API.Services
                                             .Include(a => a.Deliverable)
                                             .Include(a => a.OfferedCourse)
                                             .Where(a => a.Id == model.Id)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Offered Course Deliverable retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching Offered Course Deliverable",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetByOfferedCourseOfferedCourseDeliverableAsync(IntIdViewModel model)
+        {
+            try
+            {
+                var result = await _context.OfferedCourseDeliverables
+                                            .Include(a => a.Deliverable)
+                                            .Include(a => a.OfferedCourse)
+                                            .Where(a => a.OfferedCourseId == model.Id)
                                             .ToListAsync();
 
                 return new DataResponseManager
