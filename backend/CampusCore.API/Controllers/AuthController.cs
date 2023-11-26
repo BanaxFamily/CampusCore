@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
@@ -16,8 +17,9 @@ namespace CampusCore.API.Controllers
             _userService = userService;
         }
 
-       
+
         // /api/auth/add
+        [Authorize(Roles = "Admin")]
         [HttpPost("add")]
         public async Task<IActionResult> UserAddAsync([FromBody] UserAddViewModel model)
         {
@@ -32,6 +34,7 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet("viewList")]
         public async Task<IActionResult> ViewListAsync()
         {
@@ -46,6 +49,7 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("search")]
         public async Task<IActionResult> ViewListSearchAsync(UserListSearchViewModel model)
         {
@@ -60,6 +64,7 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync([FromBody] StringIdViewModel model)
         {
@@ -76,6 +81,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for delete"); //status code: 400
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateAsync([FromBody]UserUpdateViewModel model)
         {
@@ -140,6 +146,7 @@ namespace CampusCore.API.Controllers
         }
 
         // api/auth/getById
+        [Authorize(Roles = "Admin")]
         [HttpPost("getById")]
         public async Task<IActionResult> GetByIdAsync(StringIdViewModel model)
         {
@@ -154,6 +161,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid");
         }
         // api/auth/getByRole
+        [Authorize(Roles = "Admin")]
         [HttpPost("getByRole")]
         public async Task<IActionResult> UserListByRoleAsync(UserGetByRoleViewModel model)
         {

@@ -1,6 +1,7 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.API.Services;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting;
@@ -21,7 +22,7 @@ namespace CampusCore.API.Controllers
         //POST
         //CreateAsync(SubmissionAddViewModel model);
         [HttpPost("create")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Faculty,Student")]
         public async Task<IActionResult> CreateAsync(SubmissionAddViewModel model)
         {
             if (ModelState.IsValid)
@@ -38,8 +39,9 @@ namespace CampusCore.API.Controllers
 
         //        POST
         //        GetAllByCourseAsync(IntIdViewModel model);
+
         [HttpPost("getAllByCourse")]
-        ////Authorize(Roles = "Dean,Faculty")]
+        [Authorize(Roles = "Dean,Faculty")]
         public async Task<IActionResult> GetAllByCourseAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -57,7 +59,7 @@ namespace CampusCore.API.Controllers
         //        POST
         //        GetAllByStudentAsync(StringIdViewModel model);
         [HttpPost("getAllByStudent")]
-        ////Authorize(Roles = "Dean,Faculty")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetAllByStudentAsync(StringIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -75,7 +77,7 @@ namespace CampusCore.API.Controllers
         //GetByIdAsync(IntIdViewModel model);
         //api/submission/getById
         [HttpPut("getById")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty,Student")]
         public async Task<IActionResult> GetByIdAsync([FromBody] IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -95,7 +97,7 @@ namespace CampusCore.API.Controllers
         //        POST
         //        DeleteAsync(IntIdViewModel model);
         [HttpDelete("delete")]
-        // //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Faculty,Student")]
         public async Task<IActionResult> DeleteAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -114,7 +116,7 @@ namespace CampusCore.API.Controllers
         //        UpdateAsync(SubmissionUpdateViewModel model);
         // /api/submission/update
         [HttpPut("update")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Faculty,Student")]
         public async Task<IActionResult> UpdateAsync([FromBody] SubmissionUpdateViewModel model)
         {
             if (ModelState.IsValid)
@@ -133,7 +135,7 @@ namespace CampusCore.API.Controllers
         //POST
         //GetUnapproved(IntIdViewModel model);
         [HttpPost("getUnapproved")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty,Student")]
         public async Task<IActionResult> GetUnapproved([FromBody] IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -152,7 +154,7 @@ namespace CampusCore.API.Controllers
         //        POST
         //        GetApprovedFaculty(IntIdViewModel model);
         [HttpPost("getFacultyApproved")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty,Student")]
         public async Task<IActionResult> GetApprovedFaculty([FromBody] IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -171,7 +173,7 @@ namespace CampusCore.API.Controllers
         //POST
         //GetApprovedDean(IntIdViewModel model);
         [HttpPost("getDeanApproved")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty,Student")]
         public async Task<IActionResult> GetApprovedDean([FromBody] IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -190,7 +192,7 @@ namespace CampusCore.API.Controllers
         //POST
         //GetApprovedPRC(IntIdViewModel model);
         [HttpPost("getPRCApproved")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty,Student,PRC")]
         public async Task<IActionResult> GetApprovedPRC([FromBody] IntIdViewModel model)
         {
             if (ModelState.IsValid)
@@ -205,7 +207,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for update"); // Status code: 400
         }
         [HttpPost("search")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty,Student")]
         public async Task<IActionResult> SearchNameAsync([FromBody] StringSearchViewModel model)
         {
             if (ModelState.IsValid)
@@ -221,7 +223,7 @@ namespace CampusCore.API.Controllers
         }
 
         [HttpPost("approve")]
-        //Authorize(Roles = "Dean")]
+        [Authorize(Roles = "Dean,Faculty,PRC")]
         public async Task<IActionResult> ApproveAsync([FromBody] SubmissionApproveViewModel model)
         {
             if (ModelState.IsValid)

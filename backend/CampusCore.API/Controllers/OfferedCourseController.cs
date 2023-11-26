@@ -17,8 +17,8 @@ namespace CampusCore.API.Controllers
                 _offeredCourseService = offeredCourseService;
             }
 
-  
-        //[Authorize(Roles = "Admin,Dean")]
+
+        [Authorize(Roles = "Admin,Dean")]
         [HttpPost("add")]
         public async Task<IActionResult> CreateAsync([FromBody] OfferedCourseAddViewModel model)
             {
@@ -34,6 +34,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest("Some properties are not valid"); //status code: 400
             }
 
+        [Authorize(Roles = "Admin,Dean")]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateOfferedCourseAsync([FromBody] OfferedCourseUpdateViewModel model)
         {
@@ -51,6 +52,7 @@ namespace CampusCore.API.Controllers
 
         // /api/course/viewList
         //insert method here
+        [Authorize(Roles = "Admin,Dean,Faculty,Student")]
         [HttpGet("viewList")]
         public async Task<IActionResult> ViewListAsync()
         {
@@ -67,6 +69,7 @@ namespace CampusCore.API.Controllers
         }
         // /api/course/viewListSem
         //insert method here
+        [Authorize(Roles = "Admin,Dean,Faculty,Student")]
         [HttpPost("viewListSem")]
         public async Task<IActionResult> ViewListBySemAsync(OfferedCourseBySem model)
         {
@@ -81,6 +84,8 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
+
+        [Authorize(Roles = "Admin,Dean,Faculty")]
         [HttpPost("viewListIsNeedDeansApproval")]
         public async Task<IActionResult> OfferedCourseGetNeedDeansApprovalAsync()
         {
@@ -96,6 +101,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
         //insert method here
+        [Authorize(Roles = "Admin,Dean,Faculty,Student")]
         [HttpPost("getById")]
         public async Task<IActionResult> GetByIdAsync(IntIdViewModel model)
         {
@@ -111,7 +117,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        //[Authorize(Roles = "Admin,Dean")]
+        [Authorize(Roles = "Admin,Dean")]
         [HttpDelete("delete")]
             public async Task<IActionResult> DeleteAsync([FromBody] IntIdViewModel model)
             {
