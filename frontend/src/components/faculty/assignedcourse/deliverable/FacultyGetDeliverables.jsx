@@ -17,6 +17,7 @@ export default function FacultyGetDeliverables() {
     async function showListOfDeliverables() {
       try {
         const response = await OfferedCourseDeliverable.getFacultyOfferedCourseDeliverables({ 'id': offeredCourseId })
+        console.log(offeredCourseId)
         if (response.isSuccess) {
           setDeliverables(response.data)
           return

@@ -41,7 +41,7 @@ export default function CourseStudent() {
             !loading && !error &&
             <>
               {
-                data.length > 0 ? (<CardCoursesStudent data={data} />) : (<Alert severity="success">Something went wrong. Try again later</Alert>)
+                data.length > 0 ? (<CardCoursesStudent data={data} />) : (<Alert severity="info">No courses enrolled</Alert>)
               }
             </>
           }

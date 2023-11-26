@@ -6,10 +6,10 @@ export default function ListOfDeliverables({ data }) {
     return (
         data.map((info, index) => (
             <Stack key={index} className="px-4 rounded-t-md group">
-                <Stack className="w-3/4 mx-auto">
+                <Stack className="w-full mx-auto">
                     <Stack direction={'row'} className="items-center">
                         <Stack className="w-full">
-                            <Typography className="!font-bold !text-xl">{info.deliverable.name}</Typography>
+                            <Typography className="!font-bold !text-xl !text-black">{info.deliverable.name}</Typography>
                             <Typography fontSize={'small'}>{info.deliverable.description}</Typography>
                         </Stack>
                         <Stack>
