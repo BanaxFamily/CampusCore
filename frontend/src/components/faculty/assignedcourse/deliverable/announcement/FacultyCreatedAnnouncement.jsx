@@ -1,15 +1,16 @@
 import { Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
-import * as Announcement from "../../../../../network/announcement_api"
-import { useAuth } from "../../../../../utils/AuthContext";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import * as Announcement from "../../../../../network/announcement_api";
 
 export default function FacultyCreatedAnnouncement() {
-    let {userId} = useAuth()
+    let { offeredCourseId } = useParams()
+    const [announcement, setAnnouncement] = useState([])
 
     useEffect(() => {
-        console.log(userId)
-        async function getCreatedAnnouncement(){
-            const response = await Announcement.getAnnouncementByFaculty({'id': userId})
+        async function getCreatedAnnouncement() {
+            const response = await Announcement.getAnnouncementByCourse({ 'id': offeredCourseId })
+            setAnnouncement(response.data)
             console.log(response)
         }
 
@@ -17,11 +18,17 @@ export default function FacultyCreatedAnnouncement() {
 
     }, [])
     return (
-        <Stack>
-            <Typography variant="subtitle1" className="!text-[13px] !tracking-wide" component={'h1'}> Title : TITLE HERE </Typography>
-            <Stack className="mt-2 border border-gray-400 rounded-md" paddingX={3}>
-                <Typography fontSize={'small'}> Announcement Desccription </Typography>
+
+        announcement.map((data, index) => (
+            <Stack key={index}>
+                <Typography variant="subtitle1" className="!text-[13px] !tracking-wide" component={'h1'}> Title : {data.title} </Typography>
+                <Stack className="mt-2 border border-gray-400 !h-32" paddingX={3}>
+                    <Typography fontSize={'small'} className="py-4"> {data.content} </Typography>
+                </Stack>
+                {/* <Stack className=""> */}
+                    <Typography variant="subtitle2" className="!text-sm flex self-end"> Posted: {data.createdAt} </Typography>
+                {/* </Stack> */}
             </Stack>
-        </Stack>
+        ))
     )
 }

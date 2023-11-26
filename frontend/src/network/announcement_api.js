@@ -17,8 +17,8 @@ export async function addAnnouncement(data){
   })
   return response;
 }
-export async function getAnnouncementByFaculty(data){
-  const response = await fetchData("api/announcement/getById", {
+export async function getAnnouncementByCourse(data){
+  const response = await fetchData("api/announcement/getByOfferedCourse", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
