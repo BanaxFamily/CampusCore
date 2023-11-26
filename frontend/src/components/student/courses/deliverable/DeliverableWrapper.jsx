@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Divider, LinearProgress, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -6,6 +7,10 @@ import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import ListOfDeliverables from "./ListOfDeliverables";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export default function DeliverableWrapper() {
   let { courseName, courseId } = useParams()
@@ -38,7 +43,7 @@ export default function DeliverableWrapper() {
       }
     }
     showListOfDeliverables()
-  })
+  }, [])
 
   return (
     <Stack>
@@ -51,20 +56,31 @@ export default function DeliverableWrapper() {
       <DashBoardHeading title={`Deliverables for ${courseName}`} />
       {loading && <LinearProgress />}
       {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
-      <Stack paddingY={4} className="!px-10">
-        {
-          !loading && !error &&
-          <>
-            <Stack className="w-full border-2 rounded-md py-10">
+      <Stack className="!flex-row">
+        <Stack paddingY={4} className="!px-10 w-full">
+          {
+            !loading && !error &&
+            <>
+              <Stack className="w-full rounded-md py-10">
 
-              {
-                deliverable.length > 0 ? (
-                  <ListOfDeliverables data={deliverable} />
-                ) : (<Alert severity="success">Something went wrong. Try again later</Alert>)
-              }
-            </Stack>
-          </>
-        }
+                {
+                  deliverable.length > 0 ? (
+                    <ListOfDeliverables data={deliverable} />
+                  ) : (<Alert severity="error">Something went wrong. Try again later</Alert>)
+                }
+              </Stack>
+            </>
+          }
+        </Stack>
+        <Stack className="border-l-2 p-2">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['DateCalendar', 'DateCalendar']}>
+              <DemoItem label="Deadlines">
+                <DateCalendar defaultValue={dayjs('2022-04-17')} />
+              </DemoItem>
+            </DemoContainer>
+          </LocalizationProvider>
+        </Stack>
       </Stack>
     </Stack>
   )
