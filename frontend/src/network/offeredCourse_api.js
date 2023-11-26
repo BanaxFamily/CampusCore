@@ -18,6 +18,16 @@ export async function viewAllOfferedCourse() {
   });
   return response;
 }
+export async function viewAssignedCourse(data) {
+  const response = await fetchData("api/offered-course/getFacultyCourseLoads", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  });
+  return response;
+}
 
 export async function sortOfferedCourse(data) {
   const response = await fetchData("api/offered-course/viewListSem", {

@@ -19,23 +19,23 @@ export default function CardCoursesStudent({ data }) {
                 <MoreHoriz />
               </IconButton>
             }
-            title={course.facultyAssigneds}
-            subheader={'schedule here'}
+            title={course.offeredCourse.facultyAssigned.fullName}
+            subheader={course.offeredCourse.schedule}
           />
           <Link to={`submission`} size="small" color="primary" className='hover:!text-blue-300'>
             <CardActionArea>
               <CardContent className='h-[6rem]'>
                 <Typography gutterBottom variant="h5" component="div" fontSize={'medium'}>
-                  {course.name}
+                  {course.offeredCourse.course.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {course.description}
+                  {course.offeredCourse.course.description}
                 </Typography>
               </CardContent>
             </CardActionArea>
           </Link>
           <CardActions sx={{ justifyContent: 'flex-end' }}>
-            <Link to={`deliverable/${course.name}/${course.id}`} size="small" color="primary" className=' text-blue-500 p-2 hover:text-mainBlueColor'>
+            <Link to={`deliverable/${course.offeredCourse.course.name}/${course.offeredCourse.course.id}`} size="small" color="primary" className=' text-blue-500 p-2 hover:text-mainBlueColor'>
               Open
             </Link>
           </CardActions>

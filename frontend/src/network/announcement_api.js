@@ -6,3 +6,24 @@ export async function getAnnouncement() {
   });
   return response;
 }
+
+export async function addAnnouncement(data){
+  const response = await fetchData("api/announcement/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  })
+  return response;
+}
+export async function getAnnouncementByFaculty(data){
+  const response = await fetchData("api/announcement/getById", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  })
+  return response;
+}

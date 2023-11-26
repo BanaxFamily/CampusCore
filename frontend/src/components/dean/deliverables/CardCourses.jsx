@@ -12,7 +12,7 @@ export default function CardCourses({ data }) {
         <Card sx={{ maxWidth: 'auto' , width: '100%', height: '10rem', margin: 'auto'}} >
           <CardActionArea>
             <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography gutterBottom variant="h6" className='!font-semibold tracking-wide' component="div">
                 {item.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">

@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace CampusCore.API.Services
@@ -9,8 +10,8 @@ namespace CampusCore.API.Services
     public interface ISubmissionService
     {
         Task<ResponseManager> CreateAsync(SubmissionAddViewModel model);
-        Task<ResponseManager> GetAllByCourseDeliverableAsync(IntIdViewModel model);
-        Task<ResponseManager> GetAllByStudentAsync(StringIdViewModel model);
+        Task<ResponseManager> GetAllByCourseDeliverableAsync(GetSubmissionsByDeliverableViewModel model);
+        Task<ResponseManager> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model);
         Task<ResponseManager> GetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> SearchNameAsync(StringSearchViewModel model);
         Task<ResponseManager> DeleteAsync(IntIdViewModel model);
@@ -28,18 +29,17 @@ namespace CampusCore.API.Services
     public class SubmissionService : ISubmissionService
     {
         private AppDbContext _context;
+        private UserManager<User> _userManager;
         private string _uploadPath;
 
-        public SubmissionService(AppDbContext context)
+        public SubmissionService(AppDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
 
-            // Get the root directory of your application
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
 
-            // Combine it with the 'Uploads' directory
-            _uploadPath = Path.Combine(basePath, "Uploads");
-
+            // Combine it with the 'Uploads' directory by going up two levels
+            _uploadPath = "H:\\Campuscore system\\CampusCore\\CampusCore\\backend\\Uploads";
             // Check if the directory exists; create it if not
             if (!Directory.Exists(_uploadPath))
             {
@@ -176,65 +176,108 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllByStudentAsync(StringIdViewModel model)
+        public async Task<ResponseManager> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model)
         {
-            var studentId = model.Id;
+          
+            var deliverableId = model.CourseDeliverableId;
+
+            
+                var studentGroup = _context.StudentGroups
+                                       .Where(sg => sg.StudentId == model.UserId && sg.Group.OfferedCourseId == model.OfferedCourseId)
+                                       .FirstOrDefault();
+            
+            
+                                       
+
             try
             {
-                var submissionsByStudent = await _context.Submissions
-                                                .Include(cds => cds.Group)
-                                                .Where(cds => cds.SubmitterId == studentId)
-                                                .ToListAsync();
+                List<CourseDeliverableSubmission>cdsBySubmissions;
+                if (studentGroup != null)
+                {
+                    cdsBySubmissions = await _context.CourseDeliverableSubmissions
+                                                        .Include(cds => cds.Submission)
+                                                        .Include(cds => cds.CourseDeliverable)
+                                                        .Include(cds => cds.Submission.Group)
+                                                        .Include(cds => cds.CourseDeliverable.Deliverable)
+                                                        .Where(cd => cd.Submission.GroupId == studentGroup.GroupId || cd.Submission.SubmitterId == model.UserId)
+                                                        .Where(cd => cd.CourseDeliverableId == model.CourseDeliverableId)
+                                                        .ToListAsync();
+                }
+                else
+                {
+                    var c = await _context.CourseDeliverableSubmissions
+                        .Include(cds => cds.Submission)
+                        .Include(cds => cds.Submission.Submitter)
+                        .Include(cds => cds.CourseDeliverable)
+                        .Include(cds => cds.Submission.Group)
+                        .Include(cds => cds.CourseDeliverable.Deliverable).ToListAsync();
 
+                    cdsBySubmissions = await _context.CourseDeliverableSubmissions
+                                                                            .Include(cds => cds.Submission)
+                                                                            .Include(cds => cds.CourseDeliverable)
+                                                                            .Include(cds => cds.Submission.Group)
+                                                                            .Include(cds => cds.CourseDeliverable.Deliverable)
+                                                                            .Where(cd => cd.Submission.SubmitterId == model.UserId && cd.CourseDeliverableId == model.CourseDeliverableId)
+                                                                        
+                                                                            .ToListAsync();
+                }
+
+
+               
                 try
                 {
 
 
                     List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
-                    foreach (var item in submissionsByStudent)
+                    if(cdsBySubmissions.Count < 1)
                     {
-                        //to get authors
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-                        //to get course deliverable to which this submission is submitted
-                        var cdsBySubmission = _context.CourseDeliverableSubmissions
-                                                        .Include(cds => cds.Submission)
-                                                        .Include(cds => cds.CourseDeliverable)
-                                                        .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                        .Where(cd => cd.Submission.GroupId == item.GroupId || cd.Submission.SubmitterId == item.SubmitterId)
-                                                        .First();
-                        var coursedeliverable = cdsBySubmission.CourseDeliverable.Deliverable.Name;
-
-
-                        var filePath = item.FilePath;
-
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
+                        return new ErrorResponseManager
                         {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                            IsSuccess = false,
+                            Message = "no cds restrieved",
+                            Errors = new List<string> { "no cds retrieved " }
                         };
-
-                        var submission = new SubmissionGetAllViewModel()
+                    }
+                    foreach (var item in cdsBySubmissions)
+                    {
+                        
+                        //to get authors
+                        string authors, groupname;
+                        if(item.Submission.GroupId != null)
                         {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
+                            var members = await _context.StudentGroups
+                                                        .Include(sg => sg.Student)
+                                                        .Where(sg => sg.Id == item.Submission.GroupId)
+                                                        .ToListAsync();
+                            authors = string.Join(", ", members.Select(group => group.Student.FullName));
+                            groupname = item.Submission.Group.Name;
+                        }
+                        else
+                        {
+                            authors = item.Submission.Submitter.FullName;
+                            groupname = "No group";
+                        }
+                        
+
+                        var filePath = item.Submission.FilePath;
+
+                        
+
+                        var submission = new SubmissionGetAllViewModel
+                        {
+                            SubmissionId = item.Submission.Id,
+                            Submitter = item.Submission.Submitter.FullName,
+                            Authors = authors,
+                            GroupName = groupname,
+                            Title = item.Submission.Title,
+                            Status = item.Submission.Status,
+                            DAFaculty = item.Submission.DAFaculty,
+                            DADean = item.Submission.DADean,
+                            DAPRC = item.Submission.DAPRC,
+                            File = filePath,
+                            Version = item.Submission.Version,
+                            DateSubmitted = item.Submission.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -267,37 +310,51 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllByCourseDeliverableAsync(IntIdViewModel model)
+        public async Task<ResponseManager> GetAllByCourseDeliverableAsync(GetSubmissionsByDeliverableViewModel model)
         {
-            var courseDeliverableId = model.Id;
+            var deliverableId = model.CourseDeliverableId;
+
+
             try
             {
+                var cdsBySubmissions = await _context.CourseDeliverableSubmissions
+                                                        .Include(cds => cds.Submission)
+                                                        .Include(cds => cds.CourseDeliverable)
+                                                        .Include(cds => cds.Submission.Group)
+                                                        .Include(cds => cds.CourseDeliverable.Deliverable)
+                                                        .Where(cd => cd.CourseDeliverableId == model.CourseDeliverableId)
+                                                        .ToListAsync();
 
-                var submissionsByCourse = await _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.Submission)
-                                                .Include(cds => cds.Submission.Group)
-                                                .Include(cds => cds.Submission.Submitter)
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.CourseDeliverableId == courseDeliverableId)
-                                                .ToListAsync();
+
 
                 try
                 {
-                    var results = submissionsByCourse.Select(cds => cds.Submission);
+
 
                     List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
-                    foreach (var item in results)
+                    foreach (var item in cdsBySubmissions)
                     {
+
                         //to get authors
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
+                        string authors, groupname;
+                        if (item.Submission.GroupId != null)
+                        {
+                            var members = await _context.StudentGroups
+                                                        .Include(sg => sg.Student)
+                                                        .Where(sg => sg.Id == item.Submission.GroupId)
+                                                        .ToListAsync();
+                            authors = string.Join(", ", members.Select(group => group.Student.FullName));
+                            groupname = item.Submission.Group.Name;
+                        }
+                        else
+                        {
+                            authors = item.Submission.Submitter.FullName;
+                            groupname = "No group";
+                        }
 
-                        var coursedeliverable = submissionsByCourse.First().CourseDeliverable.Deliverable.Name;
 
-                        var filePath = item.FilePath;
+                        var filePath = item.Submission.FilePath;
 
                         // Open the file stream
                         var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
@@ -309,21 +366,20 @@ namespace CampusCore.API.Services
                             ContentType = "application/octet-stream" // Set the content type based on your file type
                         };
 
-                        var submission = new SubmissionGetAllViewModel()
+                        var submission = new SubmissionGetAllViewModel
                         {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
+                            SubmissionId = item.Submission.Id,
+                            Submitter = item.Submission.Submitter.FullName,
+                            Authors = authors,
+                            GroupName = groupname,
+                            Title = item.Submission.Title,
+                            Status = item.Submission.Status,
+                            DAFaculty = item.Submission.DAFaculty,
+                            DADean = item.Submission.DADean,
+                            DAPRC = item.Submission.DAPRC,
+                            File = filePath,
+                            Version = item.Submission.Version,
+                            DateSubmitted = item.Submission.DateSubmitted
                         };
                         data.Add(submission);
                     }
@@ -369,7 +425,6 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.CourseDeliverable.Deliverable)
                                                 .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
                 {
                     var results = submissionsByCD.Select(cds => cds.Submission)
@@ -397,17 +452,16 @@ namespace CampusCore.API.Services
 
                         var submission = new SubmissionGetAllViewModel()
                         {
-                            Id = item.Id,
+                            SubmissionId = item.Id,
                             Submitter = item.Submitter.FullName,
                             Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
                             GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
                             Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -457,7 +511,6 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.CourseDeliverable.Deliverable)
                                                 .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
                 {
                     var results = submissionsByCD.Select(cds => cds.Submission)
@@ -485,17 +538,16 @@ namespace CampusCore.API.Services
 
                         var submission = new SubmissionGetAllViewModel()
                         {
-                            Id = item.Id,
+                            SubmissionId = item.Id,
                             Submitter = item.Submitter.FullName,
                             Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
                             GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
                             Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -543,7 +595,6 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.CourseDeliverable.Deliverable)
                                                 .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
                 {
                     var results = submissionsByCD.Select(cds => cds.Submission)
@@ -571,17 +622,16 @@ namespace CampusCore.API.Services
 
                         var submission = new SubmissionGetAllViewModel()
                         {
-                            Id = item.Id,
+                            SubmissionId = item.Id,
                             Submitter = item.Submitter.FullName,
                             Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
                             GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
                             Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -647,17 +697,16 @@ namespace CampusCore.API.Services
 
                     var data = new SubmissionGetAllViewModel()
                     {
-                        Id = item.Id,
+                        SubmissionId = item.Id,
                         Submitter = item.Submitter.FullName,
                         Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
                         GroupName = item.Group.Name,
-                        ForCourseDeliverable = coursedeliverable.CourseDeliverable.Deliverable.Name,
                         Title = item.Title,
                         Status = item.Status,
                         DAFaculty = item.DAFaculty,
                         DADean = item.DADean,
                         DAPRC = item.DAPRC,
-                        File = formFile,
+                        File = filePath,
                         Version = item.Version,
                         DateSubmitted = item.DateSubmitted
                     };
@@ -706,7 +755,6 @@ namespace CampusCore.API.Services
                                                 .Include(cds => cds.CourseDeliverable)
                                                 .Where(cds => cds.CourseDeliverableId == model.Id)
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
                 try
                 {
                     var results = submissionsByCD.Select(cds => cds.Submission)
@@ -734,17 +782,16 @@ namespace CampusCore.API.Services
 
                         var submission = new SubmissionGetAllViewModel()
                         {
-                            Id = item.Id,
+                            SubmissionId = item.Id,
                             Submitter = item.Submitter.FullName,
                             Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
                             GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
                             Title = item.Title,
                             Status = item.Status,
                             DAFaculty = item.DAFaculty,
                             DADean = item.DADean,
                             DAPRC = item.DAPRC,
-                            File = formFile,
+                            File = filePath,
                             Version = item.Version,
                             DateSubmitted = item.DateSubmitted
                         };
@@ -854,17 +901,16 @@ namespace CampusCore.API.Services
 
                     var data = new SubmissionGetAllViewModel()
                     {
-                        Id = item.Id,
+                        SubmissionId = item.Id,
                         Submitter = item.Submitter.FullName,
                         Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
                         GroupName = item.Group.Name,
-                        ForCourseDeliverable = coursedeliverable.CourseDeliverable.Deliverable.Name,
                         Title = item.Title,
                         Status = item.Status,
                         DAFaculty = item.DAFaculty,
                         DADean = item.DADean,
                         DAPRC = item.DAPRC,
-                        File = formFile,
+                        File = filePath,
                         Version = item.Version,
                         DateSubmitted = item.DateSubmitted
                     };

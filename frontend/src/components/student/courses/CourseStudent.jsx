@@ -9,6 +9,9 @@ import CardCoursesStudent from './CardCoursesStudent'
 export default function CourseStudent() {
   const { userId } = useAuth()
   const [data, setData] = useState(null)
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(true)
+
   // const [error, setError] = useState(null)
   useEffect(() => {
     async function showCoursesEnrolled() {
@@ -19,6 +22,9 @@ export default function CourseStudent() {
         }
       } catch (error) {
         console.error(error)
+        setError(true)
+      } finally {
+        setLoading(false)
       }
     }
     showCoursesEnrolled()
@@ -27,11 +33,18 @@ export default function CourseStudent() {
   return (
     <Stack>
       <DashBoardHeading title="Your enrolled courses" desc="" />
+      {loading && <LinearProgress />}
+      {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
       <Stack className='my-2 w-full'>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {!data ? <LinearProgress /> : (
-            data.length > 0 ? <CardCoursesStudent data={data} /> : (<Alert severity='info' className='!rounded-lg'>No currently enrolled courses</Alert>)
-          )}
+          {
+            !loading && !error &&
+            <>
+              {
+                data.length > 0 ? (<CardCoursesStudent data={data} />) : (<Alert severity="success">Something went wrong. Try again later</Alert>)
+              }
+            </>
+          }
         </div>
       </Stack>
     </Stack>
