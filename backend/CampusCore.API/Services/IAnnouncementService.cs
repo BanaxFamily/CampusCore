@@ -35,7 +35,7 @@ namespace CampusCore.API.Services
                 OfferedCourseId = model. OfferedCourseId,
                 Title = model.Title,
                 Content = model.Content,
-                CreatedAt = model.CreatedAt,
+                CreatedAt = DateTime.Now,
 
             };
 

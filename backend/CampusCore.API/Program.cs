@@ -72,9 +72,10 @@ builder.Services.AddScoped<IAnnouncementCommentService, AnnouncementCommentServi
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
-builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
+//builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+builder.Services.AddScoped<IVersionService, VersionService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 
 
