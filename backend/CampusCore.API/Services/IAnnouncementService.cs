@@ -1,6 +1,8 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CampusCore.API.Services
 {
@@ -13,14 +15,17 @@ namespace CampusCore.API.Services
         //Task<ResponseManager> GetByIdAnnouncementAsync(int id);
         Task<ResponseManager> GetByIdAnnouncementAsync(IntIdViewModel model);
         Task<ResponseManager> GetByOfferedCourseAnnouncementAsync(IntIdViewModel model);
+        Task<ResponseManager> GetAllByUserAnnouncementAsync(AnnouncementGetAllModel model);
 
     }
 
     public class AnnouncementService : IAnnouncementService
     {
+        private UserManager<User> _userManager;
         private AppDbContext _context;
-        public AnnouncementService(AppDbContext context)
+        public AnnouncementService(UserManager<User> userManager, AppDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
         public async Task<ResponseManager> CreateAnnouncementAsync(AnnouncementAddViewModel model)
@@ -148,6 +153,68 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = false,
                     Message = "An error occurred while fetching announcements",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetAllByUserAnnouncementAsync(AnnouncementGetAllModel model)
+        {
+            try
+            {
+                var userId = model.UserId;
+                var users = await _userManager.FindByIdAsync(model.UserId);
+                var role = await _userManager.GetRolesAsync(users);
+                var data = new
+                {
+                    roles = role
+                };
+
+                if (data.roles[0] == "Admin" || data.roles[0] == "Dean" || data.roles[0] == "Faculty") // to delete admin soon
+                {
+                    var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == model.OfferedCourseId && a.UserId == userId)
+                                            .ToListAsync();
+                    return new DataResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Announcement retrieved successfully",
+                        Data = result
+                    };
+                }
+
+                // To be edited from OfferedCourseId to CourseId
+                else if (data.roles[0] == "Student")
+                {
+                    var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == model.OfferedCourseId && a.UserId == userId)
+                                            .ToListAsync();
+                    return new DataResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "Announcement retrieved successfully",
+                        Data = result
+                    };
+                }
+                else
+                {
+                    // default return statement here for unvalid role
+                    return new ErrorResponseManager
+                    {
+                        IsSuccess = false,
+                        Message = "Invalid role",
+                        Errors = new List<string> { "Invalid user role" }
+                    };
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching announcement",
                     Errors = new List<string> { ex.Message }
                 };
             }
