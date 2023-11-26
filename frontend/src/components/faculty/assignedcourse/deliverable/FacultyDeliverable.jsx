@@ -29,7 +29,7 @@ export default function FacultyDeliverable() {
                         <Stack className="w-full border-2 " direction={'row'}>
                         <FacultyGetDeliverables/>
                         </Stack>
-                        <Stack className="my-4 w-[40%]">
+                        <Stack className="my-4 w-[30%]">
                             <SpecificCourseLinks />
                         </Stack>
                     </Stack>
