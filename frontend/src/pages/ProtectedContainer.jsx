@@ -41,7 +41,7 @@ const ProtectedContainer = (props) => {
                   <div className="mx-auto px-2 sm:px-8 md:px-0 w-full ">{props.component}</div>
                 </div>
               </div>
-              {userRole !== "Admin" && (
+              {/* {userRole !== "Admin" && (
                 location.pathname.startsWith('/courses/submission/view/') && (
                   <div className="hidden lg:block w-[25%] mx-2 h-screen">
                     <div
@@ -55,7 +55,7 @@ const ProtectedContainer = (props) => {
                     </div>
                   </div>
                 )
-              )}
+              )} */}
             </div>
           </div>
         </div>

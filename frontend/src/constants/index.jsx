@@ -1,4 +1,4 @@
-import { Approval, BarChart, Book, CollectionsBookmark, Dashboard, DeveloperBoard, Groups, Home, LocalPostOffice, People, Settings, Storage } from "@mui/icons-material";
+import { BarChart, Book, CollectionsBookmark, Dashboard, DeveloperBoard, Groups, Home, LocalPostOffice, People, Settings, Storage } from "@mui/icons-material";
 import { BiRightArrowAlt } from "react-icons/bi";
 
 export const studentLinks = [
@@ -156,21 +156,32 @@ export const facultyLinks = [
     icon: <Book />,
   },
   {
-    id: "repository",
-    link: "/faculty/course-loads/subjects",
-    title: "Offered courses",
-    icon: <LocalPostOffice />,
-  },
-  {
-    id: "approval",
-    link: "/faculty/course-loads/subjects/approval",
-    title: "Final deliverables",
-    icon: <Approval />,
-  },
-  {
     id: "setting",
     link: "/settings",
     title: "Settings",
     icon: <Settings />,
   },
 ]
+
+export const facultyAsideLinks = [
+  {
+    id: "repository",
+    link: "/deliverable/management",
+    title: "Deliverable management",
+    // icon: <LocalPostOffice />,
+  },
+  {
+    id: "groups",
+    link: "/student-groups",
+    title: "Student groups",
+    // icon: <Approval />,
+  },
+  {
+    id: "submission",
+    link: "/submissions",
+    title: "Submissions",
+    // icon: < />,
+  },
+]
+
+

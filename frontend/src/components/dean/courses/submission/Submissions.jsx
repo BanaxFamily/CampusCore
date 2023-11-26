@@ -25,7 +25,6 @@ export default function Submissions() {
 
       <Stack className="mt-10 py-4 px-1" spacing={1} direction="row">
         <Button variant={`${showApproved ? 'contained' : 'outlined'}`} onClick={() => setShowApproved(!showApproved)} className="h-12">For Review</Button>
-        {/* <Divider orientation="vertical" variant="middle" flexItem sx={{border: 1, color: "GrayText"}}/> */}
         <Button variant="outlined">Approved</Button>
       </Stack>
       <Divider />
