@@ -1,6 +1,8 @@
-﻿using CampusCore.API.Models;
+﻿using CampusCore.API.Migrations;
+using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CampusCore.API.Services
 {
@@ -9,7 +11,7 @@ namespace CampusCore.API.Services
     public interface ISubmissionService
     {
         Task<ResponseManager> CreateAsync(SubmissionAddViewModel model);
-        Task<ResponseManager> GetAllByCourseDeliverableAsync(IntIdViewModel model);
+        Task<ResponseManager> GetAllByOfferedCourseDeliverableAsync(IntIdViewModel model);
         Task<ResponseManager> GetAllByStudentAsync(StringIdViewModel model);
         Task<ResponseManager> GetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> SearchNameAsync(StringSearchViewModel model);
@@ -35,10 +37,13 @@ namespace CampusCore.API.Services
             _context = context;
 
             // Get the root directory of your application
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var goUp = Directory.GetParent(currentDirectory);
+            var goUp2 = Directory.GetParent(goUp.ToString());
+            var basePath = goUp2.ToString(); 
 
             // Combine it with the 'Uploads' directory
-            _uploadPath = Path.Combine(basePath, "Uploads");
+            _uploadPath = Path.Combine(basePath.ToString(), "Uploads");
 
             // Check if the directory exists; create it if not
             if (!Directory.Exists(_uploadPath))
@@ -48,74 +53,187 @@ namespace CampusCore.API.Services
         }
         public async Task<ResponseManager> CreateAsync(SubmissionAddViewModel model)
         {
-            
+
             if (model == null)
                 throw new NullReferenceException("Submission Model is null");
 
-            var subCount = _context.CourseDeliverableSubmissions
-                                   .Where(cds => cds.CourseDeliverableId == model.ForCourseDeliverable)
-                                   .Count();
-            if (model.File != null && model.File.Length > 0)
+            //process File and copy to path
+            if (model.File == null && model.File.Length <= 0)
             {
-                
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
-                var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                return new ErrorResponseManager
                 {
-                    await model.File.CopyToAsync(fileStream);
-                }
+                    Message = "Something wrong occured while adding the file",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Error extracting file content" }
+                };
 
+            }
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
+            var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.File.CopyToAsync(fileStream);
+            }
+            //if first submission
+            if (model.SubmissionId == null)
+            {
+                //create submission
                 var submission = new Submission
                 {
                     Title = model.Title,
                     SubmitterId = model.SubmitterId,
                     GroupId = model.GroupId,
-                    Version = $"Version {subCount}",
-                    Status = model.Status,
+                    Status = "Unapproved",
+                };
+                _context.Submissions.Add(submission);
+                var results = await _context.SaveChangesAsync();
+
+                if (results < 1 )
+                {
+                    return new ErrorResponseManager
+                    {
+                        Message = "Submission is not added",
+                        IsSuccess = false,
+                        Errors = new List<string>() { "Error creating submission and adding it to submission table in DB" }
+                    };
+                }
+                //create version 
+                var version = new Models.Version
+                {
+                    VersionNumber = 1,
                     DateSubmitted = DateTime.Now,
-                    FilePath = filePath
+                    FilePath = filePath,
+                    TargetedIssues = model.TargetedIssues
 
                 };
+                _context.Versions.Add(version);
 
+                var res = await _context.SaveChangesAsync();
 
-                _context.Submissions.Add(submission);
-                var resultS = await _context.SaveChangesAsync();
+                if (res < 1)
+                {
+                    return new ErrorResponseManager
+                    {
+                        Message = "First version is not added",
+                        IsSuccess = false,
+                        Errors = new List<string>() { "Error adding version in version table in DB" }
+                    };
+                }
 
+                //add to submission version
+                _context.SubmissionVersions.Add(new SubmissionVersion
+                {
+                    SubmissionId = submission.Id,
+                    VersionId = version.VersionId
+                });
+                var resu = await _context.SaveChangesAsync();
+                if (resu < 1)
+                {
+                    return new ErrorResponseManager
+                    {
+                        Message = "version is not added",
+                        IsSuccess = false,
+                        Errors = new List<string>() { "Error adding version in SubmissionVersion table in DB" }
+                    };
+                }
+
+                //add submission to course deliverable submission
                 var cds = new CourseDeliverableSubmission()
                 {
-                    CourseDeliverableId = model.ForCourseDeliverable,
+                    OfferedCourseDeliverableId = model.OfferedCourseDeliverableId,
                     SubmissionId = submission.Id
 
                 };
                 _context.CourseDeliverableSubmissions.Add(cds);
-
-                var resultCds = await _context.SaveChangesAsync();
-                if (resultS > 0)
+                var re = await _context.SaveChangesAsync();
+                if (re < 1)
                 {
-                    if (resultCds > 0)
+                    return new ErrorResponseManager
                     {
-                        return new ResponseManager
-                        {
-                            Message = "Submission added successfully!",
-                            IsSuccess = true
-                        };
-                    }
-                    else
-                    {
-                        return new ErrorResponseManager
-                        {
-                            Message = "Submission is not added",
-                            IsSuccess = false,
-                            Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
-                        };
-                    }
-
-
+                        Message = "Submission is not added",
+                        IsSuccess = false,
+                        Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
+                    };
                 }
             }
-                
+            else
+            {
+                //no need to create submission
+
+                //discover what version number is this version
+                var subCount = _context.SubmissionVersions
+                                   .Where(sv => sv.SubmissionId == model.SubmissionId)
+                                   .Count();
+                //create version 
+                var version = new Models.Version
+                {
+                    VersionNumber = subCount+1,
+                    DateSubmitted = DateTime.Now,
+                    FilePath = filePath,
+                    TargetedIssues = model.TargetedIssues
+
+                };
+                _context.Versions.Add(version);
+
+                var res = await _context.SaveChangesAsync();
+
+                if (res < 1)
+                {
+                    return new ErrorResponseManager
+                    {
+                        Message = "First version is not added",
+                        IsSuccess = false,
+                        Errors = new List<string>() { "Error adding version in version table in DB" }
+                    };
+                }
+
+                //add to submission version
+                _context.SubmissionVersions.Add(new SubmissionVersion
+                {
+                    SubmissionId = (int) model.SubmissionId,
+                    VersionId = version.VersionId
+                });
+                var resu = await _context.SaveChangesAsync();
+                if (resu < 1)
+                {
+                    return new ErrorResponseManager
+                    {
+                        Message = "version is not added",
+                        IsSuccess = false,
+                        Errors = new List<string>() { "Error adding version in SubmissionVersion table in DB" }
+                    };
+                }
+
+                //add submission to course deliverable submission
+                var cds = new CourseDeliverableSubmission()
+                {
+                    OfferedCourseDeliverableId = model.OfferedCourseDeliverableId,
+                    SubmissionId = (int) model.SubmissionId
+
+                };
+                _context.CourseDeliverableSubmissions.Add(cds);
+                var re = await _context.SaveChangesAsync();
+                if (re < 1)
+                {
+                    return new ErrorResponseManager
+                    {
+                        Message = "Submission is not added",
+                        IsSuccess = false,
+                        Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
+                    };
+                }
+
+                return new ResponseManager {
+                    Message = "Submission added successfully",
+                    IsSuccess = true
+                };
+            }
+            
+            
+
 
             return new ErrorResponseManager
             {
@@ -125,6 +243,7 @@ namespace CampusCore.API.Services
             };
         }
 
+        //not modified but will not use
         public async Task<ResponseManager> DeleteAsync(IntIdViewModel model)
         {
             try
@@ -181,80 +300,38 @@ namespace CampusCore.API.Services
             var studentId = model.Id;
             try
             {
-                var submissionsByStudent = await _context.Submissions
-                                                .Include(cds => cds.Group)
-                                                .Where(cds => cds.SubmitterId == studentId)
+
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds =>
+                                                            cds.Submission.SubmitterId == studentId ||
+                                                            (cds.Submission.GroupId.HasValue &&
+                                                                _context.StudentGroups.Any(sg =>
+                                                                    sg.GroupId == cds.Submission.GroupId.Value &&
+                                                                    sg.StudentId == studentId))
+                                                        )
+                                                 .Select(x => new
+                                                 {
+                                                     CourseDeliverableSubmissionId = x.Id,
+                                                     SubmissionId = x.Submission.Id,
+                                                     Submitter = x.Submission.Submitter.FullName,
+                                                     GroupName = x.Submission.Group.Name,
+                                                     Title = x.Submission.Title,
+                                                     Status = x.Submission.Status,
+                                                     DAFaculty = x.Submission.DAFaculty,
+                                                     DADean = x.Submission.DADean,
+                                                     DAPRC = x.Submission.DAPRC,
+                                                 })
                                                 .ToListAsync();
 
-                try
+
+                return new DataResponseManager
                 {
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
 
 
-                    List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
-
-                    foreach (var item in submissionsByStudent)
-                    {
-                        //to get authors
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-                        //to get course deliverable to which this submission is submitted
-                        var cdsBySubmission = _context.CourseDeliverableSubmissions
-                                                        .Include(cds => cds.Submission)
-                                                        .Include(cds => cds.CourseDeliverable)
-                                                        .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                        .Where(cd => cd.Submission.GroupId == item.GroupId || cd.Submission.SubmitterId == item.SubmitterId)
-                                                        .First();
-                        var coursedeliverable = cdsBySubmission.CourseDeliverable.Deliverable.Name;
-
-
-                        var filePath = item.FilePath;
-
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                        {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
-                        };
-
-                        var submission = new SubmissionGetAllViewModel()
-                        {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
-                        };
-                        data.Add(submission);
-                    }
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Submissions approved by dean retrieved successfully",
-                        Data = data
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submissions approved by dean",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
             }
             catch (Exception ex)
             {
@@ -267,83 +344,45 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllByCourseDeliverableAsync(IntIdViewModel model)
+        public async Task<ResponseManager> GetAllByOfferedCourseDeliverableAsync(IntIdViewModel model)
         {
-            var courseDeliverableId = model.Id;
+            var offeredCourseDeliverableId = model.Id;
             try
             {
-
-                var submissionsByCourse = await _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.Submission)
-                                                .Include(cds => cds.Submission.Group)
-                                                .Include(cds => cds.Submission.Submitter)
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.CourseDeliverableId == courseDeliverableId)
+                
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId)
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
                                                 .ToListAsync();
 
-                try
-                {
-                    var results = submissionsByCourse.Select(cds => cds.Submission);
-
-                    List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
-
-                    foreach (var item in results)
+                    if (submissions.Count() < 1)
                     {
-                        //to get authors
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-
-                        var coursedeliverable = submissionsByCourse.First().CourseDeliverable.Deliverable.Name;
-
-                        var filePath = item.FilePath;
-
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
+                        return new ResponseManager
                         {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
+                            IsSuccess = true,
+                            Message = "No submissions retrieved"
                         };
-
-                        var submission = new SubmissionGetAllViewModel()
-                        {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
-                        };
-                        data.Add(submission);
                     }
-
+                  
                     return new DataResponseManager
                     {
                         IsSuccess = true,
                         Message = "Submissions approved by dean retrieved successfully",
-                        Data = data
+                        Data = submissions
                     };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submissions approved by dean",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
+              
+                
             }
             catch (Exception ex)
             {
@@ -358,78 +397,36 @@ namespace CampusCore.API.Services
 
         public async Task<ResponseManager> GetApprovedDean(IntIdViewModel model)
         {
-            var courseDeliverable = model.Id;
+            var offeredCourseDeliverableId = model.Id;
             try
             {
-                var submissionsByCD = await _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.Submission)
-                                                .Include(cds => cds.Submission.Group)
-                                                .Include(cds => cds.Submission.Submitter)
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.CourseDeliverableId == model.Id)
+
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
+                                                              && cds.Submission.Status == "Dean Level Approved")
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
-                try
+
+
+                return new DataResponseManager
                 {
-                    var results = submissionsByCD.Select(cds => cds.Submission)
-                                                 .Where(s => s.DAFaculty != null && s.DADean != null);
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
 
-                    List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
-                    foreach (var item in results)
-                    {
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-
-                        var filePath = item.FilePath;
-
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                        {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
-                        };
-
-                        var submission = new SubmissionGetAllViewModel()
-                        {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
-                        };
-                        data.Add(submission);
-                    }
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Submissions approved by dean retrieved successfully",
-                        Data = data
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submissions approved by dean",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
             }
             catch (Exception ex)
             {
@@ -446,78 +443,36 @@ namespace CampusCore.API.Services
 
         public async Task<ResponseManager> GetApprovedFaculty(IntIdViewModel model)
         {
-            var courseDeliverable = model.Id;
+            var offeredCourseDeliverableId = model.Id;
             try
             {
-                var submissionsByCD = await _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.Submission)
-                                                .Include(cds => cds.Submission.Group)
-                                                .Include(cds => cds.Submission.Submitter)
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.CourseDeliverableId == model.Id)
+
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
+                                                              && cds.Submission.Status == "Faculty Level Approved")
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
-                try
+
+
+                return new DataResponseManager
                 {
-                    var results = submissionsByCD.Select(cds => cds.Submission)
-                                                 .Where(s => s.DAFaculty != null);
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
 
-                    List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
-                    foreach (var item in results)
-                    {
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-
-                        var filePath = item.FilePath;
-
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                        {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
-                        };
-
-                        var submission = new SubmissionGetAllViewModel()
-                        {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
-                        };
-                        data.Add(submission);
-                    }
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Submissions approved by faculty retrieved successfully",
-                        Data = data
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submissions approved by faculty",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
             }
             catch (Exception ex)
             {
@@ -528,82 +483,41 @@ namespace CampusCore.API.Services
                     Errors = new List<string> { ex.Message }
                 };
             }
+
         }
 
         public async Task<ResponseManager> GetApprovedPRC(IntIdViewModel model)
         {
-            var courseDeliverable = model.Id;
+            var offeredCourseDeliverableId = model.Id;
             try
             {
-                var submissionsByCD = await _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.Submission)
-                                                .Include(cds => cds.Submission.Group)
-                                                .Include(cds => cds.Submission.Submitter)
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable)
-                                                .Where(cds => cds.CourseDeliverableId == model.Id)
+
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
+                                                              && cds.Submission.Status == "PRC Level Approved")
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
-                try
+
+
+                return new DataResponseManager
                 {
-                    var results = submissionsByCD.Select(cds => cds.Submission)
-                                                 .Where(s => s.DAFaculty != null && s.DADean != null && s.DAPRC != null);
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
 
-                    List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
-                    foreach (var item in results)
-                    {
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-
-                        var filePath = item.FilePath;
-
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                        {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
-                        };
-
-                        var submission = new SubmissionGetAllViewModel()
-                        {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
-                        };
-                        data.Add(submission);
-                    }
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Submissions approved by PRC retrieved successfully",
-                        Data = data
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submissions approved by PRC",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
             }
             catch (Exception ex)
             {
@@ -614,81 +528,51 @@ namespace CampusCore.API.Services
                     Errors = new List<string> { ex.Message }
                 };
             }
+
         }
 
         public async Task<ResponseManager> GetByIdAsync(IntIdViewModel model)
         {
+            var courseDeliverableSubmissionId = model.Id;
             try
             {
-                var item = await _context.Submissions.FindAsync(model.Id);
+
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds => cds.Id == courseDeliverableSubmissionId)
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
+                                                .ToListAsync();
 
 
-                var members = await _context.StudentGroups
-                                            .Where(sg => sg.Id == item.GroupId)
-                                            .ToListAsync();
-                try
+                return new DataResponseManager
                 {
-                    var coursedeliverable = _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable) //include these to access deliverable name
-                                                .Where(cds => cds.SubmissionId == model.Id)
-                                                .First();
-                    var filePath = item.FilePath;
-
-                    // Open the file stream
-                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                    // Create an IFormFile instance
-                    var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                    {
-                        Headers = new HeaderDictionary(),
-                        ContentType = "application/octet-stream" // Set the content type based on your file type
-                    };
-
-                    var data = new SubmissionGetAllViewModel()
-                    {
-                        Id = item.Id,
-                        Submitter = item.Submitter.FullName,
-                        Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                        GroupName = item.Group.Name,
-                        ForCourseDeliverable = coursedeliverable.CourseDeliverable.Deliverable.Name,
-                        Title = item.Title,
-                        Status = item.Status,
-                        DAFaculty = item.DAFaculty,
-                        DADean = item.DADean,
-                        DAPRC = item.DAPRC,
-                        File = formFile,
-                        Version = item.Version,
-                        DateSubmitted = item.DateSubmitted
-                    };
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
 
 
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Submission with specified id retrieved successfully",
-                        Data = data
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submission with specified id",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
             }
             catch (Exception ex)
             {
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching submission with specified id. No assigned course deliverable.",
+                    Message = "An error occurred while fetching submissions from course deliverable submissions table",
                     Errors = new List<string> { ex.Message }
                 };
             }
+
 
 
 
@@ -696,84 +580,43 @@ namespace CampusCore.API.Services
 
         public async Task<ResponseManager> GetUnapproved(IntIdViewModel model)
         {
-            var courseDeliverable = model.Id;
+            var offeredCourseDeliverableId = model.Id;
             try
             {
-                var submissionsByCD = await _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.Submission)
-                                                .Include(cds => cds.Submission.Group)
-                                                .Include(cds => cds.Submission.Submitter)
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Where(cds => cds.CourseDeliverableId == model.Id)
+
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
+                                                        && cds.Submission.Status == "Unapproved")
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
                                                 .ToListAsync();
-                var coursedeliverable = submissionsByCD.First().CourseDeliverable.Deliverable.Name;
-                try
+
+
+                return new DataResponseManager
                 {
-                    var results = submissionsByCD.Select(cds => cds.Submission)
-                                                 .Where(s => s.DAFaculty == null && s.DADean == null && s.DAPRC == null);
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
 
-                    List<SubmissionGetAllViewModel> data = new List<SubmissionGetAllViewModel>();
 
-                    foreach (var item in results)
-                    {
-                        var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-
-                        var filePath = item.FilePath;
-
-                        // Open the file stream
-                        var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                        // Create an IFormFile instance
-                        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                        {
-                            Headers = new HeaderDictionary(),
-                            ContentType = "application/octet-stream" // Set the content type based on your file type
-                        };
-
-                        var submission = new SubmissionGetAllViewModel()
-                        {
-                            Id = item.Id,
-                            Submitter = item.Submitter.FullName,
-                            Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                            GroupName = item.Group.Name,
-                            ForCourseDeliverable = coursedeliverable,
-                            Title = item.Title,
-                            Status = item.Status,
-                            DAFaculty = item.DAFaculty,
-                            DADean = item.DADean,
-                            DAPRC = item.DAPRC,
-                            File = formFile,
-                            Version = item.Version,
-                            DateSubmitted = item.DateSubmitted
-                        };
-                        data.Add(submission);
-                    }
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Unapproved retrieved successfully",
-                        Data = data
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching unapproved submissions",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
             }
             catch (Exception ex)
             {
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching unapproved submissions from course deliverable submissions table",
+                    Message = "An error occurred while fetching submissions from course deliverable submissions table",
                     Errors = new List<string> { ex.Message }
                 };
             }
@@ -810,126 +653,47 @@ namespace CampusCore.API.Services
             };
         }
 
-        public async Task<ResponseManager> GetLatestVersion(IntIdViewModel model)
-        {
-            try
-            {
-
-                var item = _context.CourseDeliverableSubmissions
-                                      .Where(cds => cds.CourseDeliverableId == model.Id)
-                                      .OrderByDescending(s => s.Submission.DateSubmitted)
-                                      .Select(cds => cds.Submission)
-                                      .FirstOrDefault();
-                if (item == null)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "There is no latest submission",
-                        Errors = new List<string> { "No latest submission in DB" }
-                    };
-                }
-
-                var members = await _context.StudentGroups
-                                                    .Where(sg => sg.Id == item.GroupId)
-                                                    .ToListAsync();
-                try
-                {
-                    var coursedeliverable = _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.CourseDeliverable)
-                                                .Include(cds => cds.CourseDeliverable.Deliverable) //include these to access deliverable name
-                                                .Where(cds => cds.SubmissionId == model.Id)
-                                                .First();
-                    var filePath = item.FilePath;
-
-                    // Open the file stream
-                    var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-                    // Create an IFormFile instance
-                    var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-                    {
-                        Headers = new HeaderDictionary(),
-                        ContentType = "application/octet-stream" // Set the content type based on your file type
-                    };
-
-                    var data = new SubmissionGetAllViewModel()
-                    {
-                        Id = item.Id,
-                        Submitter = item.Submitter.FullName,
-                        Authors = string.Join(", ", members.Select(group => group.Student.FullName)),
-                        GroupName = item.Group.Name,
-                        ForCourseDeliverable = coursedeliverable.CourseDeliverable.Deliverable.Name,
-                        Title = item.Title,
-                        Status = item.Status,
-                        DAFaculty = item.DAFaculty,
-                        DADean = item.DADean,
-                        DAPRC = item.DAPRC,
-                        File = formFile,
-                        Version = item.Version,
-                        DateSubmitted = item.DateSubmitted
-                    };
-
-
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Submission with specified id retrieved successfully",
-                        Data = data
-                    };
-                }
-                catch (Exception ex)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "An error occurred while fetching submission with specified id",
-                        Errors = new List<string> { ex.Message }
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ErrorResponseManager
-                {
-                    IsSuccess = false,
-                    Message = "An error occurred while fetching submission with specified id. No assigned course deliverable.",
-                    Errors = new List<string> { ex.Message
-                    }
-                };
-            }
-        }
 
 
         public async Task<ResponseManager> SearchNameAsync(StringSearchViewModel model)
         {
             string searchKey = model.SearchKey;
-
+            
             try
             {
 
-                var searchResults = await _context.CourseDeliverableSubmissions
-                                                .Include(cds => cds.Submission)
-                                                .Include(cds => cds.Submission.Group)
-                                                .Include(cds => cds.Submission.Submitter)
-                                                .Include(cds => cds.CourseDeliverable)
+                var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(oc => EF.Functions.Like(oc.Submission.Title, $"%{model.SearchKey}%"))
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
                                                 .ToListAsync();
-
 
 
                 return new DataResponseManager
                 {
                     IsSuccess = true,
-                    Message = "Searched courses retrieved successfully",
-                    Data = searchResults
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
                 };
+
+
             }
             catch (Exception ex)
             {
                 return new ErrorResponseManager
                 {
                     IsSuccess = false,
-                    Message = "An error occurred while fetching searched courses",
+                    Message = "An error occurred while fetching submissions from course deliverable submissions table",
                     Errors = new List<string> { ex.Message }
                 };
             }

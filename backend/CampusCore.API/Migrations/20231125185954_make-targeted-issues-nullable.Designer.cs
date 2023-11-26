@@ -4,6 +4,7 @@ using CampusCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231125185954_make-targeted-issues-nullable")]
+    partial class maketargetedissuesnullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,7 +149,7 @@ namespace CampusCore.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("OfferedCourseDeliverableId")
+                    b.Property<int>("CourseDeliverableId")
                         .HasColumnType("int");
 
                     b.Property<int>("SubmissionId")
@@ -155,7 +157,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfferedCourseDeliverableId");
+                    b.HasIndex("CourseDeliverableId");
 
                     b.HasIndex("SubmissionId");
 
@@ -955,9 +957,9 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.CourseDeliverableSubmission", b =>
                 {
-                    b.HasOne("CampusCore.API.Models.OfferedCourseDeliverable", "OfferedCourseDeliverable")
+                    b.HasOne("CampusCore.API.Models.CourseDeliverable", "CourseDeliverable")
                         .WithMany()
-                        .HasForeignKey("OfferedCourseDeliverableId")
+                        .HasForeignKey("CourseDeliverableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -967,7 +969,7 @@ namespace CampusCore.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OfferedCourseDeliverable");
+                    b.Navigation("CourseDeliverable");
 
                     b.Navigation("Submission");
                 });
