@@ -29,6 +29,7 @@ namespace CampusCore.API.Services
                 var result = await _context.OfferedCourseDeliverables
                                             .Select( a => new
                                             {
+                                                OfferedCourseDeliverableId = a.Id,
                                                 DeliverableId = a.DeliverableId,
                                                 DeliverableTitle = a.Deliverable.Name,
                                                 DeliverableInstruction = a.Deliverable.Instruction,

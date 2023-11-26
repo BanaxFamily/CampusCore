@@ -23,6 +23,8 @@ namespace CampusCore.API.Models
         public DbSet<Deliverable> Deliverables { get; set; }
         public DbSet<CourseDeliverableSubmission> CourseDeliverableSubmissions { get; set; }
         public DbSet<Submission> Submissions { get; set; }
+        public DbSet<Version> Versions { get; set; }
+        public DbSet<SubmissionVersion> SubmissionVersions { get; set; }
         public DbSet<SubmissionIssue> SubmissionIssues { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<IssueComment> IssueComments { get; set; }
@@ -115,6 +117,17 @@ namespace CampusCore.API.Models
                 .HasForeignKey(ii => ii.IssueId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<SubmissionVersion>()
+                .HasOne(si => si.Submission)
+                .WithMany()
+                .HasForeignKey(si => si.SubmissionId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<SubmissionVersion>()
+                .HasOne(ii => ii.Version)
+                .WithMany()
+                .HasForeignKey(ii => ii.VersionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Issue>()
                 .HasOne(i => i.User)
                 .WithMany()
@@ -164,6 +177,7 @@ namespace CampusCore.API.Models
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CampusCoreDB;Trusted_Connection=True;MultipleActiveResultSets=true");
+                
             }
         }
     }

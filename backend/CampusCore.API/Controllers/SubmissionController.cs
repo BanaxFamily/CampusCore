@@ -22,7 +22,7 @@ namespace CampusCore.API.Controllers
         //CreateAsync(SubmissionAddViewModel model);
         [HttpPost("create")]
         //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> CreateAsync(SubmissionAddViewModel model)
+        public async Task<IActionResult> CreateAsync([FromForm] SubmissionAddViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -38,13 +38,13 @@ namespace CampusCore.API.Controllers
 
         //        POST
         //        GetAllByCourseAsync(IntIdViewModel model);
-        [HttpPost("getAllByCourse")]
+        [HttpPost("getAllByOfferedCourseDeliverable")]
         ////Authorize(Roles = "Dean,Faculty")]
         public async Task<IActionResult> GetAllByCourseAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.GetAllByCourseDeliverableAsync(model);
+                var result = await _submissionService.GetAllByOfferedCourseDeliverableAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
