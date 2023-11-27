@@ -30,7 +30,7 @@ export default function SpecificDeliverableAddSubmission({ deliverable }) {
                             </Stack>
 
                             <Stack className="my-4">
-                                <Button variant="outlined" onClick={() => setOpenSubmission(true)} className="  flex self-end">Add submission</Button>
+                                <Button variant="outlined" size="small" onClick={() => setOpenSubmission(true)} className="  flex self-end">Add submission</Button>
                             </Stack>
                         </Stack>
                     )

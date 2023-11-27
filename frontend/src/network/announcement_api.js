@@ -27,3 +27,13 @@ export async function getAnnouncementByCourse(data){
   })
   return response;
 }
+export async function getSpecificCourse(data){
+  const response = await fetchData("api/announcement/getById", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  })
+  return response;
+}

@@ -85,7 +85,6 @@ export default function App() {
               </Route>
               <Route path={`/issues`} element={<Issues />} />
               <Route path={`/timetable`} element={<Timetable />} />
-              {/* <Route path={`/settings`} element={<UserSetting />} /> */}
             </>
           )}
           {userRole === "Admin" && (
