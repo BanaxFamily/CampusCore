@@ -34,7 +34,6 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
 
   async function onSubmit(credentials) {
     const response = await OfferCourse.addOfferCourse(credentials);
-    console.log(credentials)
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {

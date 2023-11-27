@@ -6,3 +6,34 @@ export async function getAnnouncement() {
   });
   return response;
 }
+
+export async function addAnnouncement(data){
+  const response = await fetchData("api/announcement/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  })
+  return response;
+}
+export async function getAnnouncementByCourse(data){
+  const response = await fetchData("api/announcement/getByOfferedCourse", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  })
+  return response;
+}
+export async function getSpecificCourse(data){
+  const response = await fetchData("api/announcement/getById", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  })
+  return response;
+}

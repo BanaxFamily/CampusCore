@@ -67,13 +67,15 @@ builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>(
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
 builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
+builder.Services.AddScoped<IOfferedCourseDeliverableService, OfferedCourseDeliverableService>();
 builder.Services.AddScoped<IAnnouncementCommentService, AnnouncementCommentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
-builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
+//builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+builder.Services.AddScoped<IVersionService, VersionService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 
 

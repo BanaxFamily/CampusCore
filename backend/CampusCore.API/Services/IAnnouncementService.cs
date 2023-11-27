@@ -12,6 +12,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateAnnouncementAsync(AnnouncementUpdateViewModel model);
         //Task<ResponseManager> GetByIdAnnouncementAsync(int id);
         Task<ResponseManager> GetByIdAnnouncementAsync(IntIdViewModel model);
+        Task<ResponseManager> GetByOfferedCourseAnnouncementAsync(IntIdViewModel model);
 
     }
 
@@ -34,7 +35,7 @@ namespace CampusCore.API.Services
                 OfferedCourseId = model. OfferedCourseId,
                 Title = model.Title,
                 Content = model.Content,
-                CreatedAt = model.CreatedAt,
+                CreatedAt = DateTime.Now,
 
             };
 
@@ -124,6 +125,33 @@ namespace CampusCore.API.Services
             }
         }
 
+        public async Task<ResponseManager> GetByOfferedCourseAnnouncementAsync(IntIdViewModel model)
+        {
+            try
+            {
+                var result = await _context.Announcements
+                                            .Include(a => a.User)
+                                            .Include(a => a.OfferedCourse)
+                                            .Where(a => a.OfferedCourseId == model.Id)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Announcements retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching announcements",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
 
 
         public async Task<ResponseManager> DeleteAnnouncementAsync(IntIdViewModel model)

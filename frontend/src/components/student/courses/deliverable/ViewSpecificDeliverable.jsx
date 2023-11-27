@@ -1,22 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { MoreHoriz } from "@mui/icons-material";
-import { Alert, CircularProgress, Divider, IconButton, LinearProgress, Stack, Typography } from "@mui/material";
+import { Alert, CircularProgress, Divider, LinearProgress, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import * as Deliverable from "../../../../network/deliverable";
+import * as OfferedCourseDeliverable from "../../../../network/offeredCourseDeliverable_api";
 import * as Submission from "../../../../network/submission_api";
 import { useAuth } from "../../../../utils/AuthContext";
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
-import PdfViewer from "./PdfViewer";
+// import PdfViewer from "./PdfViewer";
 import SpecificDeliverableAddSubmission from "./SpecificDeliverableAddSubmission";
 
 export default function ViewSpecificDeliverable() {
-    let { courseId, deliverableName, deliverableId, courseDeliverabelId } = useParams()
+    let { offeredCourseId, deliverableName, offeredCourseDeliverableId } = useParams()
     const { userId } = useAuth()
     // const navigate = useNavigate()
     const [deliverable, setDeliverable] = useState([])
+    // const [openSubmission, setOpenSubmission] = useState(false);
+
     // const [pdfFile, setPdfFile] = useState(null);
     const [submittedFiles, setSubmittedFiles] = useState([])
     const [loading, setLoading] = useState(true)
@@ -24,11 +26,11 @@ export default function ViewSpecificDeliverable() {
     const breadCrumbUrl = [
         {
             url: '../../',
-            name: 'List of offered courses',
+            name: 'Enrolled courses',
         },
         {
             url: '../',
-            name: `Submissions`
+            name: `Information`
         },
         {
             name: `View`
@@ -38,9 +40,10 @@ export default function ViewSpecificDeliverable() {
     useEffect(() => {
         async function getSpecificDeliverable() {
             try {
-                const response = await Deliverable.getOneDeliverable({ 'id': deliverableId })
+                const response = await OfferedCourseDeliverable.getSingleOfferedCourseDeliverable({ 'id': offeredCourseDeliverableId })
                 if (response.isSuccess) {
                     setDeliverable(response.data)
+                    console.log(response.data)
                     return
                 }
             } catch (error) {
@@ -54,15 +57,14 @@ export default function ViewSpecificDeliverable() {
         async function getSubmittedFiles() {
 
             const data = {
-                "courseDeliverableId": courseDeliverabelId,
+                "courseDeliverableId": offeredCourseDeliverableId,
                 "userId": userId,
-                "offeredCourseId": courseId
+                "offeredCourseId": offeredCourseId
             }
             try {
                 const response = await Submission.getSubmissionList(data)
                 if (response.isSuccess) {
                     setSubmittedFiles(response.data)
-                    console.log(response.data)
                     return
                 }
             } catch (error) {
@@ -94,6 +96,7 @@ export default function ViewSpecificDeliverable() {
                         !loading && !error &&
                         <>
                             <SpecificDeliverableAddSubmission deliverable={deliverable} />
+
                         </>
                     }
                 </Stack>
@@ -127,6 +130,6 @@ export default function ViewSpecificDeliverable() {
                     </Stack>
                 </Stack>
             </Stack>
-        </Stack>
+        </Stack >
     )
 }

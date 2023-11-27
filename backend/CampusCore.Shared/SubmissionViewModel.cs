@@ -7,13 +7,14 @@ namespace CampusCore.Shared
     
         public class SubmissionAddViewModel
         {
+            public int? SubmissionId { get; set; }
             public string Title { get; set; }
-            public string Status { get; set; } = "Unapproved";
             public string SubmitterId { get; set; } 
             public int? GroupId { get; set; } = null;
-            public int ForCourseDeliverable { get; set; }
-            public IFormFile? File { get; set; } = null;
-        }
+            public int OfferedCourseDeliverableId { get; set; }
+            public IFormFile File { get; set; }
+            public string? TargetedIssues { get; set; }
+    }
         public class SubmissionGetAllViewModel
         {
             public int SubmissionId { get; set; }
@@ -24,8 +25,7 @@ namespace CampusCore.Shared
             public string Submitter { get; set; }
             public string? GroupName { get; set; }
             public string Authors { get; set; }
-            public string File { get; set; }
-            public string Version { get; set; }
+            public IFormFile File { get; set; }
             public string Status { get; set; }
             public DateTime DateSubmitted { get; set; }
     }
