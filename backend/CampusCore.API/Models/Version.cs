@@ -17,7 +17,7 @@
         public DateTime DateSubmitted { get; set; }
         public string FileB64 { get; set; }
         public string FileType { get; set; } // File type to be available: PDF (for all documents), Image, MP4 
-        public string? TargetedIssues { get; set; }
+        public int[] TargetedIssues { get; set; }
     }
 
 }

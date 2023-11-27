@@ -14,7 +14,7 @@ namespace CampusCore.Shared
             public int OfferedCourseDeliverableId { get; set; }
             public IFormFile File { get; set; }
             public string FileType { get; set; }
-            public string? TargetedIssues { get; set; }
+            public int[] TargetedIssues { get; set; }
     }
         public class SubmissionGetAllViewModel
         {

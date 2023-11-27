@@ -52,10 +52,12 @@ namespace CampusCore.API.Services
                         DateSubmitted = item.Version.DateSubmitted,
                         FileB64 = fileB64,
                         FileType = item.Version.FileType,
-                        TargetedIssues = item.Version.TargetedIssues.Split(',')
-                                       .Select(int.Parse)
-                                       .ToArray()
-                });
+                        TargetedIssues = item.Version.TargetedIssues != null
+                                            ? item.Version.TargetedIssues.Split(',')
+                                                                           .Select(int.Parse)
+                                                                           .ToArray()
+                                            : Array.Empty<int>()
+                    });
                 }
                 
                 return new DataResponseManager
@@ -107,10 +109,12 @@ namespace CampusCore.API.Services
                         DateSubmitted = item.Version.DateSubmitted,
                         FileB64 = fileB64,
                         FileType = item.Version.FileType,
-                        TargetedIssues = item.Version.TargetedIssues.Split(',')
-                                       .Select(int.Parse)
-                                       .ToArray()
-                    });
+                        TargetedIssues = item.Version.TargetedIssues != null
+                                            ? item.Version.TargetedIssues.Split(',')
+                                                                           .Select(int.Parse)
+                                                                           .ToArray()
+                                            : Array.Empty<int>()
+                });
                 }
                 
                 
@@ -118,7 +122,7 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = true,
                     Message = $"Submissions for {result.First().Submission.Title} retrieved successfully",
-                    Data = result
+                    Data = versions
                 };
             }
             catch (Exception ex)
@@ -156,9 +160,11 @@ namespace CampusCore.API.Services
                     DateSubmitted = item.DateSubmitted,
                     FileB64 = fileB64,
                     FileType = item.FileType,
-                    TargetedIssues = item.TargetedIssues.Split(',')
-                                       .Select(int.Parse)
-                                       .ToArray()
+                    TargetedIssues = item.TargetedIssues != null
+                                            ? item.TargetedIssues.Split(',')
+                                                                           .Select(int.Parse)
+                                                                           .ToArray()
+                                            : Array.Empty<int>()
                 };
                 return new DataResponseManager
                 {
@@ -183,18 +189,33 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.SubmissionVersions
+                var item = await _context.SubmissionVersions
                                             .Include(s => s.Version)
                                             .Include(s => s.Submission)
                                             .Where(s => s.SubmissionId == model.Id)
                                             .OrderByDescending(s => s.Version.DateSubmitted)
                                             .FirstOrDefaultAsync();
 
+                    byte[] fileBytes = File.ReadAllBytes(item.Version.FilePath);
+                    var fileB64 = Convert.ToBase64String(fileBytes);
+                    var version = new VersionViewModel
+                    {
+                        VersionId = item.VersionId,
+                        VersionNumber = item.Version.VersionNumber,
+                        DateSubmitted = item.Version.DateSubmitted,
+                        FileB64 = fileB64,
+                        FileType = item.Version.FileType,
+                        TargetedIssues = item.Version.TargetedIssues != null
+                                                ? item.Version.TargetedIssues.Split(',')
+                                                                               .Select(int.Parse)
+                                                                               .ToArray()
+                                                : Array.Empty<int>()
+                    };
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = $"Latest version for retrieved successfully",
-                    Data = result
+                    Data = version
                 };
             }
             catch (Exception ex)
