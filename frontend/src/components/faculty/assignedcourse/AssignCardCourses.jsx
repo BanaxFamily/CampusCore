@@ -1,7 +1,10 @@
 import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-export default function CardCourses({ data }) {
+export default function AssignCardCourses({ data }) {
+
+  useEffect(() => {console.log(data)},[])
 
   return (
 
@@ -11,7 +14,7 @@ export default function CardCourses({ data }) {
         <Card sx={{ maxWidth: 'auto' , width: '100%', height: '10rem', margin: 'auto'}} >
           <CardActionArea>
             <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography gutterBottom variant="h6" className='!font-semibold tracking-wide' component="div">
                 {item.course.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -20,7 +23,7 @@ export default function CardCourses({ data }) {
             </CardContent>
           </CardActionArea>
           <CardActions sx={{justifyContent: 'flex-end'}}>
-            <Link to={`submission`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
+            <Link to={`offered-course/${item.course.name}/${item.id}`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
               Open
             </Link>
           </CardActions>

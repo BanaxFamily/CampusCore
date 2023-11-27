@@ -52,7 +52,7 @@ export default function BasicTable({ courseOffered }) {
               <Button onClick={() => deleteConfirmation(course.id)}><DeleteForever className="text-red-500 hover:text-red-300"/></Button>
             </TableCell>
             <TableCell align="center">
-              <NavLink to={`${course.course.name}/${course.course.id}/enrolled-students`} ><Button size="small" className="hover:text-blue-300">View</Button></NavLink>
+              <NavLink to={`${course.course.name}/${course.id}/enrolled-students`} ><Button size="small" className="hover:text-blue-300">View</Button></NavLink>
             </TableCell>
           </TableRow>
         ))}
