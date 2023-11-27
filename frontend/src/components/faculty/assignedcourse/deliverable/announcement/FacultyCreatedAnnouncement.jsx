@@ -22,12 +22,10 @@ export default function FacultyCreatedAnnouncement() {
         announcement.map((data, index) => (
             <Stack key={index}>
                 <Typography variant="subtitle1" className="!text-[13px] !tracking-wide" component={'h1'}> Title : {data.title} </Typography>
-                <Stack className="mt-2 border border-gray-400 !h-32" paddingX={3}>
+                <Stack className="mt-2 border border-gray-400 !h-26 overflow-y-auto" paddingX={3} >
                     <Typography fontSize={'small'} className="py-4"> {data.content} </Typography>
                 </Stack>
-                {/* <Stack className=""> */}
-                    <Typography variant="subtitle2" className="!text-sm flex self-end"> Posted: {data.createdAt} </Typography>
-                {/* </Stack> */}
+                <Typography variant="subtitle2" className="!text-sm flex self-end"> Posted: {data.createdAt} </Typography>
             </Stack>
         ))
     )

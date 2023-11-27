@@ -43,6 +43,7 @@ import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
 import FacultyDeliverable from "./components/faculty/assignedcourse/deliverable/FacultyDeliverable";
+import ViewSpecificAnnouncement from "./components/student/courses/announcement/ViewSpecificAnnouncement";
 
 
 export default function App() {
@@ -73,13 +74,13 @@ export default function App() {
               <Route path={`/research`} element={<ResearchRepo />} />
               <Route path={`/course/*`} element={<LayoutCourse />}>
                 <Route index element={<CourseStudent />} />
-                <Route path={`deliverable/:courseName/:courseId/*`} element={<LayoutCourse />} >
+                <Route path={`information/:courseName/:offeredCourseId/*`} element={<LayoutCourse />} >
                   <Route index element={<DeliverableWrapper />} />
-                  <Route path="view/:deliverableName/:deliverableId/:courseDeliverabelId/*" element={<LayoutCourse />} >
+                  <Route path="announcements/view/:announcementId" element={< ViewSpecificAnnouncement/>} />
+                  <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<LayoutCourse />} >
                     <Route index element={<ViewSpecificDeliverable />} />
                     <Route path=":filePath" element={<PdfViewer />} />
                   </Route>
-
                 </Route>
               </Route>
               <Route path={`/issues`} element={<Issues />} />

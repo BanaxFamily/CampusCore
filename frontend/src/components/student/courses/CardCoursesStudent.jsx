@@ -35,7 +35,7 @@ export default function CardCoursesStudent({ data }) {
             </CardActionArea>
           </Link>
           <CardActions sx={{ justifyContent: 'flex-end' }}>
-            <Link to={`deliverable/${course.offeredCourse.course.name}/${course.offeredCourse.course.id}`} size="small" color="primary" className=' text-blue-500 p-2 hover:text-mainBlueColor'>
+            <Link to={`information/${course.offeredCourse.course.name}/${course.offeredCourse.id}`} size="small" color="primary" className=' text-blue-500 p-2 hover:text-mainBlueColor'>
               Open
             </Link>
           </CardActions>

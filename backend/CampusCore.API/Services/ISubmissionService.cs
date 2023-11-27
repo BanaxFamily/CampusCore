@@ -1,7 +1,6 @@
 ﻿using CampusCore.API.Migrations;
 using CampusCore.API.Models;
 using CampusCore.Shared;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -31,19 +30,17 @@ namespace CampusCore.API.Services
     public class SubmissionService : ISubmissionService
     {
         private AppDbContext _context;
-        private UserManager<User> _userManager;
         private string _uploadPath;
 
-        public SubmissionService(AppDbContext context, UserManager<User> userManager)
+        public SubmissionService(AppDbContext context)
         {
             _context = context;
-            _userManager = userManager;
 
             // Get the root directory of your application
             var currentDirectory = Directory.GetCurrentDirectory();
             var goUp = Directory.GetParent(currentDirectory);
             var goUp2 = Directory.GetParent(goUp.ToString());
-            var basePath = goUp2.ToString(); 
+            var basePath = goUp2.ToString();
 
             // Combine it with the 'Uploads' directory
             _uploadPath = Path.Combine(basePath.ToString(), "Uploads");
@@ -94,7 +91,7 @@ namespace CampusCore.API.Services
                 _context.Submissions.Add(submission);
                 var results = await _context.SaveChangesAsync();
 
-                if (results < 1 )
+                if (results < 1)
                 {
                     return new ErrorResponseManager
                     {
@@ -173,7 +170,7 @@ namespace CampusCore.API.Services
                 //create version 
                 var version = new Models.Version
                 {
-                    VersionNumber = subCount+1,
+                    VersionNumber = subCount + 1,
                     DateSubmitted = DateTime.Now,
                     FilePath = filePath,
                     TargetedIssues = model.TargetedIssues
@@ -196,7 +193,7 @@ namespace CampusCore.API.Services
                 //add to submission version
                 _context.SubmissionVersions.Add(new SubmissionVersion
                 {
-                    SubmissionId = (int) model.SubmissionId,
+                    SubmissionId = (int)model.SubmissionId,
                     VersionId = version.VersionId
                 });
                 var resu = await _context.SaveChangesAsync();
@@ -214,7 +211,7 @@ namespace CampusCore.API.Services
                 var cds = new CourseDeliverableSubmission()
                 {
                     OfferedCourseDeliverableId = model.OfferedCourseDeliverableId,
-                    SubmissionId = (int) model.SubmissionId
+                    SubmissionId = (int)model.SubmissionId
 
                 };
                 _context.CourseDeliverableSubmissions.Add(cds);
@@ -229,13 +226,14 @@ namespace CampusCore.API.Services
                     };
                 }
 
-                return new ResponseManager {
+                return new ResponseManager
+                {
                     Message = "Submission added successfully",
                     IsSuccess = true
                 };
             }
-            
-            
+
+
 
 
             return new ErrorResponseManager
@@ -298,19 +296,9 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model)
+        public async Task<ResponseManager> GetAllByStudentAsync(StringIdViewModel model)
         {
-          
-            var deliverableId = model.CourseDeliverableId;
-
-            
-                var studentGroup = _context.StudentGroups
-                                       .Where(sg => sg.StudentId == model.UserId && sg.Group.OfferedCourseId == model.OfferedCourseId)
-                                       .FirstOrDefault();
-            
-            
-                                       
-
+            var studentId = model.Id;
             try
             {
 
@@ -362,7 +350,7 @@ namespace CampusCore.API.Services
             var offeredCourseDeliverableId = model.Id;
             try
             {
-                
+
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId)
                                                 .Select(x => new
@@ -379,23 +367,23 @@ namespace CampusCore.API.Services
                                                 })
                                                 .ToListAsync();
 
-                    if (submissions.Count() < 1)
-                    {
-                        return new ResponseManager
-                        {
-                            IsSuccess = true,
-                            Message = "No submissions retrieved"
-                        };
-                    }
-                  
-                    return new DataResponseManager
+                if (submissions.Count() < 1)
+                {
+                    return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "Submissions approved by dean retrieved successfully",
-                        Data = submissions
+                        Message = "No submissions retrieved"
                     };
-              
-                
+                }
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
+
+
             }
             catch (Exception ex)
             {
@@ -671,7 +659,7 @@ namespace CampusCore.API.Services
         public async Task<ResponseManager> SearchNameAsync(StringSearchViewModel model)
         {
             string searchKey = model.SearchKey;
-            
+
             try
             {
 

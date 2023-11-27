@@ -24,7 +24,6 @@ namespace CampusCore.API.Controllers
         //Authorize(Roles = "Dean")]
         public async Task<IActionResult> CreateAsync([FromForm] SubmissionAddViewModel model)
         {
-            var models = model;
             if (ModelState.IsValid)
             {
                 var result = await _submissionService.CreateAsync(model);
@@ -41,7 +40,7 @@ namespace CampusCore.API.Controllers
         //        GetAllByCourseAsync(IntIdViewModel model);
         [HttpPost("getAllByOfferedCourseDeliverable")]
         ////Authorize(Roles = "Dean,Faculty")]
-        public async Task<IActionResult> GetAllByCourseAsync(GetSubmissionsByDeliverableViewModel model)
+        public async Task<IActionResult> GetAllByCourseAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -55,10 +54,11 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        
+        //        POST
+        //        GetAllByStudentAsync(StringIdViewModel model);
         [HttpPost("getAllByStudent")]
         ////Authorize(Roles = "Dean,Faculty")]
-        public async Task<IActionResult> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model)
+        public async Task<IActionResult> GetAllByStudentAsync(StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {

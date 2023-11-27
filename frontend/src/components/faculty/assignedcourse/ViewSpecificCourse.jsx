@@ -34,7 +34,7 @@ export default function ViewSpecificCourse() {
                         <Stack className="w-full " direction={'row'}>
                             <FacultyAnnouncement/>
                         </Stack>
-                        <Stack className="my-4 w-[30%]">
+                        <Stack className="border-l my-4 w-[30%]">
                             <SpecificCourseLinks />
                         </Stack>
                     </Stack>

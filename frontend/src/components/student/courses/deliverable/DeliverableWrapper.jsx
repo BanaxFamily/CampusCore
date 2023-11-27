@@ -2,7 +2,7 @@
 import { Alert, Divider, LinearProgress, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import * as CourseDeliverable from '../../../../network/courseDeliverable_api';
+import * as OfferedCourseDeliverable from '../../../../network/offeredCourseDeliverable_api';
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
@@ -11,26 +11,27 @@ import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import StudentAnnouncementCourse from "../announcement/StudentAnnouncementCourse";
 
 export default function DeliverableWrapper() {
-  let { courseName, courseId } = useParams()
+  let { courseName, offeredCourseId } = useParams()
   const [deliverable, setDeliverables] = useState([])
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const breadCrumbUrl = [
     {
       url: '../',
-      name: 'List of offered courses',
+      name: 'Enrolled courses',
     },
     {
-      name: `Submissions`
+      name: `Information`
     }
   ]
 
   useEffect(() => {
     async function showListOfDeliverables() {
       try {
-        const response = await CourseDeliverable.getCourseDeliverable({ 'id': courseId })
+        const response = await OfferedCourseDeliverable.getFacultyOfferedCourseDeliverables({ 'id': offeredCourseId })
         if (response.isSuccess) {
           setDeliverables(response.data)
           return
@@ -53,15 +54,19 @@ export default function DeliverableWrapper() {
       <Stack className="my-4">
         <Divider className="!bg-black" />
       </Stack>
-      <DashBoardHeading title={`Deliverables for ${courseName}`} />
+      <DashBoardHeading title={`Informations for ${courseName}`} />
       {loading && <LinearProgress />}
       {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
+
+
       <Stack className="!flex-row">
-        <Stack paddingY={4} className="!px-10 w-full">
+        <Stack paddingY={4} className="!px-10 w-full gap-4">
+          <StudentAnnouncementCourse />
+          <Divider/>
           {
             !loading && !error &&
             <>
-              <Stack className="w-full rounded-md py-10">
+              <Stack className="w-full rounded-md">
 
                 {
                   deliverable.length > 0 ? (
