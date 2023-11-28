@@ -63,6 +63,22 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
+        //api/announcement/getByUser
+        [HttpPost("getByUser")]
+        public async Task<IActionResult> GetAllByUserAsync(AnnouncementGetAllModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _announcementService.GetAllByUserAnnouncementAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
         // /api/announcement/viewList
         //insert method here
         [HttpGet("viewList")]
