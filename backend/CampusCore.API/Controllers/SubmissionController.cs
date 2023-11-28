@@ -12,10 +12,12 @@ namespace CampusCore.API.Controllers
     public class SubmissionController : Controller
     {
         private ISubmissionService _submissionService;
+        private IVersionService _versionService;
 
-        public SubmissionController(ISubmissionService submissionService)
+        public SubmissionController(ISubmissionService submissionService, IVersionService versionService)
         {
             _submissionService = submissionService;
+            _versionService = versionService;
         }
 
         //POST
@@ -234,6 +236,54 @@ namespace CampusCore.API.Controllers
                 return BadRequest(result);
             }
             return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+
+        [HttpPost("getAllSubmissionVersions")]
+        //Authorize(Roles = "Dean,Faculty,Student")]
+        public async Task<IActionResult> GetAllSubmissionVersionsAsync(IntIdViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _versionService.GetAllSubmissionVersionsAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+        [HttpPost("getVersionById")]
+        //Authorize(Roles = "Dean,Faculty,Student")]
+        public async Task<IActionResult> GetVersionById(IntIdViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _versionService.GetByIdAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+        [HttpGet("getAllVersions")]
+        //Authorize(Roles = "Dean,Faculty,Student")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _versionService.GetAllAsync();
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
         }
 
 

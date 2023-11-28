@@ -543,4 +543,49 @@ public class UserService : IUserService
             };
         }
     }
+
+
+
+    //public async Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model)
+    //{
+    //    try
+    //    {
+    //        var user = await _userManager.FindByIdAsync(model.Id);
+
+    //        if (user == null)
+    //        {
+    //            return new ErrorResponseManager
+    //            {
+    //                IsSuccess = false,
+    //                Message = "user not found",
+    //                Errors = new List<string> { "user with the specified ID does not exist" }
+
+    //            };
+    //        }
+
+    //        // Update the user properties from the model
+    //        user.Email = model.Email;
+    //        user.PhoneNumber = model.PhoneNumber;
+
+
+
+    //        // Save changes to the database
+    //        await _userManager.UpdateAsync(user);
+
+    //        return new ResponseManager
+    //        {
+    //            IsSuccess = true,
+    //            Message = "user updated successfully"
+    //        };
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return new ErrorResponseManager
+    //        {
+    //            IsSuccess = false,
+    //            Message = "An error occurred while updating the user",
+    //            Errors = new List<string> { ex.Message }
+    //        };
+    //    }
+    //}
 }

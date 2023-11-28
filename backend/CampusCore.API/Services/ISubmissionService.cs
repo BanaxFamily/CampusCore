@@ -3,6 +3,7 @@ using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 
 namespace CampusCore.API.Services
 {
@@ -40,7 +41,7 @@ namespace CampusCore.API.Services
             var currentDirectory = Directory.GetCurrentDirectory();
             var goUp = Directory.GetParent(currentDirectory);
             var goUp2 = Directory.GetParent(goUp.ToString());
-            var basePath = goUp2.ToString(); 
+            var basePath = goUp2.ToString();
 
             // Combine it with the 'Uploads' directory
             _uploadPath = Path.Combine(basePath.ToString(), "Uploads");
@@ -53,194 +54,204 @@ namespace CampusCore.API.Services
         }
         public async Task<ResponseManager> CreateAsync(SubmissionAddViewModel model)
         {
-
-            if (model == null)
-                throw new NullReferenceException("Submission Model is null");
-
-            //process File and copy to path
-            if (model.File == null && model.File.Length <= 0)
+            try
             {
+                if (model == null)
+                    throw new NullReferenceException("Submission Model is null");
 
-
-                return new ErrorResponseManager
+                //process File and copy to path
+                if (model.File == null && model.File.Length <= 0)
                 {
-                    Message = "Something wrong occured while adding the file",
-                    IsSuccess = false,
-                    Errors = new List<string>() { "Error extracting file content" }
-                };
 
-            }
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
-            var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
 
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.File.CopyToAsync(fileStream);
-            }
-            //if first submission
-            if (model.SubmissionId == null)
-            {
-                //create submission
-                var submission = new Submission
-                {
-                    Title = model.Title,
-                    SubmitterId = model.SubmitterId,
-                    GroupId = model.GroupId,
-                    Status = "Unapproved",
-                };
-                _context.Submissions.Add(submission);
-                var results = await _context.SaveChangesAsync();
-
-                if (results < 1 )
-                {
                     return new ErrorResponseManager
                     {
-                        Message = "Submission is not added",
+                        Message = "Something wrong occured while adding the file",
                         IsSuccess = false,
-                        Errors = new List<string>() { "Error creating submission and adding it to submission table in DB" }
+                        Errors = new List<string>() { "Error extracting file content" }
                     };
+
                 }
-                //create version 
-                var version = new Models.Version
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
+                var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    VersionNumber = 1,
-                    DateSubmitted = DateTime.Now,
-                    FilePath = filePath,
-                    TargetedIssues = model.TargetedIssues
-
-                };
-                _context.Versions.Add(version);
-
-                var res = await _context.SaveChangesAsync();
-
-                if (res < 1)
+                    await model.File.CopyToAsync(fileStream);
+                }
+                //if first submission
+                if (model.SubmissionId == null)
                 {
-                    return new ErrorResponseManager
+                    //create submission
+                    var submission = new Submission
                     {
-                        Message = "First version is not added",
-                        IsSuccess = false,
-                        Errors = new List<string>() { "Error adding version in version table in DB" }
+                        Title = model.Title,
+                        SubmitterId = model.SubmitterId,
+                        GroupId = model.GroupId,
+                        Status = "Unapproved",
                     };
-                }
+                    _context.Submissions.Add(submission);
+                    var results = await _context.SaveChangesAsync();
 
-                //add to submission version
-                _context.SubmissionVersions.Add(new SubmissionVersion
-                {
-                    SubmissionId = submission.Id,
-                    VersionId = version.VersionId
-                });
-                var resu = await _context.SaveChangesAsync();
-                if (resu < 1)
-                {
-                    return new ErrorResponseManager
+                    if (results < 1)
                     {
-                        Message = "version is not added",
-                        IsSuccess = false,
-                        Errors = new List<string>() { "Error adding version in SubmissionVersion table in DB" }
-                    };
-                }
-
-                //add submission to course deliverable submission
-                var cds = new CourseDeliverableSubmission()
-                {
-                    OfferedCourseDeliverableId = model.OfferedCourseDeliverableId,
-                    SubmissionId = submission.Id
-
-                };
-                _context.CourseDeliverableSubmissions.Add(cds);
-                var re = await _context.SaveChangesAsync();
-                if (re < 1)
-                {
-                    return new ErrorResponseManager
+                        return new ErrorResponseManager
+                        {
+                            Message = "Submission is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error creating submission and adding it to submission table in DB" }
+                        };
+                    }
+                    //create version 
+                    var version = new Models.Version
                     {
-                        Message = "Submission is not added",
-                        IsSuccess = false,
-                        Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
+                        VersionNumber = 1,
+                        DateSubmitted = DateTime.Now,
+                        FileType = model.FileType,
+                        FilePath = filePath,
+                        TargetedIssues = string.Join(",", model.TargetedIssues)//concat issue targets to store in one field
+
                     };
-                }
-            }
-            else
-            {
-                //no need to create submission
+                    _context.Versions.Add(version);
 
-                //discover what version number is this version
-                var subCount = _context.SubmissionVersions
-                                   .Where(sv => sv.SubmissionId == model.SubmissionId)
-                                   .Count();
-                //create version 
-                var version = new Models.Version
-                {
-                    VersionNumber = subCount+1,
-                    DateSubmitted = DateTime.Now,
-                    FilePath = filePath,
-                    TargetedIssues = model.TargetedIssues
+                    var res = await _context.SaveChangesAsync();
 
-                };
-                _context.Versions.Add(version);
-
-                var res = await _context.SaveChangesAsync();
-
-                if (res < 1)
-                {
-                    return new ErrorResponseManager
+                    if (res < 1)
                     {
-                        Message = "First version is not added",
-                        IsSuccess = false,
-                        Errors = new List<string>() { "Error adding version in version table in DB" }
-                    };
-                }
+                        return new ErrorResponseManager
+                        {
+                            Message = "First version is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error adding version in version table in DB" }
+                        };
+                    }
 
-                //add to submission version
-                _context.SubmissionVersions.Add(new SubmissionVersion
-                {
-                    SubmissionId = (int) model.SubmissionId,
-                    VersionId = version.VersionId
-                });
-                var resu = await _context.SaveChangesAsync();
-                if (resu < 1)
-                {
-                    return new ErrorResponseManager
+                    //add to submission version
+                    _context.SubmissionVersions.Add(new SubmissionVersion
                     {
-                        Message = "version is not added",
-                        IsSuccess = false,
-                        Errors = new List<string>() { "Error adding version in SubmissionVersion table in DB" }
-                    };
-                }
-
-                //add submission to course deliverable submission
-                var cds = new CourseDeliverableSubmission()
-                {
-                    OfferedCourseDeliverableId = model.OfferedCourseDeliverableId,
-                    SubmissionId = (int) model.SubmissionId
-
-                };
-                _context.CourseDeliverableSubmissions.Add(cds);
-                var re = await _context.SaveChangesAsync();
-                if (re < 1)
-                {
-                    return new ErrorResponseManager
+                        SubmissionId = submission.Id,
+                        VersionId = version.VersionId
+                    });
+                    var resu = await _context.SaveChangesAsync();
+                    if (resu < 1)
                     {
-                        Message = "Submission is not added",
-                        IsSuccess = false,
-                        Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
+                        return new ErrorResponseManager
+                        {
+                            Message = "version is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error adding version in SubmissionVersion table in DB" }
+                        };
+                    }
+
+                    //add submission to course deliverable submission
+                    var cds = new CourseDeliverableSubmission()
+                    {
+                        OfferedCourseDeliverableId = model.OfferedCourseDeliverableId,
+                        SubmissionId = submission.Id
+
                     };
+                    _context.CourseDeliverableSubmissions.Add(cds);
+                    var re = await _context.SaveChangesAsync();
+                    if (re < 1)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "Submission is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
+                        };
+                    }
+                }
+                else
+                {
+                    //no need to create submission
+
+                    //discover what version number is this version
+                    var subCount = _context.SubmissionVersions
+                                       .Where(sv => sv.SubmissionId == model.SubmissionId)
+                                       .Count();
+
+                    //create version 
+                    var version = new Models.Version
+                    {
+                        VersionNumber = subCount + 1,
+                        DateSubmitted = DateTime.Now,
+                        FileType = model.FileType,
+                        FilePath = filePath,
+                        TargetedIssues = string.Join(",", model.TargetedIssues)//concat issue targets to store in one field
+
+                    };
+                    _context.Versions.Add(version);
+
+                    var res = await _context.SaveChangesAsync();
+
+                    if (res < 1)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "First version is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error adding version in version table in DB" }
+                        };
+                    }
+
+                    //add to submission version
+                    _context.SubmissionVersions.Add(new SubmissionVersion
+                    {
+                        SubmissionId = (int)model.SubmissionId,
+                        VersionId = version.VersionId
+                    });
+                    var resu = await _context.SaveChangesAsync();
+                    if (resu < 1)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "version is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error adding version in SubmissionVersion table in DB" }
+                        };
+                    }
+
+                    //add submission to course deliverable submission
+                    var cds = new CourseDeliverableSubmission()
+                    {
+                        OfferedCourseDeliverableId = model.OfferedCourseDeliverableId,
+                        SubmissionId = (int)model.SubmissionId
+
+                    };
+                    _context.CourseDeliverableSubmissions.Add(cds);
+                    var re = await _context.SaveChangesAsync();
+                    if (re < 1)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "Submission is not added",
+                            IsSuccess = false,
+                            Errors = new List<string>() { "Error adding submission in CourseDeliverableSubmissions table in DB" }
+                        };
+                    }
                 }
 
-                return new ResponseManager {
+
+                return new ResponseManager
+                {
                     Message = "Submission added successfully",
                     IsSuccess = true
                 };
+            }catch(Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    Message = "Submission is not added",
+                    IsSuccess = false,
+                    Errors = new List<string>() {ex.Message}
+                };
             }
             
+
+
+
             
-
-
-            return new ErrorResponseManager
-            {
-                Message = "Submission is not added",
-                IsSuccess = false,
-                Errors = new List<string>() { "Error adding submission in Submissions table in DB" }
-            };
         }
 
         //not modified but will not use
@@ -349,7 +360,7 @@ namespace CampusCore.API.Services
             var offeredCourseDeliverableId = model.Id;
             try
             {
-                
+
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId)
                                                 .Select(x => new
@@ -366,23 +377,23 @@ namespace CampusCore.API.Services
                                                 })
                                                 .ToListAsync();
 
-                    if (submissions.Count() < 1)
-                    {
-                        return new ResponseManager
-                        {
-                            IsSuccess = true,
-                            Message = "No submissions retrieved"
-                        };
-                    }
-                  
-                    return new DataResponseManager
+                if (submissions.Count() < 1)
+                {
+                    return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "Submissions approved by dean retrieved successfully",
-                        Data = submissions
+                        Message = "No submissions retrieved"
                     };
-              
-                
+                }
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Submissions approved by dean retrieved successfully",
+                    Data = submissions
+                };
+
+
             }
             catch (Exception ex)
             {
@@ -658,7 +669,7 @@ namespace CampusCore.API.Services
         public async Task<ResponseManager> SearchNameAsync(StringSearchViewModel model)
         {
             string searchKey = model.SearchKey;
-            
+
             try
             {
 

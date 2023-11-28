@@ -8,7 +8,7 @@ namespace CampusCore.API.Models
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
-
+           
         }
 
         public DbSet<User> Users { get; set; }

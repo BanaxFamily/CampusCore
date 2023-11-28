@@ -71,6 +71,7 @@ namespace CampusCore.API.Services
                                             .Where(a => a.Id == model.Id)
                                             .Select(a => new
                                             {
+                                                OfferedCourseDeliverableId = a.Id,
                                                 DeliverableId = a.DeliverableId,
                                                 DeliverableTitle = a.Deliverable.Name,
                                                 DeliverableInstruction = a.Deliverable.Instruction,
@@ -110,6 +111,7 @@ namespace CampusCore.API.Services
                                             .Where(a => a.OfferedCourseId == model.Id)
                                             .Select(a => new
                                             {
+                                                OfferedCourseDeliverableId = a.Id,
                                                 DeliverableId = a.DeliverableId,
                                                 DeliverableTitle = a.Deliverable.Name,
                                                 DeliverableInstruction = a.Deliverable.Instruction,
