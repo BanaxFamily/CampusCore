@@ -9,14 +9,16 @@ import * as UserRole from "../../../../network/getUserRole_api";
 import * as GroupApi from "../../../../network/group_api";
 
 
-export default function FacultyAddGroup() {
-    let { offeredCourseId } = useParams()
+export default function FacultyUpdateMembers() {
+    let { offeredCourseId, groupName, groupId } = useParams()
     const [chooseMember, setChooseMember] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const [userRoles, setUserRoles] = useState([]);
     const [students, setStudents] = useState([])
+    const [groupMembers, setGroupMembers] = useState([])
     const [members, setSelectedMembers] = useState([]);
+    const mergeStudents = students.concat(groupMembers)
     const [leader, setLeader] = useState("")
     const { register, reset, handleSubmit } = useForm()
 
@@ -47,12 +49,31 @@ export default function FacultyAddGroup() {
                 setLoading(false)
             }
         }
+        async function getGroupMembers() {
+            try {
+                const response = await GroupApi.viewGroupMembers({ "id": groupId })
+                if (response.isSuccess) {
+                    setGroupMembers(response.data.members)
+                    return
+                }
+            } catch (error) {
+                console.error(error)
+                setError(true)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+
         async function getUserRoles() {
             const response = await UserRole.getUserRoles({ "role": "faculty" })
             setUserRoles(response.data)
         }
         showEnrolledStudents()
         getUserRoles()
+        getGroupMembers()
+
+        console.log(mergeStudents)
     }, [])
 
     async function addStudentGroup(data) {
@@ -65,7 +86,7 @@ export default function FacultyAddGroup() {
 
         try {
             const response = await GroupApi.createGroup(studentGroupData)
-            if(response.isSuccess){
+            if (response.isSuccess) {
                 reset()
                 return
             }
@@ -81,7 +102,7 @@ export default function FacultyAddGroup() {
                         <Stack className='!flex-row items-center'>
                             <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>Group name {" "} :</Typography>
                             <Stack className='w-full'>
-                                <TextField size='small' variant='outlined' label="Name of the group" name='name' InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('name')} />
+                                <TextField size='small' variant='outlined' value={groupName} label="Name of the group" name='name' InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('name')} />
                             </Stack>
                         </Stack>
                         <Stack className='!flex-row items-center'>
@@ -93,8 +114,7 @@ export default function FacultyAddGroup() {
                                 </Button>
                                 <Collapse in={chooseMember}>
                                     {error && <Alert>Something went wrong try again later</Alert>}
-                                    {
-                                        !error && !loading &&
+                                    {!error && !loading &&
                                         <Stack className='border max-h-48 px-6 overflow-y-scroll'>
                                             {
                                                 students.map((student, index) => (
@@ -103,7 +123,6 @@ export default function FacultyAddGroup() {
                                                             <FormControlLabel
                                                                 control={<Checkbox />}
                                                                 label={<Typography className="md:!text-sm">{student.studentName}</Typography>}
-                                                                // sx={{ fontSize: '14px' }} // Adjust the font size as needed
                                                                 onChange={() => handleCheckboxChange(student.studentId)}
                                                             />
                                                         </Stack>
