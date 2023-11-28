@@ -11,7 +11,6 @@ namespace CampusCore.Shared
         public int AnnouncementId { get; set; } // foreign key from AnnouncementTable
         public string UserId { get; set; } // foreign key from UsersTable
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
     public class AnnouncementCommentListViewModel
     {
@@ -21,13 +20,6 @@ namespace CampusCore.Shared
     {
         public int Id { get; set; }
     }
-    public class AnnouncementCommentUpdateViewModel
-    {
-        public int Id { get; set; }
-        public int AnnouncementId { get; set; } // foreign key from AnnouncementTable
-        public string UserId { get; set; } // foreign key from UsersTable
-        public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
-    }
+    
 
 }

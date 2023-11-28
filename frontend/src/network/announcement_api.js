@@ -1,6 +1,6 @@
 import { fetchData } from "./user_api";
 
-export async function getAnnouncement() {
+export async function getAllAnnouncement() {
   const response = await fetchData("api/announcement/viewList", {
     method: "GET",
   });

@@ -65,21 +65,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for delete"); //status code: 400
         }
 
-        // /api/announcementComment/update
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] AnnouncementCommentUpdateViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _announcementCommentService.UpdateAnnouncementCommentAsync(model);
-
-                if (result.IsSuccess)
-                    return Ok(result); // Status code: 200
-
-                return BadRequest(result);
-            }
-            return BadRequest("Some properties are not valid for update"); // Status code: 400
-        }
+       
 
 
     }

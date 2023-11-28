@@ -10,7 +10,6 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateAnnouncementCommentAsync(AnnouncementCommentAddViewModel model);
         Task<ResponseManager> ViewAnnouncementCommentListAsync(); // new method to get AnnouncementComment
         Task<ResponseManager> DeleteAnnouncementCommentAsync(IntIdViewModel model); // New method to delete a AnnouncementComment
-        Task<ResponseManager> UpdateAnnouncementCommentAsync(AnnouncementCommentUpdateViewModel model);
         //Task<ResponseManager> UpdateAnnouncementCommentAsync(model);
 
     }
@@ -33,7 +32,7 @@ namespace CampusCore.API.Services
                 AnnouncementId = model.AnnouncementId,
                 UserId = model.UserId,
                 Content = model.Content,
-                CreatedAt = model.CreatedAt
+                CreatedAt = DateTime.Now
 
             };
 
@@ -145,60 +144,7 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> UpdateAnnouncementCommentAsync(AnnouncementCommentUpdateViewModel model)
-        {
-            try
-            {
-                var announcementComment = await _context.AnnouncementComments.FindAsync(model.Id);
-
-                if (announcementComment == null)
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "Comment for the announcement was not found",
-                        Errors = new List<string> { "Comment for the announcement with the specified ID does not exist" }
-                    };
-                }
-
-                // Update the Announcement Comment properties from the model
-
-                announcementComment.AnnouncementId = model.AnnouncementId;
-                announcementComment.UserId = model.UserId;
-                announcementComment.Content = model.Content;
-                announcementComment.CreatedAt = model.CreatedAt;
-
-                // Save changes to the database
-                var result = await _context.SaveChangesAsync();
-
-                if (result > 0)
-                {
-                    return new ResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Comment for the announcement updated successfully"
-                    };
-                }
-                else
-                {
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "Announcement comment update failed",
-                        Errors = new List<string> { "Error occurred while updating the comment for the announcement" }
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ErrorResponseManager
-                {
-                    IsSuccess = false,
-                    Message = "An error occurred while updating the comment for the announcement",
-                    Errors = new List<string> { ex.Message }
-                };
-            }
-        }
+        
 
 
     }
