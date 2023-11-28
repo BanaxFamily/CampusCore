@@ -11,11 +11,11 @@ export default function ViewSpecificCourse() {
     let { courseName } = useParams()
     const breadCrumbUrl = [
         {
-            url: '../../',
+            url: '../',
             name: 'Assigned courses',
         },
         {
-            name: `View`
+            name: `${courseName}`
         }
     ]
 
@@ -34,7 +34,7 @@ export default function ViewSpecificCourse() {
                         <Stack className="w-full " direction={'row'}>
                             <FacultyAnnouncement/>
                         </Stack>
-                        <Stack className="border-l my-4 w-[30%]">
+                        <Stack className="border-l my-4 w-[35%]">
                             <SpecificCourseLinks />
                         </Stack>
                     </Stack>

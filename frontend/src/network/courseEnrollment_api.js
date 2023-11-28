@@ -32,9 +32,6 @@ export async function getEnrolledStudents(data) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Header: {
-        userRole: "Admin",
-      },
     },
     body: JSON.stringify(data),
   });
