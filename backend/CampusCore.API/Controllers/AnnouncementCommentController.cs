@@ -32,14 +32,14 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
 
-        // /api/announcementComment/viewList
+        // /api/announcementComment/viewComments
         //insert method here
-        [HttpGet("viewList")]
-        public async Task<IActionResult> ViewListAsync()
+        [HttpPost("viewComments")]
+        public async Task<IActionResult> GetAllByAnnouncement(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _announcementCommentService.ViewAnnouncementCommentListAsync();
+                var result = await _announcementCommentService.GetAllByAnnouncement(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200

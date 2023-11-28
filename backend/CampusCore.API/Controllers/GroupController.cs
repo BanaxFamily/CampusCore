@@ -212,5 +212,19 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for update"); // Status code: 400
         }
 
+        [HttpPost("getStudentsForUpdate")]
+        public async Task<IActionResult> GetStudentsForUpdate(GetStudentsForUpdateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _groupService.GetStudentsForUpdate(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
     }
 }
