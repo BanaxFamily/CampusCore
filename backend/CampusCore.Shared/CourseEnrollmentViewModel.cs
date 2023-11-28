@@ -9,7 +9,7 @@ namespace CampusCore.Shared
     public class CourseEnrollmentAddViewModel
     {
         public int OfferedCourseId { get; set; }
-        public string StudentId { get; set; }
+        public string[] StudentIdArray { get; set; }
     }
 
     public class CourseEnrolledViewModel
