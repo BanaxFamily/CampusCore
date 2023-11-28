@@ -23,7 +23,7 @@ export default function FacultyShowDeliverables({ data }) {
                                         <TableCell className="border !text-black !font-bold"> Description </TableCell>
                                         <TableCell className="border !text-black !font-bold"> Instruction </TableCell>
                                         <TableCell className="border !text-black !font-bold"> Date </TableCell>
-                                        <TableCell className="border !text-black !font-bold" align="center" colSpan={2}> Action</TableCell>
+                                        <TableCell className="border !text-black !font-bold" align="center"> Action</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
