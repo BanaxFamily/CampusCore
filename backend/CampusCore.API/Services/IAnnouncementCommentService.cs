@@ -8,7 +8,7 @@ namespace CampusCore.API.Services
     public interface IAnnouncementCommentService
     {
         Task<ResponseManager> CreateAnnouncementCommentAsync(AnnouncementCommentAddViewModel model);
-        Task<ResponseManager> ViewAnnouncementCommentListAsync(); // new method to get AnnouncementComment
+        Task<ResponseManager> GetAllByAnnouncement(IntIdViewModel model); // new method to get AnnouncementComment
         Task<ResponseManager> DeleteAnnouncementCommentAsync(IntIdViewModel model); // New method to delete a AnnouncementComment
         Task<ResponseManager> UpdateAnnouncementCommentAsync(AnnouncementCommentUpdateViewModel model);
         //Task<ResponseManager> UpdateAnnouncementCommentAsync(model);
@@ -66,13 +66,21 @@ namespace CampusCore.API.Services
 
         }
 
-        public async Task<ResponseManager> ViewAnnouncementCommentListAsync()
+        public async Task<ResponseManager> GetAllByAnnouncement(IntIdViewModel model)
         {
             try
             {
                 var result = await _context.AnnouncementComments
-                                            .Include(x => x.Announcement)
-                                            .Include(x => x.User)
+                                            .Where(x => x.AnnouncementId == model.Id)
+                                            .Select(x=> new
+                                            {
+                                                AnnouncementId = x.AnnouncementId,
+                                                UserId = x.UserId,
+                                                CommentId = x.Id,
+                                                Content = x.Content,
+                                                CreatedAt = x.CreatedAt
+
+                                            })
                                             .ToListAsync();
 
                 return new DataResponseManager
