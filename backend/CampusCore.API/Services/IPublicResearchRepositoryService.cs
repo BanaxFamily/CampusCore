@@ -1,4 +1,4 @@
-﻿using CampusCore.API.Models;
+﻿/*using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
@@ -69,7 +69,7 @@ namespace CampusCore.API.Services
                 Description = model.Description,
                 Authors = authors,
                 SubmissionId = model.SubmissionId,
-                FilePath = submission.FilePath,
+                FilePath = submissFilePath,
                 DateUploaded = DateTime.Now,
             };
 
@@ -580,3 +580,4 @@ namespace CampusCore.API.Services
         
     }
 }
+*/

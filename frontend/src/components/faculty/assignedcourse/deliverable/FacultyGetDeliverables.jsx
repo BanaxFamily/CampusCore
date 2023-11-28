@@ -17,6 +17,7 @@ export default function FacultyGetDeliverables() {
     async function showListOfDeliverables() {
       try {
         const response = await OfferedCourseDeliverable.getFacultyOfferedCourseDeliverables({ 'id': offeredCourseId })
+        console.log(offeredCourseId)
         if (response.isSuccess) {
           setDeliverables(response.data)
           return
@@ -36,11 +37,11 @@ export default function FacultyGetDeliverables() {
     <>
       {loading && <LinearProgress />}
       {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
-      <Stack paddingY={4}>
+      <Stack paddingY={4} className="border-3 border-red-400">
         {
           !loading && !error &&
           <>
-            <Stack className="w-full rounded-md">
+            <Stack className="rounded-md">
 
               {
                 deliverable.length > 0 ? (

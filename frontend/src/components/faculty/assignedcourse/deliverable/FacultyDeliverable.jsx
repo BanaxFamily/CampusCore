@@ -26,10 +26,10 @@ export default function FacultyDeliverable() {
                 <Stack className="w-full">
                     <DashBoardHeading title={`Deliverables`} />
                     <Stack direction={'row'}>
-                        <Stack className="w-full border-2 " direction={'row'}>
-                        <FacultyGetDeliverables/>
+                        <Stack className="w-full " >
+                            <FacultyGetDeliverables />
                         </Stack>
-                        <Stack className="my-4 w-[30%]">
+                        <Stack className="border-l my-4 w-[35%]">
                             <SpecificCourseLinks />
                         </Stack>
                     </Stack>

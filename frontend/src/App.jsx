@@ -25,12 +25,16 @@ import FinalDeliverables from "./components/faculty/FinalDeliverables";
 import Layout from "./components/faculty/Layout";
 import CourseAssigned from "./components/faculty/assignedcourse/CourseAssigned";
 import ViewSpecificCourse from "./components/faculty/assignedcourse/ViewSpecificCourse";
+import FacultyDeliverable from "./components/faculty/assignedcourse/deliverable/FacultyDeliverable";
+import FacultyAddGroupWrapper from "./components/faculty/assignedcourse/studentgroups/FacultyAddGroupsWrapper";
+import FacultyStudentGroups from "./components/faculty/assignedcourse/studentgroups/FacultyStudentGroups";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
 import Home from "./components/shared-route/home/Home";
 import CourseStudent from "./components/student/courses/CourseStudent";
 import LayoutCourse from "./components/student/courses/LayoutCourse";
+import ViewSpecificAnnouncement from "./components/student/courses/announcement/ViewSpecificAnnouncement";
 import DeliverableWrapper from "./components/student/courses/deliverable/DeliverableWrapper";
 import PdfViewer from "./components/student/courses/deliverable/PdfViewer";
 import ViewSpecificDeliverable from "./components/student/courses/deliverable/ViewSpecificDeliverable";
@@ -42,7 +46,6 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
-import FacultyDeliverable from "./components/faculty/assignedcourse/deliverable/FacultyDeliverable";
 
 
 export default function App() {
@@ -73,18 +76,17 @@ export default function App() {
               <Route path={`/research`} element={<ResearchRepo />} />
               <Route path={`/course/*`} element={<LayoutCourse />}>
                 <Route index element={<CourseStudent />} />
-                <Route path={`deliverable/:courseName/:courseId/*`} element={<LayoutCourse />} >
+                <Route path={`information/:courseName/:offeredCourseId/*`} element={<LayoutCourse />} >
                   <Route index element={<DeliverableWrapper />} />
-                  <Route path="view/:deliverableName/:deliverableId/:courseDeliverabelId/*" element={<LayoutCourse />} >
+                  <Route path="announcements/view/:announcementId" element={< ViewSpecificAnnouncement />} />
+                  <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<LayoutCourse />} >
                     <Route index element={<ViewSpecificDeliverable />} />
                     <Route path=":filePath" element={<PdfViewer />} />
                   </Route>
-
                 </Route>
               </Route>
               <Route path={`/issues`} element={<Issues />} />
               <Route path={`/timetable`} element={<Timetable />} />
-              {/* <Route path={`/settings`} element={<UserSetting />} /> */}
             </>
           )}
           {userRole === "Admin" && (
@@ -125,6 +127,10 @@ export default function App() {
                 <Route path="offered-course/:courseName/:offeredCourseId/*" element={<Layout />} >
                   <Route index element={<ViewSpecificCourse />} />
                   <Route path="deliverable/management" element={<FacultyDeliverable />} />
+                  <Route path="student/groups/*" element={<Layout />}>
+                    <Route index element={<FacultyStudentGroups />} />
+                    <Route path="add" element={<FacultyAddGroupWrapper />} />
+                  </Route>
                 </Route>
               </Route>
               <Route path="faculty/course-loads/subjects" element={<FinalDeliverables />} />

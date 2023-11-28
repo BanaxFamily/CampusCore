@@ -47,13 +47,41 @@ namespace CampusCore.API.Services
                     IsSuccess = true
                 };
 
+                var res = await _context.OfferedCourses
+                                   .Where(oc=> oc.CourseId == model.CourseId)
+                                   .ToListAsync();
+                if (res.Count > 0)
+                {
+                    foreach (var item in res)
+                    {
+
+                        var offeredCourseDeliverable = new OfferedCourseDeliverable
+                        {
+                            OfferedCourseId = item.Id,
+                            DeliverableId = model.DeliverableId,
+                            Deadline = null
+                        };
+                        _context.OfferedCourseDeliverables.Add(offeredCourseDeliverable);
+                        var re = await _context.SaveChangesAsync();
+
+                        if (re > 0)
+                        {
+                            return new ResponseManager
+                            {
+                                Message = "Course deliverable added successfully and updated existing offered courses!",
+                                IsSuccess = true
+                            };
+                        }
+                    }
+                }
+
             }
 
 
 
             return new ErrorResponseManager
             {
-                Message = "Course enrollemnt is not added",
+                Message = "Course enrollement is not added",
                 IsSuccess = false,
                 Errors = new List<string>() { "Error updating adding current course deliverable in DB" }
             };

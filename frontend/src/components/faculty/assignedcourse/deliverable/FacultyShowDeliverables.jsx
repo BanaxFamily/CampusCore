@@ -15,7 +15,7 @@ export default function FacultyShowDeliverables({ data }) {
 
                 data.map((info, index) => {
                     return (
-                        <Stack key={index} className="px-4 rounded-t-md group">
+                        <Stack key={index} className="rounded-t-md group">
                             <DynamicTable>
                                 <TableHead>
                                     <TableRow className="bg-slate-300">

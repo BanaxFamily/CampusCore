@@ -147,7 +147,7 @@ namespace CampusCore.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CourseDeliverableId")
+                    b.Property<int>("OfferedCourseDeliverableId")
                         .HasColumnType("int");
 
                     b.Property<int>("SubmissionId")
@@ -155,7 +155,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseDeliverableId");
+                    b.HasIndex("OfferedCourseDeliverableId");
 
                     b.HasIndex("SubmissionId");
 
@@ -221,6 +221,10 @@ namespace CampusCore.API.Migrations
 
                     b.Property<string>("AdviserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LeaderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -522,13 +526,6 @@ namespace CampusCore.API.Migrations
                     b.Property<DateTime?>("DAPRC")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateSubmitted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
@@ -541,10 +538,6 @@ namespace CampusCore.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Version")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -578,6 +571,29 @@ namespace CampusCore.API.Migrations
                     b.HasIndex("SubmissionId");
 
                     b.ToTable("SubmissionIssues");
+                });
+
+            modelBuilder.Entity("CampusCore.API.Models.SubmissionVersion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("SubmissionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VersionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubmissionId");
+
+                    b.HasIndex("VersionId");
+
+                    b.ToTable("SubmissionVersions");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>
@@ -624,6 +640,36 @@ namespace CampusCore.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserPublishedResearch");
+                });
+
+            modelBuilder.Entity("CampusCore.API.Models.Version", b =>
+                {
+                    b.Property<int>("VersionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VersionId"), 1L, 1);
+
+                    b.Property<DateTime>("DateSubmitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TargetedIssues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VersionNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("VersionId");
+
+                    b.ToTable("Versions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -917,9 +963,9 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.CourseDeliverableSubmission", b =>
                 {
-                    b.HasOne("CampusCore.API.Models.CourseDeliverable", "CourseDeliverable")
+                    b.HasOne("CampusCore.API.Models.OfferedCourseDeliverable", "OfferedCourseDeliverable")
                         .WithMany()
-                        .HasForeignKey("CourseDeliverableId")
+                        .HasForeignKey("OfferedCourseDeliverableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -929,7 +975,7 @@ namespace CampusCore.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CourseDeliverable");
+                    b.Navigation("OfferedCourseDeliverable");
 
                     b.Navigation("Submission");
                 });
@@ -1129,6 +1175,25 @@ namespace CampusCore.API.Migrations
                     b.Navigation("Issue");
 
                     b.Navigation("Submission");
+                });
+
+            modelBuilder.Entity("CampusCore.API.Models.SubmissionVersion", b =>
+                {
+                    b.HasOne("CampusCore.API.Models.Submission", "Submission")
+                        .WithMany()
+                        .HasForeignKey("SubmissionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("CampusCore.API.Models.Version", "Version")
+                        .WithMany()
+                        .HasForeignKey("VersionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Submission");
+
+                    b.Navigation("Version");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.UserLog", b =>

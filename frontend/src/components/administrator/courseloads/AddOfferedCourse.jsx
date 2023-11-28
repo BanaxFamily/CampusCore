@@ -34,7 +34,6 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
 
   async function onSubmit(credentials) {
     const response = await OfferCourse.addOfferCourse(credentials);
-    console.log(credentials)
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
@@ -138,14 +137,12 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   variant="filled"
                   {...register("schedule", { required: "this si required" })}
 
-                // value={selectedItem.name || ''}
                 />
 
                 <TextField
                   id="filled-role"
                   select
                   label="Faculty"
-                  // defaultValue="  "
                   SelectProps={{
                     native: true,
                   }}
