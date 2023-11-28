@@ -153,11 +153,11 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.StudentGroups
+                var result = await _context.Groups
                                             .Select(sg => new {
-                                                GroupId = sg.GroupId,
-                                                Adviser = sg.Group.Adviser.FullName,
-                                                GroupName = sg.Group.Name,
+                                                GroupId = sg.Id,
+                                                Adviser = sg.Adviser.FullName,
+                                                GroupName = sg.Name,
                                             })
                                             .ToListAsync();
 
@@ -279,20 +279,29 @@ namespace CampusCore.API.Services
 
             try
             {
+                
+
+                var leaderId = _context.StudentGroups
+                                            .Where(g => g.GroupId == model.Id)
+                                            .Select(sg => new String(sg.Group.LeaderId)).FirstOrDefault();
+
                 var result = await _context.StudentGroups
                                             .Where(g => g.GroupId == model.Id)
                                             .Select(sg => new {
                                                 StudentId = sg.StudentId,
                                                 StudentIdno = sg.Student.Idno,
                                                 StudentName = sg.Student.FullName,
+                                                IsLeader = sg.StudentId == leaderId? true : false
                                             })
                                             .ToListAsync();
-
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = $"members of group {model.Id} retrieved successfully",
-                    Data = result
+                    Data = new
+                    {
+                        Members = result
+                    }
                 };
             }
             catch (Exception ex)

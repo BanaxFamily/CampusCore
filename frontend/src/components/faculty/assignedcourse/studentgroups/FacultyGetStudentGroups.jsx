@@ -11,9 +11,9 @@ export default function FacultyGetStudentGroups() {
             {/* {loading && <LinearProgress />}
       {error && <Alert severity="error">Something went wrong. Try again later</Alert>} */}
             <Stack paddingBottom={4} className="border-3 border-red-400">
+
                 {
                     <Stack className="rounded-md">
-
                         {
                             sample ? (
                                 <FacultyStudentGroupTable />

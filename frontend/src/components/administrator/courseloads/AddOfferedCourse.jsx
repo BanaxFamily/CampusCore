@@ -99,24 +99,24 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
 
                 />
 
-<TextField
-                    
-                    id="filled-sem"
-                    select
-                    label="Semester"
-                    SelectProps={{
-                      native: true,
-                    }}
-                    required
-                    variant="outlined"
-                    name="sem"
-                    {...register("sem", { required: "select one option" })}
-                  >
-                    <option value=""></option>
-                    <option value="first">first</option>
-                    <option value="second">second</option>
-                    <option value="summer">summer</option>
-                  </TextField>
+                <TextField
+
+                  id="filled-sem"
+                  select
+                  label="Semester"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  required
+                  variant="outlined"
+                  name="sem"
+                  {...register("sem", { required: "select one option" })}
+                >
+                  <option value=""></option>
+                  <option value="first">first</option>
+                  <option value="second">second</option>
+                  <option value="summer">summer</option>
+                </TextField>
 
                 <TextField
                   required
@@ -137,14 +137,12 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   variant="filled"
                   {...register("schedule", { required: "this si required" })}
 
-                // value={selectedItem.name || ''}
                 />
 
                 <TextField
                   id="filled-role"
                   select
                   label="Faculty"
-                  // defaultValue="  "
                   SelectProps={{
                     native: true,
                   }}

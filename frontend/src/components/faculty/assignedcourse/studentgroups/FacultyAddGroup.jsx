@@ -1,27 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Alert, Button, Checkbox, Collapse, FormControlLabel, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, Checkbox, Collapse, FormControlLabel, Radio, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as CourseEnrollmentApi from "../../../../network/courseEnrollment_api"
 import { useParams } from 'react-router-dom';
+import * as CourseEnrollmentApi from "../../../../network/courseEnrollment_api";
+import * as UserRole from "../../../../network/getUserRole_api";
+import * as GroupApi from "../../../../network/group_api";
+
 
 export default function FacultyAddGroup() {
     let { offeredCourseId } = useParams()
-    const [chooseMember, setChooseMember] = useState(true)
+    const [chooseMember, setChooseMember] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const [userRoles, setUserRoles] = useState([]);
     const [students, setStudents] = useState([])
     const [members, setSelectedMembers] = useState([]);
-    const { register, handleSubmit } = useForm()
+    const [leader, setLeader] = useState("")
+    const { register, reset, handleSubmit } = useForm()
 
-    const handleCheckboxChange = (member) => {
+
+    function handleCheckboxChange(member) {
         if (members.includes(member)) {
             setSelectedMembers(members.filter((m) => m !== member));
         } else {
             setSelectedMembers([...members, member]);
         }
-    };
+    }
+    function handleLeaderChange(studentId) {
+        setLeader(studentId);
+    }
 
     useEffect(() => {
         async function showEnrolledStudents() {
@@ -38,15 +47,31 @@ export default function FacultyAddGroup() {
                 setLoading(false)
             }
         }
+        async function getUserRoles() {
+            const response = await UserRole.getUserRoles({ "role": "faculty" })
+            setUserRoles(response.data)
+        }
         showEnrolledStudents()
+        getUserRoles()
     }, [])
 
     async function addStudentGroup(data) {
         let studentGroupData = {
             ...data,
-            members
+            members,
+            "leaderId": leader,
+            "offeredCOurseId": offeredCourseId
         }
-        console.log(studentGroupData)
+
+        try {
+            const response = await GroupApi.createGroup(studentGroupData)
+            if(response.isSuccess){
+                reset()
+                return
+            }
+        } catch (error) {
+            console.error(error)
+        }
     }
     return (
         <Stack paddingBottom={4} className=" border-3 border-red-400">
@@ -73,12 +98,23 @@ export default function FacultyAddGroup() {
                                         <Stack className='border max-h-48 px-6 overflow-y-scroll'>
                                             {
                                                 students.map((student, index) => (
-                                                    <FormControlLabel
-                                                        key={index}
-                                                        control={<Checkbox />}
-                                                        label={student.student.fullName}
-                                                        onChange={() => handleCheckboxChange(student.student.fullName)}
-                                                    />
+                                                    <Stack key={index} className='!flex-row'>
+                                                        <Stack className='w-1/2'>
+                                                            <FormControlLabel
+                                                                control={<Checkbox />}
+                                                                label={student.student.fullName}
+                                                                onChange={() => handleCheckboxChange(student.student.id)}
+                                                            />
+                                                        </Stack>
+                                                        <Stack className='w-1/2'>
+                                                            <FormControlLabel
+                                                                control={<Radio />}
+                                                                label="Leader"
+                                                                checked={leader === student.student.id}
+                                                                onChange={() => handleLeaderChange(student.student.id)}
+                                                            />
+                                                        </Stack>
+                                                    </Stack>
                                                 ))
                                             }
 
@@ -90,7 +126,26 @@ export default function FacultyAddGroup() {
                         <Stack className='!flex-row items-center'>
                             <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>Adviser {" "} :</Typography>
                             <Stack className='w-full'>
-                                <TextField size='small' variant='outlined' label="optional" name='adviserId' InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('adviserId')} />
+                                <TextField
+                                    select
+                                    label="Adviser"
+                                    SelectProps={{
+                                        native: true,
+                                    }}
+                                    variant="outlined"
+                                    size='small'
+                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('name')}
+                                    name="adviserId"
+                                    {...register("adviserId", { required: "select one option" })}
+                                >
+                                    <option value=""></option>
+                                    {
+                                        userRoles.map((role, index) => (
+                                            <option value={role.id} key={index}>{role.fullName}</option>
+                                        ))
+                                    }
+                                </TextField>
+                                {/* <TextField size='small' variant='outlined' label="optional" name='adviserId' InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('adviserId')} /> */}
                             </Stack>
                         </Stack>
                         <Button type='submit' variant='contained' size='small' className=' !my-2 flex self-end'>Add</Button>
