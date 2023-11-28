@@ -6,9 +6,14 @@ import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as AnnouncementApi from "../../../../network/announcement_api";
+import * as AnnounceComment from "../../../../network/announcementComment_api";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../../../../utils/AuthContext";
 
 export default function ViewSpecificAnnouncement() {
+    const {userId} = useAuth()
     let { announcementId } = useParams();
+    const {register, handleSubmit} =  useForm()
     const [specificAnnouncement, setSpecificAnnouncement] = useState([]);
     const [error, setError] = useState(false);
     const breadCrumbUrl = [
@@ -41,6 +46,15 @@ export default function ViewSpecificAnnouncement() {
         }
         showSpecificCourse();
     }, []);
+
+    async function createComment(data){
+        try {
+            const response = await AnnounceComment.addAnnouncementComment(data)
+            console.log(response)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <Stack>
@@ -77,14 +91,18 @@ export default function ViewSpecificAnnouncement() {
                         </Stack>
                     </Stack>
                     <Divider className="!border-y" />
-                    <Stack className="mt-2 !flex-row items-center gap-1">
-                        <Stack className="w-full">
-                            <TextareaAutosize className="w-full border px-2 !text-black bg-slate-100 rounded-lg" placeholder="Write a comment" style={{ resize: "none" }} minRows={2} />
+                    <form action="" onSubmit={handleSubmit(createComment)}>
+                        <input type="text" name="announcementId" value={announcementId} hidden {...register("announcementId", {required: "ID is required"})} />
+                        <input type="text" name="userId" value={userId} hidden {...register("userId", {required: "ID is required"})} />
+                        <Stack className="mt-2 !flex-row items-center gap-1">
+                            <Stack className="w-full">
+                                <TextareaAutosize className="w-full border px-2 !text-black bg-slate-100 rounded-lg" placeholder="Write a comment" name="content" style={{ resize: "none" }} minRows={2} {...register('content', {required: "This is reqruied"})}/>
+                            </Stack>
+                            <Button type="submit" variant="contained" size="small">
+                                Comment
+                            </Button>
                         </Stack>
-                        <Button variant="contained" size="small">
-                            Comment
-                        </Button>
-                    </Stack>
+                    </form>
                 </Stack>
             ))}
         </Stack>

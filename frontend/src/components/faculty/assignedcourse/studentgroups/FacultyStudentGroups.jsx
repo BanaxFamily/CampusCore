@@ -1,17 +1,17 @@
-import { Stack } from "@mui/system"
+import { Divider, Stack } from "@mui/material"
+import { useParams } from "react-router-dom"
 import BackNav from "../../../reusable/BackNav"
 import BreadCrumb from "../../../reusable/BreadCrumb"
-import { Divider } from "@mui/material"
-import { useParams } from "react-router"
 import DashBoardHeading from "../../../reusable/DashBoardHeading"
 import SpecificCourseLinks from "../SpecificCourseLinks"
-import FacultyGetDeliverables from "./FacultyGetDeliverables"
+import FacultyGetStudentGroups from "./FacultyGetStudentGroups"
 
-export default function FacultyDeliverable() {
+export default function FacultyStudentGroups() {
     let { courseName } = useParams()
     const breadCrumbUrl = [
+        { url: '../../', name: 'Assigned Courses', },
         { url: '../', name: `${courseName}`, },
-        { name: `Deliverables` }
+        { name: 'Student groups', }
     ]
 
     return (
@@ -24,10 +24,10 @@ export default function FacultyDeliverable() {
             </Stack>
             <Stack direction={'row'}>
                 <Stack className="w-full">
-                    <DashBoardHeading title={`Deliverables`} />
-                    <Stack direction={'row'}>
-                        <Stack className="w-full " >
-                            <FacultyGetDeliverables />
+                    <DashBoardHeading title={`Student Groups`} />
+                    <Stack direction={'row'} className="border-t-2 shadow-md rounded-md shadow-gray-500">
+                        <Stack className=" w-full " >
+                            <FacultyGetStudentGroups />
                         </Stack>
                         <Stack className="border-l my-4 w-[35%]">
                             <SpecificCourseLinks />
