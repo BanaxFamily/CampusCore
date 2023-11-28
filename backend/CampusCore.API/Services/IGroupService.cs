@@ -397,6 +397,20 @@ namespace CampusCore.API.Services
                         _context.StudentGroups.Remove(member);
 
                     }
+                    //update leader
+                    var group = await _context.Groups.FindAsync(model.GroupId);
+                    if (group == null)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "Error updating leader",
+                            IsSuccess = false,
+                            Errors = new List<string> { "Group not found in DB"}
+                        };
+                    }
+                    group.LeaderId = model.LeaderId;
+                    _context.Groups.Update(group);
+
                     await _context.SaveChangesAsync();
                     return new ResponseManager
                     {
@@ -495,7 +509,9 @@ namespace CampusCore.API.Services
                                             .Where(g => g.Group.OfferedCourseId == model.Id)
                                             .Select(sg => new
                                             {
-                                                StudentId = sg.StudentId
+                                                StudentId = sg.StudentId,
+                                                StudentIdno = sg.Student.Idno,
+                                                StudentName = sg.Student.FullName
                                             })
                                             .ToListAsync();
 
@@ -503,7 +519,9 @@ namespace CampusCore.API.Services
                                            .Where(ce => ce.OfferedCourseId == model.Id)
                                            .Select(sg => new
                                            {
-                                               StudentId = sg.StudentId
+                                               StudentId = sg.StudentId,
+                                               StudentIdno = sg.Student.Idno,
+                                               StudentName = sg.Student.FullName
                                            })
                                            .ToListAsync();
                 //checking members to be removed

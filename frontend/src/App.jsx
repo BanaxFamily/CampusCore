@@ -26,8 +26,8 @@ import Layout from "./components/faculty/Layout";
 import CourseAssigned from "./components/faculty/assignedcourse/CourseAssigned";
 import ViewSpecificCourse from "./components/faculty/assignedcourse/ViewSpecificCourse";
 import FacultyDeliverable from "./components/faculty/assignedcourse/deliverable/FacultyDeliverable";
-import FacultyAddGroupWrapper from "./components/faculty/assignedcourse/studentgroups/FacultyAddGroupsWrapper";
 import FacultyStudentGroups from "./components/faculty/assignedcourse/studentgroups/FacultyStudentGroups";
+import FacultyUpdateAndAddGroupWrapper from "./components/faculty/assignedcourse/studentgroups/FacultyUpdateAndAddGroupsWrapper";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
@@ -129,7 +129,8 @@ export default function App() {
                   <Route path="deliverable/management" element={<FacultyDeliverable />} />
                   <Route path="student/groups/*" element={<Layout />}>
                     <Route index element={<FacultyStudentGroups />} />
-                    <Route path="add" element={<FacultyAddGroupWrapper />} />
+                    <Route path="add" element={<FacultyUpdateAndAddGroupWrapper />} />
+                    <Route path="update/:groupName/:groupId" element={<FacultyUpdateAndAddGroupWrapper />} />
                   </Route>
                 </Route>
               </Route>
