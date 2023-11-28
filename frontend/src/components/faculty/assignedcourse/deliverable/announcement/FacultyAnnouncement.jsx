@@ -1,4 +1,4 @@
-import { Alert, Button, Stack, TextField, TextareaAutosize, Typography } from "@mui/material";
+import { Alert, Button, Divider, Stack, TextField, TextareaAutosize, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../../../../utils/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,12 +35,12 @@ export default function FacultyAnnouncement() {
         }
     }
     return (
-        <Stack className="w-full px-10 pt-4">
+        <Stack className="shadow-lg  rounded-md w-full px-10 mt-4 pt-4">
             {error && <Alert>Something went wrong try again later</Alert>}
             {errorMessage && <Alert>{errorMessage}</Alert>}
-            <Stack>
+            <Stack className="py-4">
                 <Typography variant="subtitle1" className="!text-black" >Announcements</Typography>
-                <Stack className="mt-2 py-2 border border-black rounded-md md:px-8">
+                <Stack className="mt-2 py-2 rounded-md md:px-8">
                     <form action="" onSubmit={handleSubmit(createAnnouncement)}>
                         <input type="text" name="userId" value={userId} {...register('userId', { required: "userId is required" })} hidden />
                         <input type="text" name="offeredCourseId" value={offeredCourseId} {...register('offeredCourseId', { required: "Id is required" })} hidden />
@@ -63,7 +63,9 @@ export default function FacultyAnnouncement() {
                             </Stack>
                         </Stack>
                     </form>
-
+                    <Stack className="py-4">
+                        <Divider />
+                    </Stack>
                     <Stack className=" px-10 mt-2">
                         <FacultyCreatedAnnouncement />
                     </Stack>
