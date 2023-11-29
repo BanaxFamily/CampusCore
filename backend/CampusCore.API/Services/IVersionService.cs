@@ -1,6 +1,7 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CampusCore.API.Services
 {
@@ -24,34 +25,46 @@ namespace CampusCore.API.Services
         }
         public async Task<ResponseManager> GetAllAsync()
         {
-           /* var filePath = item.FilePath;
-
-            // Open the file stream
-            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-            // Create an IFormFile instance
-            var formFile = new FormFile(fileStream, 0, fileStream.Length, null, Path.GetFileName(filePath))
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "application/octet-stream" // Set the content type based on your file type
-            };*/
+           
             try
             {
                 var result = await _context.SubmissionVersions
                                             .Include(s=>s.Version)
                                             .Include(s=>s.Submission)
                                             .ToListAsync();
-
-                List<SubmissionVersion> data = new List<SubmissionVersion>();
+                if (result.Count < 1)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "No versions available"
+                    };
+                }
+                List<VersionViewModel> versions = new List<VersionViewModel>();
                 foreach ( var item in result)
                 {
-                    
+                    byte[] fileBytes = File.ReadAllBytes(item.Version.FilePath);
+                    var fileB64 = Convert.ToBase64String(fileBytes);
+                    versions.Add(new VersionViewModel
+                    {
+                        VersionId = item.VersionId,
+                        VersionNumber = item.Version.VersionNumber,
+                        DateSubmitted = item.Version.DateSubmitted,
+                        FileB64 = fileB64,
+                        FileType = item.Version.FileType,
+                        TargetedIssues = item.Version.TargetedIssues != null
+                                            ? item.Version.TargetedIssues.Split(',')
+                                                                           .Select(int.Parse)
+                                                                           .ToArray()
+                                            : Array.Empty<int>()
+                    });
                 }
+                
                 return new DataResponseManager
                 {
                     IsSuccess = true,
-                    Message = "Submission versions retrieved successfully",
-                    Data = result
+                    Message = "All submission versions retrieved successfully",
+                    Data = versions
                 };
             }
             catch (Exception ex)
@@ -75,12 +88,41 @@ namespace CampusCore.API.Services
                                             .Include(s => s.Submission)
                                             .Where(s=> s.SubmissionId == model.Id)
                                             .ToListAsync();
+                if (result.Count < 1)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "No versions available"
+                    };
+                }
 
+                List<VersionViewModel> versions = new List<VersionViewModel>();
+                foreach (var item in result)
+                {
+                    byte[] fileBytes = File.ReadAllBytes(item.Version.FilePath);
+                    var fileB64 = Convert.ToBase64String(fileBytes);
+                    versions.Add(new VersionViewModel
+                    {
+                        VersionId = item.VersionId,
+                        VersionNumber = item.Version.VersionNumber,
+                        DateSubmitted = item.Version.DateSubmitted,
+                        FileB64 = fileB64,
+                        FileType = item.Version.FileType,
+                        TargetedIssues = item.Version.TargetedIssues != null
+                                            ? item.Version.TargetedIssues.Split(',')
+                                                                           .Select(int.Parse)
+                                                                           .ToArray()
+                                            : Array.Empty<int>()
+                });
+                }
+                
+                
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = $"Submissions for {result.First().Submission.Title} retrieved successfully",
-                    Data = result
+                    Data = versions
                 };
             }
             catch (Exception ex)
@@ -98,15 +140,37 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.Versions
+                var item = await _context.Versions
                                             .FindAsync(model.Id);
 
-
+                if (item == null)
+                {
+                    return new ResponseManager
+                    {
+                        IsSuccess = true,
+                        Message = "No versions available"
+                    };
+                }
+                byte[] fileBytes = File.ReadAllBytes(item.FilePath);
+                var fileB64 = Convert.ToBase64String(fileBytes);
+                var version = new VersionViewModel
+                {
+                    VersionId = item.VersionId,
+                    VersionNumber = item.VersionNumber,
+                    DateSubmitted = item.DateSubmitted,
+                    FileB64 = fileB64,
+                    FileType = item.FileType,
+                    TargetedIssues = item.TargetedIssues != null
+                                            ? item.TargetedIssues.Split(',')
+                                                                           .Select(int.Parse)
+                                                                           .ToArray()
+                                            : Array.Empty<int>()
+                };
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = $"Submissions version with id: {model.Id} retrieved successfully",
-                    Data = result
+                    Data = version
                 };
             }
             catch (Exception ex)
@@ -125,18 +189,33 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.SubmissionVersions
+                var item = await _context.SubmissionVersions
                                             .Include(s => s.Version)
                                             .Include(s => s.Submission)
                                             .Where(s => s.SubmissionId == model.Id)
                                             .OrderByDescending(s => s.Version.DateSubmitted)
                                             .FirstOrDefaultAsync();
 
+                    byte[] fileBytes = File.ReadAllBytes(item.Version.FilePath);
+                    var fileB64 = Convert.ToBase64String(fileBytes);
+                    var version = new VersionViewModel
+                    {
+                        VersionId = item.VersionId,
+                        VersionNumber = item.Version.VersionNumber,
+                        DateSubmitted = item.Version.DateSubmitted,
+                        FileB64 = fileB64,
+                        FileType = item.Version.FileType,
+                        TargetedIssues = item.Version.TargetedIssues != null
+                                                ? item.Version.TargetedIssues.Split(',')
+                                                                               .Select(int.Parse)
+                                                                               .ToArray()
+                                                : Array.Empty<int>()
+                    };
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = $"Latest version for retrieved successfully",
-                    Data = result
+                    Data = version
                 };
             }
             catch (Exception ex)

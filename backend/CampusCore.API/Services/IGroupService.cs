@@ -16,6 +16,9 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateDetailsAsync(GroupUpdateDetailsViewModel model);
         Task<ResponseManager> UpdateMembersAsync(GroupUpdateMembersViewModel model);
         Task<ResponseManager> UpdateStatusAsync(GroupUpdateStatusViewModel model);
+        Task<ResponseManager> GetStudentsWithNoGroup( IntIdViewModel model);
+        Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model);
+        Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model);
         Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
     }
 
@@ -37,6 +40,7 @@ namespace CampusCore.API.Services
             {
                 Name = model.Name,
                 AdviserId = model.AdviserId,
+                LeaderId = model.LeaderId,
                 Status = "active",
                 OfferedCourseId = model.OfferedCourseId
             };
@@ -150,12 +154,13 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.StudentGroups
-                                            .Include(sg => sg.Student.FullName)
-                                            .Include(sg => sg.Student.Id)
-                                            .Include(sg => sg.Student.Idno)
-                                            .Include(sg => sg.Group)
-                                            .Select(sg => sg.Group)
+                var result = await _context.Groups
+                                            .Select(sg => new {
+                                                GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
+                                                Adviser = sg.Adviser.FullName,
+                                                GroupName = sg.Name,
+                                            })
                                             .ToListAsync();
 
                 return new DataResponseManager
@@ -180,13 +185,14 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.StudentGroups
-                                            .Include(sg => sg.Student.FullName)
-                                            .Include(sg => sg.Student.Id)
-                                            .Include(sg => sg.Student.Idno)
-                                            .Include(sg => sg.Group)
-                                            .Select(sg => sg.Group)
+                var result = await _context.Groups
                                             .Where(g=> g.OfferedCourseId == model.Id)
+                                            .Select(sg => new {
+                                                GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
+                                                Adviser = sg.Adviser.FullName,
+                                                GroupName = sg.Name,
+                                            })
                                             .ToListAsync();
 
                 return new DataResponseManager
@@ -213,11 +219,11 @@ namespace CampusCore.API.Services
             {
                 var result = await _context.StudentGroups
                                             .Where(g => g.StudentId == model.Id)
-                                            .Include(sg => sg.Student.FullName)
-                                            .Include(sg => sg.Student.Id)
-                                            .Include(sg => sg.Student.Idno)
-                                            .Include(sg=> sg.Group)
-                                            .Select(sg => sg.Group)
+                                            .Select(sg => new {
+                                                GroupId = sg.GroupId,
+                                                Adviser = sg.Group.Adviser.FullName,
+                                                GroupName = sg.Group.Name,
+                                            })
                                             .ToListAsync();
 
                 return new DataResponseManager
@@ -242,9 +248,9 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.Groups.FindAsync(model.Id);
-
-                if(result == null)
+                var sg = await _context.Groups.FindAsync(model.Id);
+               
+                if (sg == null)
                 {
                     return new ErrorResponseManager
                     {
@@ -257,7 +263,13 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = true,
                     Message = $"{model.Id} retrieved successfully",
-                    Data = result
+                    Data = new
+                    {
+                        GroupId = sg.Id,
+                        AdviserId = sg.AdviserId,
+                        Adviser = sg.Adviser.FullName,
+                        GroupName = sg.Name,
+                    }
                 };
             }
             catch (Exception ex)
@@ -276,19 +288,29 @@ namespace CampusCore.API.Services
 
             try
             {
+                
+
+                var leaderId = _context.StudentGroups
+                                            .Where(g => g.GroupId == model.Id)
+                                            .Select(sg => new String(sg.Group.LeaderId)).FirstOrDefault();
+
                 var result = await _context.StudentGroups
                                             .Where(g => g.GroupId == model.Id)
-                                            .Include(sg => sg.Student.FullName)
-                                            .Include(sg => sg.Student.Id)
-                                            .Include(sg => sg.Student.Idno)
-                                            .Select(sg => sg.Student)
+                                            .Select(sg => new {
+                                                StudentId = sg.StudentId,
+                                                StudentIdno = sg.Student.Idno,
+                                                StudentName = sg.Student.FullName,
+                                                IsLeader = sg.StudentId == leaderId? true : false
+                                            })
                                             .ToListAsync();
-
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = $"members of group {model.Id} retrieved successfully",
-                    Data = result
+                    Data = new
+                    {
+                        Members = result
+                    }
                 };
             }
             catch (Exception ex)
@@ -308,7 +330,7 @@ namespace CampusCore.API.Services
                 throw new NullReferenceException("Register Model is null");
 
 
-            var group = await _context.Groups.FindAsync(model.Id);
+            var group = await _context.Groups.FindAsync(model.GroupId);
 
             group.Name = model.Name;
             group.AdviserId = model.AdviserId;
@@ -339,10 +361,12 @@ namespace CampusCore.API.Services
         {
             if (model == null)
                 throw new NullReferenceException("Register Model is null");
+            
             var membersInDb = _context.StudentGroups
-                                      .Where(sg => sg.GroupId == model.Id)
-                                      .Select(sg=>sg.Student.Id)
-                                      .ToList();
+                                      .Where(sg => sg.GroupId == model.GroupId)
+                                      .Select(sg=> new string(sg.StudentId))
+                                      .ToArray();
+            
             var updatedMembers = model.Members;
 
             //checking members to be added
@@ -359,11 +383,11 @@ namespace CampusCore.API.Services
                     {
                         _context.StudentGroups.Add(new StudentGroup
                         {
-                            GroupId = model.Id,
+                            GroupId = model.GroupId,
                             StudentId = memberId
                         });
                     }
-                    _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                     foreach (var memberId in toRemoveMembers)
                     {
@@ -382,7 +406,26 @@ namespace CampusCore.API.Services
                         _context.StudentGroups.Remove(member);
 
                     }
+                    //update leader
+                    var group = await _context.Groups.FindAsync(model.GroupId);
+                    if (group == null)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "Error updating leader",
+                            IsSuccess = false,
+                            Errors = new List<string> { "Group not found in DB"}
+                        };
+                    }
+                    group.LeaderId = model.LeaderId;
+                    _context.Groups.Update(group);
+
                     await _context.SaveChangesAsync();
+                    return new ResponseManager
+                    {
+                        Message = "Group members updated successfully",
+                        IsSuccess = true
+                    };
                 }
                 catch(Exception ex)
                 {
@@ -395,13 +438,13 @@ namespace CampusCore.API.Services
                 }
              
             }
-            
-            return new ErrorResponseManager
+            return new ResponseManager
             {
-                Message = "Group is not created",
-                IsSuccess = false,
-                Errors = new List<string>() { "Error creating group in DB" }
+                Message = "No member changes found",
+                IsSuccess = true
             };
+
+
         }
 
         public async Task<ResponseManager> UpdateStatusAsync(GroupUpdateStatusViewModel model)
@@ -467,5 +510,136 @@ namespace CampusCore.API.Services
             }
         }
 
+        public async Task<ResponseManager> GetStudentsWithNoGroup(IntIdViewModel model)
+        {
+            try
+            {
+                var studentWithGroups = await _context.StudentGroups
+                                            .Where(g => g.Group.OfferedCourseId == model.Id)
+                                            .Select(sg => new
+                                            {
+                                                StudentId = sg.StudentId,
+                                                StudentIdno = sg.Student.Idno,
+                                                StudentName = sg.Student.FullName
+                                            })
+                                            .ToListAsync();
+
+                var enrolledStudents = await _context.CourseEnrollments
+                                           .Where(ce => ce.OfferedCourseId == model.Id)
+                                           .Select(sg => new
+                                           {
+                                               StudentId = sg.StudentId,
+                                               StudentIdno = sg.Student.Idno,
+                                               StudentName = sg.Student.FullName
+                                           })
+                                           .ToListAsync();
+                //checking members to be removed
+                var noGroupStudents = enrolledStudents.Except(studentWithGroups).ToList();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"groups of offered course {model.Id} retrieved successfully",
+                    Data = noGroupStudents
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching groups in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+
+        public async Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model)
+        {
+            var groupId = model.GroupId;
+            var offeredCourseId = model.OfferedCourseId;
+
+
+            try
+            {
+                var leaderId = _context.StudentGroups
+                                            .Where(g => g.GroupId == groupId)
+                                            .Select(sg => new String(sg.Group.LeaderId)).FirstOrDefault();
+
+                var members = await _context.StudentGroups
+                                            .Where(g => g.GroupId == groupId)
+                                            .Select(sg => new String(sg.StudentId)
+                                            )
+                                            .ToListAsync();
+
+                var enrolledStudents = await _context.CourseEnrollments
+                                           .Where(ce => ce.OfferedCourseId == offeredCourseId)
+                                           .Select(sg => new
+                                           {
+                                               StudentId = sg.StudentId,
+                                               StudentIdno = sg.Student.Idno,
+                                               StudentName = sg.Student.FullName,
+                                               IsLeader = sg.StudentId == leaderId ? true : false,
+                                               IsMember = members.Contains(sg.StudentId) ? true : false
+                                           })
+                                           .ToListAsync();
+                
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"students of offered course {groupId} retrieved successfully",
+                    Data = enrolledStudents
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching students of offered course in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model)
+        {
+            var studentId = model.StudentId;
+            var offeredCourseId = model.OfferedCourseId;
+
+
+            try
+            {
+                var groupId =  await _context.StudentGroups
+                                            .Where(g => g.Group.OfferedCourseId == offeredCourseId && g.StudentId == studentId)
+                                            .Select(sg => new
+                                            {
+                                                StudentGroupId = sg.GroupId
+                                            }).FirstOrDefaultAsync();
+
+                
+
+                
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"students of offered course {groupId} retrieved successfully",
+                    Data = groupId
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching students of offered course in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
     }
 }

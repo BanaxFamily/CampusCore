@@ -6,10 +6,10 @@ import TableContainer from '@mui/material/TableContainer';
 
 export default function DynamicTable({children}) {
 
- 
+
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table sx={{ tableLayout: 'fixed', width:'100%' }} size="small" aria-label="a dense table">
           {children}
       </Table>
     </TableContainer>

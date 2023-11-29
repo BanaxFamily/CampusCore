@@ -4,6 +4,7 @@ using CampusCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231127172824_Add-file-type-to-version-model")]
+    partial class Addfiletypetoversionmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,10 +223,6 @@ namespace CampusCore.API.Migrations
 
                     b.Property<string>("AdviserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LeaderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -637,14 +635,7 @@ namespace CampusCore.API.Migrations
                     b.Property<int>("ResearchId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ResearchId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UserPublishedResearch");
                 });
@@ -1210,23 +1201,6 @@ namespace CampusCore.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("CampusCore.API.Models.UserPublishedResearch", b =>
-                {
-                    b.HasOne("CampusCore.API.Models.PublicResearchRepository", "Research")
-                        .WithMany()
-                        .HasForeignKey("ResearchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CampusCore.API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Research");
 
                     b.Navigation("User");
                 });

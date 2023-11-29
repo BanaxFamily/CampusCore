@@ -7,6 +7,7 @@ namespace CampusCore.API.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Status { get; set; }
+        public string LeaderId { get; set; }
 
         //offered course foreign key so they can have different groups for different course they take
         public int OfferedCourseId { get; set; }

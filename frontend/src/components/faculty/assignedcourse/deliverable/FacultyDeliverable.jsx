@@ -29,7 +29,7 @@ export default function FacultyDeliverable() {
                         <Stack className="w-full " >
                             <FacultyGetDeliverables />
                         </Stack>
-                        <Stack className="border-l my-4 w-[30%]">
+                        <Stack className="!hidden md:!block border-l my-4 md:w-[40%] lg:w-[35%]">
                             <SpecificCourseLinks />
                         </Stack>
                     </Stack>

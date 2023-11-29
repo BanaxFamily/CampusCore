@@ -172,7 +172,7 @@ export const facultyAsideLinks = [
   },
   {
     id: "groups",
-    link: "/student-groups",
+    link: "/student/groups",
     title: "Student groups",
     // icon: <Approval />,
   },

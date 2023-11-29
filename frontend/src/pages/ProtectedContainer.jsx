@@ -38,7 +38,7 @@ const ProtectedContainer = (props) => {
               </div>
               <div className={`w-full ${location.pathname.startsWith('/courses/submission/view/') ? 'md:w-[75%]' : 'md:flex-grow'} px-2 md:px-4 m-0 `} role="main">
                 <div className="sm:p-0 md:px-6 lg:pl-8 mt-4">
-                  <div className="mx-auto px-2 sm:px-8 md:px-0 w-full ">{props.component}</div>
+                  <div className="mx-auto px-2 sm:px-8 md:px-0  ">{props.component}</div>
                 </div>
               </div>
               {/* {userRole !== "Admin" && (

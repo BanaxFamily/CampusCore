@@ -15,7 +15,7 @@ export default function FacultyShowDeliverables({ data }) {
 
                 data.map((info, index) => {
                     return (
-                        <Stack key={index} className="mx-auto rounded-t-md group">
+                        <Stack key={index} className="rounded-t-md group">
                             <DynamicTable>
                                 <TableHead>
                                     <TableRow className="bg-slate-300">
@@ -23,7 +23,7 @@ export default function FacultyShowDeliverables({ data }) {
                                         <TableCell className="border !text-black !font-bold"> Description </TableCell>
                                         <TableCell className="border !text-black !font-bold"> Instruction </TableCell>
                                         <TableCell className="border !text-black !font-bold"> Date </TableCell>
-                                        <TableCell className="border !text-black !font-bold" align="center" colSpan={2}> Action</TableCell>
+                                        <TableCell className="border !text-black !font-bold" align="center"> Action</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
