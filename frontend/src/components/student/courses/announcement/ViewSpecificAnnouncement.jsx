@@ -11,9 +11,10 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../../../utils/AuthContext";
 
 export default function ViewSpecificAnnouncement() {
+
     const { userId } = useAuth()
     let { announcementId } = useParams();
-    const { register, handleSubmit } = useForm()
+
     const [specificAnnouncement, setSpecificAnnouncement] = useState([]);
     const [error, setError] = useState(false);
     const breadCrumbUrl = [
@@ -48,7 +49,8 @@ export default function ViewSpecificAnnouncement() {
         showSpecificCourse();
     }, []);
 
-    async function createComment(data) {
+
+    async function createComment(data){
         try {
             const response = await AnnounceComment.addAnnouncementComment(data)
             console.log(response)
@@ -97,7 +99,7 @@ export default function ViewSpecificAnnouncement() {
                         <input type="text" name="userId" value={userId} hidden {...register("userId", { required: "ID is required" })} />
                         <Stack className="mt-2 !flex-row items-center gap-1">
                             <Stack className="w-full">
-                                <TextareaAutosize className="w-full border px-2 !text-black bg-slate-100 rounded-lg" placeholder="Write a comment" name="content" style={{ resize: "none" }} minRows={2} {...register('content', { required: "This is reqruied" })} />
+  
                             </Stack>
                             <Button type="submit" variant="contained" size="small">
                                 Comment
