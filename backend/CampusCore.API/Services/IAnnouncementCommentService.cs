@@ -75,6 +75,7 @@ namespace CampusCore.API.Services
                                             {
                                                 AnnouncementId = x.AnnouncementId,
                                                 UserId = x.UserId,
+                                                UserFullName = x.User.FullName,
                                                 CommentId = x.Id,
                                                 Content = x.Content,
                                                 CreatedAt = x.CreatedAt
