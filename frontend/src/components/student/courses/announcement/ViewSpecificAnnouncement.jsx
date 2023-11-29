@@ -58,9 +58,10 @@ const CommentWithLimit = ({ comment }) => {
 };
 
 export default function ViewSpecificAnnouncement() {
+
     const { userId } = useAuth()
     let { announcementId } = useParams();
-    const { register, handleSubmit } = useForm()
+
     const [specificAnnouncement, setSpecificAnnouncement] = useState([]);
     const [specificComment, setSpecificComment] = useState([]);
     const [error, setError] = useState(false);
@@ -97,7 +98,8 @@ export default function ViewSpecificAnnouncement() {
         showSpecificCourse();
     }, []);
 
-    async function createComment(data) {
+
+    async function createComment(data){
         try {
             const response = await AnnounceComment.addAnnouncementComment(data)
             console.log(response)
