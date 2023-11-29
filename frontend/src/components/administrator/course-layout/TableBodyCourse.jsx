@@ -1,59 +1,45 @@
 /* eslint-disable react/prop-types */
-import { TableCell, TableRow } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import { IconButton, TableCell, TableRow } from "@mui/material";
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
-import { FaPencil } from "react-icons/fa6";
-import { MdDeleteForever } from "react-icons/md";
 
 export default function TableBodyCourse(props) {
   return (
-    <TableRow
-      key={props.index}
-      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-      className="hover:bg-slate-200"
-    >
-      <TableCell>{props.index}</TableCell>
-      <TableCell>{props.course.name}</TableCell>
-      <TableCell>{props.course.description}</TableCell>
-      <TableCell>
+    <TableRow className="hover:bg-slate-200">
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.index}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.course.name}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.course.description}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">
         {props.course.status === "open" ? (
           <form action="">
-            <button>
-              <AiOutlineCheckCircle color="green" size={18} />
-            </button>
+            <IconButton>
+              <AiOutlineCheckCircle color="green" size={20} />
+            </IconButton>
           </form>
         ) : (
           <form>
-            <button>
-              <AiOutlineCloseCircle color="red" size={18} />
-            </button>
+            <IconButton>
+              <AiOutlineCloseCircle color="red" size={20} />
+            </IconButton>
           </form>
         )}
       </TableCell>
-      <TableCell>
-        <div className="flex items-center justify-center">
-          <button
-            className="text-sm flex self-center text-green-500 uppercase px-
-          hover:text-green-900 hover:cursor-pointer"
-          >
-            <FaPencil size={20} onClick={props.openModalUpdate} />
-          </button>
-        </div>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">
+          <IconButton size="small">
+            <Edit size="small" className="text-green-500" onClick={props.openModalUpdate} />
+          </IconButton>
       </TableCell>
-      <TableCell>
-        <div className="flex items-center justify-center">
-          <button
-            className="text-sm flex self-center text-red-500 uppercase px-
-          hover:text-red-900 hover:cursor-pointer"
-          >
-            <MdDeleteForever
-              size={20}
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">
+          <IconButton size="small">
+            <Delete
+              className="text-red-500"
+              size="small"
               onClick={(e) => {
                 props.onDeleteCourseClicked(props.course);
                 e.stopPropagation();
               }}
             />
-          </button>
-        </div>
+          </IconButton>
       </TableCell>
     </TableRow>
   );

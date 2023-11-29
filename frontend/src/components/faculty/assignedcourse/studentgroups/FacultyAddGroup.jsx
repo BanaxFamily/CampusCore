@@ -135,7 +135,7 @@ export default function FacultyAddGroup() {
                                     }}
                                     variant="outlined"
                                     size='small'
-                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('name')}
+                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                                     name="adviserId"
                                     {...register("adviserId", { required: "select one option" })}
                                 >

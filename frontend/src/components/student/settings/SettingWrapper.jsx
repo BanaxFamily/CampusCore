@@ -19,6 +19,7 @@ export default function SettingWrapper() {
         async function getUserCredentials() {
             try {
                 const response = await UserApi.getUserById({ 'id': userId })
+                console.log(response.data)
                 if (response.isSuccess) {
                     setCrdentials(response.data)
                 }
@@ -76,7 +77,7 @@ export default function SettingWrapper() {
                             </Stack>
                             <Stack className="md:!flex-row md:items-center ">
                                 <Typography className="!text-[14px] !font-semibold w-[20%] !tracking-wider">Role</Typography>
-                                <Typography className="border-2 rounded-md !text-[14px] w-full px-3 py-2">{credentials.user.userName}</Typography>
+                                <Typography className="border-2 rounded-md !text-[14px] w-full px-3 py-2">{credentials.roles[0]}</Typography>
                             </Stack>
                             <Stack className="md:!flex-row md:items-center ">
                                 <Typography className="!text-[14px] !font-semibold w-[20%] !tracking-wider">Phone #</Typography>
