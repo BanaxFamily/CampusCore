@@ -11,9 +11,9 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../../../utils/AuthContext";
 
 export default function ViewSpecificAnnouncement() {
-    const {userId} = useAuth()
+    const { userId } = useAuth()
     let { announcementId } = useParams();
-    const {register, handleSubmit} =  useForm()
+    const { register, handleSubmit } = useForm()
     const [specificAnnouncement, setSpecificAnnouncement] = useState([]);
     const [error, setError] = useState(false);
     const breadCrumbUrl = [
@@ -34,6 +34,7 @@ export default function ViewSpecificAnnouncement() {
         async function showSpecificCourse() {
             try {
                 const response = await AnnouncementApi.getSpecificCourse({ id: announcementId });
+
                 console.log(response.data);
                 if (response.isSuccess) {
                     setSpecificAnnouncement(response.data);
@@ -47,7 +48,7 @@ export default function ViewSpecificAnnouncement() {
         showSpecificCourse();
     }, []);
 
-    async function createComment(data){
+    async function createComment(data) {
         try {
             const response = await AnnounceComment.addAnnouncementComment(data)
             console.log(response)
@@ -92,11 +93,11 @@ export default function ViewSpecificAnnouncement() {
                     </Stack>
                     <Divider className="!border-y" />
                     <form action="" onSubmit={handleSubmit(createComment)}>
-                        <input type="text" name="announcementId" value={announcementId} hidden {...register("announcementId", {required: "ID is required"})} />
-                        <input type="text" name="userId" value={userId} hidden {...register("userId", {required: "ID is required"})} />
+                        <input type="text" name="announcementId" value={announcementId} hidden {...register("announcementId", { required: "ID is required" })} />
+                        <input type="text" name="userId" value={userId} hidden {...register("userId", { required: "ID is required" })} />
                         <Stack className="mt-2 !flex-row items-center gap-1">
                             <Stack className="w-full">
-                                <TextareaAutosize className="w-full border px-2 !text-black bg-slate-100 rounded-lg" placeholder="Write a comment" name="content" style={{ resize: "none" }} minRows={2} {...register('content', {required: "This is reqruied"})}/>
+                                <TextareaAutosize className="w-full border px-2 !text-black bg-slate-100 rounded-lg" placeholder="Write a comment" name="content" style={{ resize: "none" }} minRows={2} {...register('content', { required: "This is reqruied" })} />
                             </Stack>
                             <Button type="submit" variant="contained" size="small">
                                 Comment

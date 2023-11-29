@@ -51,4 +51,10 @@ namespace CampusCore.Shared
         public int GroupId { get; set; }
         public int OfferedCourseId { get; set; }
     }
+
+    public class GetGroupOfStudentViewModel
+    {
+        public string StudentId { get; set; }
+        public int OfferedCourseId { get; set; }
+    }
 }

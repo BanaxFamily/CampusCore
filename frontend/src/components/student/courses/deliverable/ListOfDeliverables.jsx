@@ -4,7 +4,7 @@ import { Collapse, Divider, IconButton, Stack, Typography } from "@mui/material"
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-export default function ListOfDeliverables({ data }) {
+export default function ListOfDeliverables({ data, groupId }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const handleToggleCollapse = () => {
@@ -29,7 +29,7 @@ export default function ListOfDeliverables({ data }) {
                                     {/* <Typography className="!text-sm">{info.deliverableDescription}</Typography> */}
                                 </Stack>
                                 <Stack>
-                                    <NavLink to={`deliverable/${info.deliverableTitle}/${info.deliverableId}/${info.offeredCourseDeliverableId}`}>
+                                    <NavLink to={`deliverable/${info.deliverableTitle}/${info.deliverableId}/${info.offeredCourseDeliverableId}/group/${groupId}`}>
                                         <IconButton className="!rounded-none group-hover:hover:text-blue-300">
                                             <Typography  className="!text-sm pr-2">view </Typography><MoreHoriz />
                                         </IconButton>

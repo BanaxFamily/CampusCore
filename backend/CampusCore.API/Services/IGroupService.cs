@@ -18,6 +18,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateStatusAsync(GroupUpdateStatusViewModel model);
         Task<ResponseManager> GetStudentsWithNoGroup( IntIdViewModel model);
         Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model);
+        Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model);
         Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
     }
 
@@ -553,6 +554,7 @@ namespace CampusCore.API.Services
             }
         }
 
+
         public async Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model)
         {
             var groupId = model.GroupId;
@@ -589,6 +591,44 @@ namespace CampusCore.API.Services
                     IsSuccess = true,
                     Message = $"students of offered course {groupId} retrieved successfully",
                     Data = enrolledStudents
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching students of offered course in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model)
+        {
+            var studentId = model.StudentId;
+            var offeredCourseId = model.OfferedCourseId;
+
+
+            try
+            {
+                var groupId =  await _context.StudentGroups
+                                            .Where(g => g.Group.OfferedCourseId == offeredCourseId && g.StudentId == studentId)
+                                            .Select(sg => new
+                                            {
+                                                StudentGroupId = sg.GroupId
+                                            }).FirstOrDefaultAsync();
+
+                
+
+                
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"students of offered course {groupId} retrieved successfully",
+                    Data = groupId
                 };
             }
             catch (Exception ex)

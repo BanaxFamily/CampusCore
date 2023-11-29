@@ -79,7 +79,7 @@ export default function App() {
                 <Route path={`information/:courseName/:offeredCourseId/*`} element={<LayoutCourse />} >
                   <Route index element={<DeliverableWrapper />} />
                   <Route path="announcements/view/:announcementId" element={< ViewSpecificAnnouncement />} />
-                  <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<LayoutCourse />} >
+                  <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/group/:groupId/*" element={<LayoutCourse />} >
                     <Route index element={<ViewSpecificDeliverable />} />
                     <Route path=":filePath" element={<PdfViewer />} />
                   </Route>
