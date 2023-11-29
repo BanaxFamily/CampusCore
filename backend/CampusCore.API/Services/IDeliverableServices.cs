@@ -34,6 +34,8 @@ namespace CampusCore.API.Services
                 Name = model.Name,
                 Description = model.Description,
                 Instruction = model.Instruction,
+                ForAdviser = model.ForAdviser,
+                GroupSubmission = model.GroupSubmission
             };
 
 
@@ -204,7 +206,9 @@ namespace CampusCore.API.Services
                 deliverable.Name = model.Name;
                 deliverable.Description = model.Description;
                 deliverable.Instruction = model.Instruction;
-                
+                deliverable.ForAdviser = model.ForAdviser;
+                deliverable.GroupSubmission = model.GroupSubmission;
+
 
                 // Save changes to the database
                 var result = await _context.SaveChangesAsync();
