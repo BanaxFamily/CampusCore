@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [userRole, setUserRole] = useState(null)
     const [error, setError] = useState(null)
     const [courseName, setCourseName] = useState(null)
+    const [facultyGroupAdviserId, setFacultyGroupAdviserId] = useState(null)
 
     useEffect(() => {
         checkUserStatus()
@@ -60,6 +61,7 @@ export const AuthProvider = ({ children }) => {
         setUserId(null)
         setUserRole(null)
         setLoading(false)
+        setFacultyGroupAdviserId(null)
     }
 
     const checkUserStatus = () => {
@@ -82,13 +84,15 @@ export const AuthProvider = ({ children }) => {
         error,
         user,
         userId,
-        courseName,
-        setCourseName,
-        setError,
         userRole,
-        setLoading,
+        courseName,
+        facultyGroupAdviserId,
+        setError,
         loginUser,
+        setLoading,
         logOutUser,
+        setCourseName,
+        setFacultyGroupAdviserId
     }
 
 

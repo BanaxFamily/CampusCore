@@ -17,7 +17,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateMembersAsync(GroupUpdateMembersViewModel model);
         Task<ResponseManager> UpdateStatusAsync(GroupUpdateStatusViewModel model);
         Task<ResponseManager> GetStudentsWithNoGroup( IntIdViewModel model);
-        
+        Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model);
         Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
     }
 
@@ -156,6 +156,7 @@ namespace CampusCore.API.Services
                 var result = await _context.Groups
                                             .Select(sg => new {
                                                 GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
                                                 Adviser = sg.Adviser.FullName,
                                                 GroupName = sg.Name,
                                             })
@@ -187,6 +188,7 @@ namespace CampusCore.API.Services
                                             .Where(g=> g.OfferedCourseId == model.Id)
                                             .Select(sg => new {
                                                 GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
                                                 Adviser = sg.Adviser.FullName,
                                                 GroupName = sg.Name,
                                             })
@@ -245,9 +247,9 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.Groups.FindAsync(model.Id);
+                var sg = await _context.Groups.FindAsync(model.Id);
                
-                if (result == null)
+                if (sg == null)
                 {
                     return new ErrorResponseManager
                     {
@@ -260,7 +262,13 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = true,
                     Message = $"{model.Id} retrieved successfully",
-                    Data = result
+                    Data = new
+                    {
+                        GroupId = sg.Id,
+                        AdviserId = sg.AdviserId,
+                        Adviser = sg.Adviser.FullName,
+                        GroupName = sg.Name,
+                    }
                 };
             }
             catch (Exception ex)
@@ -540,6 +548,55 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = false,
                     Message = "An error occurred while fetching groups in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model)
+        {
+            var groupId = model.GroupId;
+            var offeredCourseId = model.OfferedCourseId;
+
+
+            try
+            {
+                var leaderId = _context.StudentGroups
+                                            .Where(g => g.GroupId == groupId)
+                                            .Select(sg => new String(sg.Group.LeaderId)).FirstOrDefault();
+
+                var members = await _context.StudentGroups
+                                            .Where(g => g.GroupId == groupId)
+                                            .Select(sg => new String(sg.StudentId)
+                                            )
+                                            .ToListAsync();
+
+                var enrolledStudents = await _context.CourseEnrollments
+                                           .Where(ce => ce.OfferedCourseId == offeredCourseId)
+                                           .Select(sg => new
+                                           {
+                                               StudentId = sg.StudentId,
+                                               StudentIdno = sg.Student.Idno,
+                                               StudentName = sg.Student.FullName,
+                                               IsLeader = sg.StudentId == leaderId ? true : false,
+                                               IsMember = members.Contains(sg.StudentId) ? true : false
+                                           })
+                                           .ToListAsync();
+                
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"students of offered course {groupId} retrieved successfully",
+                    Data = enrolledStudents
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching students of offered course in DB",
                     Errors = new List<string> { ex.Message }
                 };
             }

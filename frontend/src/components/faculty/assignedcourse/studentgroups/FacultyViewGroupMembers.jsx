@@ -9,7 +9,7 @@ import Modal from '../../../administrator/Modal';
 import DashBoardHeading from '../../../reusable/DashBoardHeading';
 
 
-export default function FacultyViewGroupMembers({ onDismiss, groupId, groupName }) {
+export default function FacultyViewGroupMembers({ onDismiss, groupId, groupName,adviserId }) {
     const [groupMembers, setGroupMembers] = useState([])
 
     useEffect(() => {
@@ -37,8 +37,11 @@ export default function FacultyViewGroupMembers({ onDismiss, groupId, groupName 
         >
             <Stack>
                 <Stack className='!flex-row justify-between mb-2'>
-                    <Typography variant='h6'>{groupName} Group Members:</Typography>
-                    <NavLink to={`update/${groupName}/${groupId}`}> Edit Members</NavLink>
+                    <Typography variant='h6'><span className='font-bold'>{groupName}</span> Group Members:</Typography>
+                    <Stack className='!flex-row gap-2'>
+                        <NavLink to={`update/members/${groupName}/${groupId}`} className="underline text-blue-600 rounded-md px-2 font-bold tracking-wider !text-[12px] flex items-center hover:text-blue-900"> Edit Members</NavLink>
+                        <NavLink to={`update/group-details/${groupName}/${groupId}/${adviserId}`} className="underline text-blue-600 rounded-md px-2 font-bold tracking-wider !text-[12px] flex items-center hover:text-blue-900"> Edit Group</NavLink>
+                    </Stack>
                 </Stack>
                 <Stack className='shadow-lg shadow-gray-300 border rounded-md'>
 
@@ -53,7 +56,7 @@ export default function FacultyViewGroupMembers({ onDismiss, groupId, groupName 
                                         <ListItemIcon>
                                             {member.isLeader ? <StarIcon className='!text-yellow-300' /> : ""}
                                         </ListItemIcon>
-                                        <ListItemText primary={member.studentName} />
+                                        <ListItemText primary={<Typography className='!text-[14px]'>{member.studentName}</Typography>} />
                                     </ListItemButton>
                                 </ListItem>
                             ))

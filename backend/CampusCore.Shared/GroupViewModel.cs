@@ -24,7 +24,6 @@ namespace CampusCore.Shared
     {
         public int GroupId { get; set; }
         public string Name { get; set; }
-        public string Status { get; set; }
         public string? AdviserId { get; set; } = null;
     }
     public class GroupUpdateMembersViewModel
@@ -45,5 +44,11 @@ namespace CampusCore.Shared
     {
         public int Id { get; set; }
         public string Status { get; set; }
+    }
+
+    public class GetStudentsForUpdateViewModel
+    {
+        public int GroupId { get; set; }
+        public int OfferedCourseId { get; set; }
     }
 }

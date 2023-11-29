@@ -14,6 +14,7 @@ export default function FacultyStudentGroupTable() {
     const [viewMembersModal, setViewMembersModal] = useState("")
     const [groupIdToView, setGroupIdToView] = useState("")
     const [groupNameToView, setGroupNameToView] = useState("")
+    const [groupAdiverId, setGroupAdviserId] = useState("")
 
     useEffect(() => {
         async function showAllGroups() {
@@ -30,15 +31,16 @@ export default function FacultyStudentGroupTable() {
         showAllGroups()
     }, [])
 
-    function viewMembers(id, name){
+    function viewMembers(id, name,adviserId){
         setViewMembersModal(true)
         setGroupIdToView(id)
         setGroupNameToView(name)
+        setGroupAdviserId(adviserId)
     }
 
     return (
         <Stack className="mx-auto rounded-t-md group">
-            <NavLink to={'add'} className="flex self-end !mr-4 !mt-2 " size="small">Add group</NavLink>
+            <NavLink to={'add'} className="border text-[12px] py-1 px-3 hover:bg-blue-400 my-2 tracking-wider rounded-md bg-blue-500 text-white uppercase  flex self-end !mr-4 !mt-2 " size="small">Add group</NavLink>
             <DynamicTable>
                 <TableHead>
                     <TableRow className="bg-slate-300">
@@ -54,14 +56,14 @@ export default function FacultyStudentGroupTable() {
                                 <TableRow key={index}>
                                     <TableCell>{group.groupName}</TableCell>
                                     <TableCell>{group.adviser}</TableCell>
-                                    <TableCell align="center"> <Button onClick={() => viewMembers(group.groupId,group.groupName)} size="small" className="!text-sm">view members</Button></TableCell>
+                                    <TableCell align="center"> <Button onClick={() => viewMembers(group.groupId,group.groupName, group.adviserId)} size="small" className="!text-sm">view </Button></TableCell>
                                 </TableRow>
                             ))
                         }
                 </TableBody>
             </DynamicTable>
 
-            {viewMembersModal && <FacultyViewGroupMembers groupId={groupIdToView} groupName={groupNameToView}/>}
+            {viewMembersModal && <FacultyViewGroupMembers onDismiss={() => setViewMembersModal(false)} groupId={groupIdToView} adviserId={groupAdiverId} groupName={groupNameToView}/>}
         </Stack>
     )
 }
