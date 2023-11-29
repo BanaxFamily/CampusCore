@@ -130,7 +130,8 @@ export default function App() {
                   <Route path="student/groups/*" element={<Layout />}>
                     <Route index element={<FacultyStudentGroups />} />
                     <Route path="add" element={<FacultyUpdateAndAddGroupWrapper />} />
-                    <Route path="update/:groupName/:groupId" element={<FacultyUpdateAndAddGroupWrapper />} />
+                    <Route path="update/members/:groupName/:groupId" element={<FacultyUpdateAndAddGroupWrapper />} />
+                    <Route path="update/group-details/:groupName/:groupId/:groupAdviserId" element={<FacultyUpdateAndAddGroupWrapper />} />
                   </Route>
                 </Route>
               </Route>

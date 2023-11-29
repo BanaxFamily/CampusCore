@@ -3,20 +3,21 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Alert, Button, Checkbox, Collapse, FormControlLabel, Radio, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 // import * as UserRole from "../../../../network/getUserRole_api";
 import * as GroupApi from "../../../../network/group_api";
 
 export default function FacultyUpdateMembers() {
+    const navigate = useNavigate()
     let { offeredCourseId, groupName, groupId } = useParams();
     const [chooseMember, setChooseMember] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    // const [userRoles, setUserRoles] = useState([]);
     const [students, setStudents] = useState([]);
     const [members, setSelectedMembers] = useState([]);
     const [leader, setLeader] = useState("");
-    const { reset, handleSubmit } = useForm();
+    const [updateSuccessfull, setUpdateSuccessfull] = useState(false);
+    const { handleSubmit, formState: {isSubmitting} } = useForm();
 
     function handleCheckboxChange(studentId) {
         setSelectedMembers((prevMembers) => {
@@ -50,13 +51,7 @@ export default function FacultyUpdateMembers() {
             }
         }
 
-        // async function getUserRoles() {
-        //     const response = await UserRole.getUserRoles({ "role": "faculty" });
-        //     setUserRoles(response.data);
-        // }
-
         getStudentsFromUpdateApi();
-        // getUserRoles();
 
     }, []);
 
@@ -69,17 +64,23 @@ export default function FacultyUpdateMembers() {
         try {
             const response = await GroupApi.updateMembers(studentGroupData);
             if (response.isSuccess) {
-                reset();
+                setUpdateSuccessfull(true)
                 return;
             }
         } catch (error) {
             console.error(error);
+        } finally{
+            setTimeout(() => {
+                setUpdateSuccessfull(false)
+                navigate('../')
+            }, 2000)
         }
     }
 
     return (
         <Stack paddingBottom={4} className=" border-3 border-red-400">
             <Stack className="rounded-md">
+                {updateSuccessfull && <Alert>Updated successfully</Alert>}
                 <form action="" onSubmit={handleSubmit(updateGroupMembers)}>
                     <Stack className='mt-4 px-10 gap-2'>
                         <Stack className='!flex-row items-center'>
@@ -122,31 +123,7 @@ export default function FacultyUpdateMembers() {
                                 </Collapse>
                             </Stack>
                         </Stack>
-                        {/* <Stack className='!flex-row items-center'>
-                            <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>Adviser {" "} :</Typography>
-                            <Stack className='w-full'>
-                                <TextField
-                                    select
-                                    label="Adviser"
-                                    SelectProps={{
-                                        native: true,
-                                    }}
-                                    variant="outlined"
-                                    size='small'
-                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }}
-                                    name="adviserId"
-                                    {...register("adviserId", { required: "select one option" })}
-                                >
-                                    <option value=""></option>
-                                    {
-                                        userRoles.map((role, index) => (
-                                            <option value={role.id} key={index}>{role.fullName}</option>
-                                        ))
-                                    }
-                                </TextField>
-                            </Stack>
-                        </Stack> */}
-                        <Button type='submit' variant='contained' size='small' className=' !my-2 flex self-end'>Add</Button>
+                        <Button type='submit' disabled={isSubmitting} variant='contained' size='small' className=' !my-2 flex self-end'>Add</Button>
                     </Stack>
                 </form>
             </Stack>

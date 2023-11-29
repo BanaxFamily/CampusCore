@@ -69,3 +69,14 @@ export async function updateMembers(data){
 
     return response;
 }
+export async function updateDetails(data){
+    const response = await fetchData("api/group/updateDetails", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}

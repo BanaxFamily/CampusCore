@@ -156,6 +156,7 @@ namespace CampusCore.API.Services
                 var result = await _context.Groups
                                             .Select(sg => new {
                                                 GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
                                                 Adviser = sg.Adviser.FullName,
                                                 GroupName = sg.Name,
                                             })
@@ -187,6 +188,7 @@ namespace CampusCore.API.Services
                                             .Where(g=> g.OfferedCourseId == model.Id)
                                             .Select(sg => new {
                                                 GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
                                                 Adviser = sg.Adviser.FullName,
                                                 GroupName = sg.Name,
                                             })
@@ -245,9 +247,9 @@ namespace CampusCore.API.Services
         {
             try
             {
-                var result = await _context.Groups.FindAsync(model.Id);
+                var sg = await _context.Groups.FindAsync(model.Id);
                
-                if (result == null)
+                if (sg == null)
                 {
                     return new ErrorResponseManager
                     {
@@ -260,7 +262,13 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = true,
                     Message = $"{model.Id} retrieved successfully",
-                    Data = result
+                    Data = new
+                    {
+                        GroupId = sg.Id,
+                        AdviserId = sg.AdviserId,
+                        Adviser = sg.Adviser.FullName,
+                        GroupName = sg.Name,
+                    }
                 };
             }
             catch (Exception ex)
