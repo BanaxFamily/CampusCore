@@ -12,10 +12,14 @@ import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import StudentAnnouncementCourse from "../announcement/StudentAnnouncementCourse";
+import * as GroupApi from "../../../../network/group_api"
+import { useAuth } from "../../../../utils/AuthContext";
 
 export default function DeliverableWrapper() {
+  let {userId} = useAuth()
   let { courseName, offeredCourseId } = useParams()
   const [deliverable, setDeliverables] = useState([])
+  const [groupId, setGroupId] = useState("")
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const breadCrumbUrl = [
@@ -32,8 +36,10 @@ export default function DeliverableWrapper() {
     async function showListOfDeliverables() {
       try {
         const response = await OfferedCourseDeliverable.getFacultyOfferedCourseDeliverables({ 'id': offeredCourseId })
-        if (response.isSuccess) {
+        const groupId = await GroupApi.getGroupId({ 'studentId': userId, 'offeredCourseId': offeredCourseId })
+        if (response.isSuccess && groupId.isSuccess) {
           setDeliverables(response.data)
+          setGroupId(groupId.data.studentGroupId)
           return
         }
       } catch (error) {
@@ -61,7 +67,8 @@ export default function DeliverableWrapper() {
 
       <Stack className="!flex-row">
         <Stack paddingY={4} className="!px-10 w-full gap-4">
-          <StudentAnnouncementCourse />
+          {/* THIS IS FOR ANNOUNCEMENTS COMPONENT */}
+          <StudentAnnouncementCourse /> 
           <Divider/>
           {
             !loading && !error &&
@@ -70,7 +77,7 @@ export default function DeliverableWrapper() {
 
                 {
                   deliverable.length > 0 ? (
-                    <ListOfDeliverables data={deliverable} />
+                    <ListOfDeliverables data={deliverable} groupId={groupId} />
                   ) : (<Alert severity="error">Something went wrong. Try again later</Alert>)
                 }
               </Stack>

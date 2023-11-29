@@ -79,7 +79,7 @@ export default function App() {
                 <Route path={`information/:courseName/:offeredCourseId/*`} element={<LayoutCourse />} >
                   <Route index element={<DeliverableWrapper />} />
                   <Route path="announcements/view/:announcementId" element={< ViewSpecificAnnouncement />} />
-                  <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<LayoutCourse />} >
+                  <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/group/:groupId/*" element={<LayoutCourse />} >
                     <Route index element={<ViewSpecificDeliverable />} />
                     <Route path=":filePath" element={<PdfViewer />} />
                   </Route>
@@ -130,7 +130,8 @@ export default function App() {
                   <Route path="student/groups/*" element={<Layout />}>
                     <Route index element={<FacultyStudentGroups />} />
                     <Route path="add" element={<FacultyUpdateAndAddGroupWrapper />} />
-                    <Route path="update/:groupName/:groupId" element={<FacultyUpdateAndAddGroupWrapper />} />
+                    <Route path="update/members/:groupName/:groupId" element={<FacultyUpdateAndAddGroupWrapper />} />
+                    <Route path="update/group-details/:groupName/:groupId/:groupAdviserId" element={<FacultyUpdateAndAddGroupWrapper />} />
                   </Route>
                 </Route>
               </Route>
