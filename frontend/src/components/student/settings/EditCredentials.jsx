@@ -42,7 +42,7 @@ export default function EditCredentials({ onClose, data }) {
                                 className="!text-md w-full px-3 py-2"
                                 size="small"
                                 defaultValue={data.user.phoneNumber}
-                                label={data.user.phoneNumbe ? data.user.phoneNumbe : "phone # is not set yet"}
+                                label={data.user.phoneNumber ? "mobile phone #" : "phone # is not set yet"}
                                 name="phoneNumber"
                                 {...register('phoneNumber')}
                             />
@@ -53,6 +53,7 @@ export default function EditCredentials({ onClose, data }) {
                                 variant="standard"
                                 className="!text-md w-full px-3 py-2"
                                 size="small"
+                                label="email"
                                 defaultValue={data.user.email}
                                 name="email"
                                 {...register('email')}
