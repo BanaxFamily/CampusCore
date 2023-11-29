@@ -219,11 +219,10 @@ namespace CampusCore.API.Services
                 }
 
                 // Update the Announcement properties from the model
-                announcement.UserId = model.UserId;
-                announcement.OfferedCourseId = model.OfferedCourseId;
+            
                 announcement.Title = model.Title;
                 announcement.Content = model.Content;
-                announcement.CreatedAt = model.CreatedAt;
+                announcement.CreatedAt = DateTime.Now;
 
                 // Save changes to the database
                 var result = await _context.SaveChangesAsync();

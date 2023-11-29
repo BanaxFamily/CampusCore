@@ -12,7 +12,7 @@ const SideNav = (props) => {
         to={props.link}
         key={props.id}
         activeclassname="active"
-        className={`flex flex-row gap-6 w-full text-[14px] items-center md:gap-6 hover:text-paleRed text-white`}
+        className={`flex flex-row gap-6 w-full text-[14px] 2xl:text-xl items-center md:gap-6 hover:text-paleRed text-white`}
       >
           {props.icon}
         {/* <span className=" flex flex-row gap-6 text-sm md:text-sm lg:text-[0.9rem] font-semibold justify-start  leading-3"> */}
