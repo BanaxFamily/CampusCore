@@ -61,7 +61,7 @@ export default function ViewSpecificAnnouncement() {
 
     const { userId } = useAuth()
     let { announcementId } = useParams();
-
+    const {register, handleSubmit, formState: {isSubmitting}} = useForm()
     const [specificAnnouncement, setSpecificAnnouncement] = useState([]);
     const [specificComment, setSpecificComment] = useState([]);
     const [error, setError] = useState(false);
@@ -159,7 +159,7 @@ export default function ViewSpecificAnnouncement() {
                         <Stack className="mt-2 !flex-row items-center gap-1">
                             <Stack className="!flex-row w-full gap-2 items-center relative">
                                 <TextareaAutosize className="w-full border px-2 focus:py-2 pr-20 !text-[14px] !text-black bg-slate-100 rounded-xl" placeholder="Write a comment" name="content" style={{ resize: "none" }} minRows={2} {...register('content', { required: "This is reqruied" })} />
-                                <Button type="submit" variant="contained" size="small" className="!absolute w-[8%] bottom-3 right-1 h-6">
+                                <Button type="submit" disabled={isSubmitting} variant="contained" size="small" className="!absolute w-[8%] bottom-3 right-1 h-6">
                                     <Send fontSize="small" />
                                 </Button>
                             </Stack>

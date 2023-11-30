@@ -185,3 +185,23 @@ export const facultyAsideLinks = [
 ]
 
 
+export const prcLink = [
+  {
+    id: "home",
+    link: "/",
+    title: "Home",
+    icon: <Home />,
+  },
+  {
+    id: "course",
+    link: "/courses",
+    title: "Courses",
+    icon: <Book />,
+  },
+  {
+    id: "profile",
+    link: "/deliverable-management",
+    title: "Deliverable management",
+    icon: <DeveloperBoard />,
+  },
+]

@@ -66,9 +66,9 @@ export default function DeliverableWrapper() {
 
 
       <Stack className="!flex-row">
-        <Stack paddingY={4} className="!px-10 w-full gap-4">
+        <Stack paddingY={4} className="md:!px-10 w-full gap-4">
           {/* THIS IS FOR ANNOUNCEMENTS COMPONENT */}
-          <StudentAnnouncementCourse /> 
+          <StudentAnnouncementCourse />
           <Divider/>
           {
             !loading && !error &&
@@ -78,13 +78,13 @@ export default function DeliverableWrapper() {
                 {
                   deliverable.length > 0 ? (
                     <ListOfDeliverables data={deliverable} groupId={groupId} />
-                  ) : (<Alert severity="error">Something went wrong. Try again later</Alert>)
+                  ) : (<Alert severity="info">No deliverables yet</Alert>)
                 }
               </Stack>
             </>
           }
         </Stack>
-        <Stack className="border-l-2 p-2">
+        <Stack className="!hidden md:!block border-l-2 p-2">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateCalendar', 'DateCalendar']}>
               <DemoItem label="Deadlines">

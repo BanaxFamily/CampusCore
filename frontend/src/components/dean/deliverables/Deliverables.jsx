@@ -123,7 +123,7 @@ export default function Deliverables() {
                                                     )
                                                 })
                                             }
-                                        </> : <p>There is no deliverables yet</p>
+                                        </> : <TableRow><TableCell colSpan={7}>There is no deliverables yet</TableCell></TableRow>
                                 }
                             </>
                         }
