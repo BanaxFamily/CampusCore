@@ -193,15 +193,22 @@ export const prcLink = [
     icon: <Home />,
   },
   {
-    id: "course",
-    link: "/courses",
-    title: "Courses",
-    icon: <Book />,
+    id: "repository",
+    link: "manage/repository",
+    title: "Repository",
+    icon: <Storage />,
   },
   {
-    id: "profile",
-    link: "/deliverable-management",
-    title: "Deliverable management",
+    id: "deliverable",
+    link: "/deliverable-approval",
+    title: "Approve deliverables",
     icon: <DeveloperBoard />,
+  },
+
+  {
+    id: "setting",
+    link: "/settings",
+    title: "Settings",
+    icon: <Settings />,
   },
 ]

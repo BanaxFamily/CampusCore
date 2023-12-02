@@ -1,27 +1,27 @@
 /* eslint-disable react/prop-types */
-import { DeleteForever } from "@mui/icons-material";
-import { Button, IconButton, TableBody, TableHead } from "@mui/material";
+import { Button, TableBody, TableHead } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { NavLink } from "react-router-dom";
-import * as OfferedCourse from "../../../network/offeredCourse_api";
+// import * as OfferedCourse from "../../../network/offeredCourse_api";
 import DynamicTable from "../../reusable/DynamicTable";
+import ConfirmDialogCourseLoads from "./ConfirmDialogCourseLoads";
 
 
 export default function BasicTable({ courseOffered }) {
 
-  async function deleteCourseOff(id) {
-      const response = await OfferedCourse.deleteOfferedCourse({"id": id})
-    console.log(response)
-    console.log(id)
-  }
+  // async function deleteCourseOff(id) {
+  //     const response = await OfferedCourse.deleteOfferedCourse({"id": id})
+  //   console.log(response)
+  //   console.log(id)
+  // }
 
-  function deleteConfirmation(id){
-    let text = "Are you sure you want to delete this course?"
-    if(confirm(text)){
-      deleteCourseOff(id)
-    }
-  }
+  // function deleteConfirmation(id){
+  //   let text = "Are you sure you want to delete this course?"
+  //   if(confirm(text)){
+  //     deleteCourseOff(id)
+  //   }
+  // }
   return (
     <DynamicTable>
       <TableHead>
@@ -49,7 +49,8 @@ export default function BasicTable({ courseOffered }) {
             <TableCell className="!text-[12px] 2xl:text-[14px] border">{course.sem === 'first' ? "1st" : "2nd"}</TableCell>
             <TableCell className="!text-[12px] 2xl:text-[14px] border">{course.acadYear}</TableCell>
             <TableCell className="!text-[12px] 2xl:text-[14px] border">
-              <IconButton  size="small" onClick={() => deleteConfirmation(course.id)}><DeleteForever className="text-red-500 hover:text-red-300"/></IconButton>
+              {/* <IconButton  size="small" onClick={() => deleteConfirmation(course.id)}><DeleteForever className="text-red-500 hover:text-red-300"/></IconButton> */}
+              <ConfirmDialogCourseLoads courseId={course.id} />
             </TableCell>
             <TableCell align="center">
               <NavLink to={`${course.course.name}/${course.id}/enrolled-students`} ><Button size="small" className="!text-sm hover:text-blue-300">View</Button></NavLink>

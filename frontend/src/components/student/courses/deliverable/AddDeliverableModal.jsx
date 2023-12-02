@@ -25,11 +25,12 @@ export default function AddDeliverableModal({ onDismiss }) {
         formData.append("file", data.file[0])
         formData.append("FileType", data.FileType)
         formData.append("TargetedIssues", [1])
-        formData.append("groupId", groupId)
+        if (groupId !== "null") {
+            formData.append("groupId", groupId);
+        }
 
         try {
             const response = await Submission.submissionOfDeliverable(formData)
-            console.log(response)
             if (response.isSuccess) {
                 navigate(0)
                 return
