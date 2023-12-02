@@ -47,15 +47,13 @@ namespace CampusCore.Shared
         }
         public class GetSubmissionsByStudentViewModel
         {
-            public int CourseDeliverableId { get; set; }
+            public int OfferedDeliverableId { get; set; }
             public string UserId { get; set;}
-            public int OfferedCourseId { get; set; }
         }
 
         public class GetSubmissionsByDeliverableViewModel
         {
-            public int CourseDeliverableId { get; set; }
-            public int OfferedCourseId { get; set; }
+            public int OfferedCourseDeliverableId { get; set; }
         }
 
 

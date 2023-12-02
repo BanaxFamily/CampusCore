@@ -11,7 +11,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> FirstSubmission(FirstSubmissionViewModel model);
         Task<ResponseManager> AddNewVersion(AddNewVersionViewModel model);
         Task<ResponseManager> GetAllByOfferedCourseDeliverableAsync(IntIdViewModel model);
-        Task<ResponseManager> GetAllByStudentAsync(StringIdViewModel model);
+        Task<ResponseManager> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model);
         Task<ResponseManager> GetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> SearchNameAsync(StringSearchViewModel model);
         Task<ResponseManager> DeleteAsync(IntIdViewModel model);
@@ -104,9 +104,10 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllByStudentAsync(StringIdViewModel model)
+        public async Task<ResponseManager> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model)
         {
-            var studentId = model.Id;
+            var studentId = model.UserId;
+            var offeredCourseDeliverableId = model.OfferedDeliverableId;
             try
             {
                 
@@ -118,6 +119,7 @@ namespace CampusCore.API.Services
                                                                     sg.GroupId == cds.Submission.GroupId.Value &&
                                                                     sg.StudentId == studentId))
                                                   )
+                                                .Where(cds=> cds.OfferedCourseDeliverableId == offeredCourseDeliverableId)
                                                  .Select(x => new
                                                  {
                                                      CourseDeliverableSubmissionId = x.Id,
