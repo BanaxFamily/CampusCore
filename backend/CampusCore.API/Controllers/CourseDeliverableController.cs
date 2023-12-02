@@ -88,22 +88,5 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for update"); // Status code: 400
         }
 
-        // /api/course-deliverable/update
-        [HttpPut("update")]
-        //[Authorize(Roles = "Dean")]
-        public async Task<IActionResult> UpdateAsync([FromBody] CourseDeliverableUpdateViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _cdService.UpdateAsync(model);
-
-                if (result.IsSuccess)
-                    return Ok(result); // Status code: 200
-
-                return BadRequest(result);
-            }
-            return BadRequest("Some properties are not valid for update"); // Status code: 400
-        }
-
     }
 }

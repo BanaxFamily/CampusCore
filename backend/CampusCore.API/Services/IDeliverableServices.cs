@@ -35,7 +35,8 @@ namespace CampusCore.API.Services
                 Description = model.Description,
                 Instruction = model.Instruction,
                 ForAdviser = model.ForAdviser,
-                GroupSubmission = model.GroupSubmission
+                GroupSubmission = model.GroupSubmission,
+                HighestApprovalNeeded = model.HighestApprovalNeeded
             };
 
 
@@ -208,6 +209,7 @@ namespace CampusCore.API.Services
                 deliverable.Instruction = model.Instruction;
                 deliverable.ForAdviser = model.ForAdviser;
                 deliverable.GroupSubmission = model.GroupSubmission;
+                deliverable.HighestApprovalNeeded = model.HighestApprovalNeeded;
 
 
                 // Save changes to the database
