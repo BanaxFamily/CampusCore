@@ -41,7 +41,7 @@ export default function ViewSpecificDeliverable() {
         async function getSpecificDeliverable() {
             try {
                 const response = await OfferedCourseDeliverable.getSingleOfferedCourseDeliverable({ 'id': offeredCourseDeliverableId })
-                if (response.isSuccess) {
+                if (response.isSuccess ) {
                     setDeliverable(response.data)
                     console.log(response.data)
                     return

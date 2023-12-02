@@ -7,7 +7,7 @@ import { IconButton } from "@mui/material";
 import { useState } from "react";
 import { BiMenu } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import { adminLinks, deanLink, studentLinks } from "../../constants";
+import { adminLinks, deanLink, facultyLinks, studentLinks } from "../../constants";
 import { useAuth } from "../../utils/AuthContext";
 
 export default function TemporaryDrawer() {
@@ -65,6 +65,17 @@ export default function TemporaryDrawer() {
 
             {userRole === "Dean" &&
               deanLink.map((route, index) => (
+                <ListItem key={index}>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      {route.icon}
+                    </ListItemIcon>
+                    <Link to={route.link}>{route.title}</Link>
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            {userRole === "Faculty" &&
+              facultyLinks.map((route, index) => (
                 <ListItem key={index}>
                   <ListItemButton>
                     <ListItemIcon>

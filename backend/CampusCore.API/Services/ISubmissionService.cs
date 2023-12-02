@@ -1,6 +1,9 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace CampusCore.API.Services
 {
@@ -472,7 +475,7 @@ namespace CampusCore.API.Services
 
             try
             {
-
+                
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(oc => EF.Functions.Like(oc.Submission.Title, $"%{model.SearchKey}%"))
                                                 .Select(x => new
