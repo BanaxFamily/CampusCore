@@ -76,7 +76,7 @@ namespace CampusCore.API.Controllers
         //        GetAllByStudentAsync(StringIdViewModel model);
         [HttpPost("getAllByStudent")]
         ////Authorize(Roles = "Dean,Faculty")]
-        public async Task<IActionResult> GetAllByStudentAsync(StringIdViewModel model)
+        public async Task<IActionResult> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model)
         {
             if (ModelState.IsValid)
             {
