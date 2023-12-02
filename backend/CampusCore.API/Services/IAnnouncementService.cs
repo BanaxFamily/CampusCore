@@ -15,7 +15,7 @@ namespace CampusCore.API.Services
         //Task<ResponseManager> GetByIdAnnouncementAsync(int id);
         Task<ResponseManager> GetByIdAnnouncementAsync(IntIdViewModel model);
         Task<ResponseManager> GetByOfferedCourseAnnouncementAsync(IntIdViewModel model);
-        Task<ResponseManager> GetAllByUserAnnouncementAsync(AnnouncementGetAllModel model);
+        Task<ResponseManager> GetAllByUserAnnouncementAsync(StringIdViewModel model);
 
     }
 
@@ -158,56 +158,155 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllByUserAnnouncementAsync(AnnouncementGetAllModel model)
+        public async Task<ResponseManager> GetAllByUserAnnouncementAsync(StringIdViewModel model)
         {
             try
             {
-                var userId = model.UserId;
-                var users = await _userManager.FindByIdAsync(model.UserId);
-                var role = await _userManager.GetRolesAsync(users);
-                var data = new
+                var userId = model.Id;
+                var users = await _userManager.FindByIdAsync(userId);
+                var roles = await _userManager.GetRolesAsync(users);
+                var role = roles.FirstOrDefault();
+
+                if (role != null)
                 {
-                    roles = role
+                    var announcements = new List<Announcement>();
+
+                    if (role == "Faculty")
+                    {
+                        var courseLoads = await _context.OfferedCourses
+                                              .Include(oc => oc.Course)
+                                              .Include(oc => oc.FacultyAssigned)
+                                              .Where(oc => oc.FacultyId == userId)
+                                              .ToListAsync();
+
+                        if (courseLoads.Count > 0)
+                        {
+                            foreach (var item in courseLoads)
+                            {
+                                var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    if (role == "Dean")
+                    {
+                        var courseLoads = await _context.OfferedCourseDeliverables
+                                              .Where(ocd => ocd.Deliverable.HighestApprovalNeeded == "Dean Level")
+                                              .ToListAsync();
+
+                        if (courseLoads.Count > 0)
+                        {
+                            foreach (var item in courseLoads)
+                            {
+                                var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    if (role == "Student")
+                    {
+                        var enrolledCourses = await _context.CourseEnrollments
+                                                                      .Where(oc => oc.StudentId == userId)
+                                                                      .ToListAsync();
+
+                        if (enrolledCourses.Count > 0)
+                        {
+                            foreach (var item in enrolledCourses)
+                            {
+                                var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    if (role == "PRC")
+                    {
+                        var courseLoads = await _context.OfferedCourseDeliverables
+                                                                      .Where(ocd => ocd.Deliverable.HighestApprovalNeeded == "PRC Level")
+                                                                      .ToListAsync();
+
+                        if (courseLoads.Count > 0)
+                        {
+                            foreach (var item in courseLoads)
+                            {
+                                var result = await _context.Announcements
+                                            .Include(a => a.User)
+                                            .Include(a => a.OfferedCourse)
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    else
+                    {
+                        return new ErrorResponseManager
+                        {
+                            IsSuccess = false,
+                            Message = "This role does not have access to announcements",
+                            Errors = new List<string> {"Admin role does not have access to announcements"}
+                        };
+                    }
+                }
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching announcement",
+                    Errors = new List<string> {"Role of the user is null!"}
                 };
-
-                if (data.roles[0] == "Admin" || data.roles[0] == "Dean" || data.roles[0] == "Faculty") // to delete admin soon
-                {
-                    var result = await _context.Announcements
-                                            .Where(a => a.OfferedCourseId == model.OfferedCourseId && a.UserId == userId)
-                                            .ToListAsync();
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Announcement retrieved successfully",
-                        Data = result
-                    };
-                }
-
-                // To be edited from OfferedCourseId to CourseId
-                else if (data.roles[0] == "Student")
-                {
-                    var result = await _context.Announcements
-                                            .Where(a => a.OfferedCourseId == model.OfferedCourseId && a.UserId == userId)
-                                            .ToListAsync();
-                    return new DataResponseManager
-                    {
-                        IsSuccess = true,
-                        Message = "Announcement retrieved successfully",
-                        Data = result
-                    };
-                }
-                else
-                {
-                    // default return statement here for unvalid role
-                    return new ErrorResponseManager
-                    {
-                        IsSuccess = false,
-                        Message = "Invalid role",
-                        Errors = new List<string> { "Invalid user role" }
-                    };
-                }
-
-
             }
             catch (Exception ex)
             {
