@@ -5,6 +5,7 @@ import BreadCrumb from "../../../reusable/BreadCrumb"
 import DashBoardHeading from "../../../reusable/DashBoardHeading"
 import SpecificCourseLinks from "../SpecificCourseLinks"
 import FacultyGetStudentGroups from "./FacultyGetStudentGroups"
+import SpecificCourseLinksMobile from "../SpecificCourseLinksMobile"
 
 export default function FacultyStudentGroups() {
     let { courseName } = useParams()
@@ -19,17 +20,20 @@ export default function FacultyStudentGroups() {
             <BackNav>
                 <BreadCrumb data={breadCrumbUrl} />
             </BackNav>
-            <Stack className="my-4">
+            <Stack className="mt-4 mb-2">
                 <Divider className="!bg-black" />
             </Stack>
             <Stack direction={'row'}>
                 <Stack className="w-full">
+                    <Stack className="md:!hidden border-l mb-2">
+                        <SpecificCourseLinksMobile />
+                    </Stack>
                     <DashBoardHeading title={`Student Groups`} />
                     <Stack direction={'row'} className="border-t-2 shadow-md rounded-md shadow-gray-500">
                         <Stack className=" w-full " >
                             <FacultyGetStudentGroups />
                         </Stack>
-                        <Stack className="border-l my-4 w-[35%]">
+                        <Stack className="!hidden md:!block border-l my-4 w-[35%]">
                             <SpecificCourseLinks />
                         </Stack>
                     </Stack>

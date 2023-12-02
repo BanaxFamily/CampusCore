@@ -34,10 +34,55 @@ export async function getNoGroupStudents(data){
 
     return response;
 }
+export async function getGroupId(data){
+    const response = await fetchData("api/group/getGroupOfStudent", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}
+
+export async function getAllStudentsFromUpdateApi(data){
+    const response = await fetchData("api/group/getStudentsForUpdate", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}
 
 export async function viewGroupMembers(data){
     const response = await fetchData("api/group/getMembers", {
         method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}
+export async function updateMembers(data){
+    const response = await fetchData("api/group/updateMembers", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}
+export async function updateDetails(data){
+    const response = await fetchData("api/group/updateDetails", {
+        method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
