@@ -37,15 +37,12 @@ export default function AddDeliverable(props) {
     }
     async function addDeliverableToCourse(data) {
         const formData = {
-            'CourseId': courseId,
-            'deliverableId': data,
-            'deliverableDeadline': null
+            'courseId': parseInt(courseId),
+            'deliverableId': data
         }
         try {
 
             const response = await CourseDeliverable.createCourseDeliverable(formData)
-            console.log(response)
-
             if (response.isSuccess) {
                 setSuccessMessage(response.message)
                 reset()
@@ -63,14 +60,16 @@ export default function AddDeliverable(props) {
 
     async function addDeliverable(credentials) {
         const adjustCredentials = {
-            "name":credentials.name,
-            "instruction":credentials.instruction,
-            "description":credentials.description,
+            "name": credentials.name,
+            "instruction": credentials.instruction,
+            "description": credentials.description,
             "forAdviser": Boolean(credentials.forAdviser),
             "groupSubmission": Boolean(credentials.groupSubmission),
+            "highestApprovalNeeded": credentials.highestApprovalNeeded
         }
         // console.log(adjustCredentials)
         const response = await Deliverable.addDeliverable(adjustCredentials);
+        console.log(response)
         if (response.isSuccess) {
             const deliverableId = response.data
             addDeliverableToCourse(deliverableId);
@@ -96,7 +95,7 @@ export default function AddDeliverable(props) {
                 </Stack>
                 <form action="" onSubmit={handleSubmit(addDeliverable)}>
 
-                    <Stack className="w-full items-center mt-2 rounded-md" paddingBottom={4}>
+                    <Stack className="w-full items-center mt-2 rounded-md" >
                         <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Stack className='w-1/2 !flex-row'>
                                 <Stack className='w-full'>
@@ -136,6 +135,26 @@ export default function AddDeliverable(props) {
                                     </TextField>
                                 </Stack>
                             </Stack>
+                        </Stack>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                            <Typography className="w-1/6 ">Title</Typography>
+                            <TextField
+                                select
+                                label="Highes approval needed"
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                className="flex flex-grow"
+                                variant="outlined"
+                                size='small'
+                                InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                name="highestApprovalNeeded"
+                                {...register("highestApprovalNeeded", { required: "select one option" })}
+                            >
+                                <option value={'PRC Level'}>PRC Level</option>
+                                <option value={'Dean Level'}>Dean Level</option>
+                                <option value={'Faculty Level'}>Faculty Level</option>
+                            </TextField>
                         </Stack>
                         <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Title</Typography>

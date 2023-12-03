@@ -69,6 +69,7 @@ export default function App() {
           <Route path={`/`} element={<Home />} />
           <Route path={`/home`} element={<Home />} />
           <Route path={`/manage/profile`} element={<ManageProfile />} />
+
           {userRole === "Student" && (
             <>
               <Route path={`/research`} element={<ResearchRepo />} />
@@ -79,7 +80,7 @@ export default function App() {
                   <Route path="announcements/view/:announcementId" element={< ViewSpecificAnnouncement />} />
                   <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/group/:groupId/*" element={<LayoutCourse />} >
                     <Route index element={<ViewSpecificDeliverable />} />
-                    <Route path=":filePath" element={<PdfViewer />} />
+                    <Route path=":submissionId" element={<PdfViewer />} />
                   </Route>
                 </Route>
               </Route>

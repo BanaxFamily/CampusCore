@@ -61,8 +61,8 @@ export default function ViewSpecificDeliverable() {
             try {
                 const response = await Submission.getSubmissionList(data)
                 if (response.isSuccess) {
+                    console.log(response)
                     setSubmittedFiles(response.data)
-                    console.log(response.data)
                     return
                 }
             } catch (error) {
@@ -115,7 +115,7 @@ export default function ViewSpecificDeliverable() {
                                                 <Stack key={index} className="gap-1 hover:bg-gray-300">
                                                     <Stack className=" w-full px-2 justify-between items-center !flex-row ">
                                                         <Typography className="!text-[14px] ">{data.title}</Typography>
-                                                        <NavLink to={`${data.file}`} className="hover:!text-blue-500 hover:!rounded-none "><Typography variant="subtitle2">view</Typography><MoreHoriz /></NavLink>
+                                                        <NavLink to={`${data.submissionId}`} className="hover:!text-blue-500 hover:!rounded-none "><Typography variant="subtitle2">view</Typography><MoreHoriz /></NavLink>
                                                         {/* ERROR : FILE IS DISPLAYING */}
                                                     </Stack>
                                                 </Stack>

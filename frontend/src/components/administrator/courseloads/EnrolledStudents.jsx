@@ -1,4 +1,4 @@
-import { CircularProgress, Divider, Stack, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
+import { Alert, Button, CircularProgress, Divider, Stack, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import * as EnrollmentApi from "../../../network/courseEnrollment_api"
@@ -13,7 +13,7 @@ import ModalEnrollStudent from "./ModalEnrollStudent"
 export default function EnrolledStudents() {
   let { courseName, courseId } = useParams()
   const [loading, setLoading] = useState(true)
-  // const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("")
   const [showModalEnroll, setShowModalEnroll] = useState(false)
   const [offeredCourse, setOfferedCourse] = useState(null)
   const [enrolledStudent, setEnrolledStudents] = useState(null)
@@ -78,10 +78,10 @@ export default function EnrolledStudents() {
       <Stack className="mt-4">
           <DashBoardHeading title={`${courseName} enrolled students`} desc="" />
         <Stack>
-          {/* <Stack>
+          <Stack>
           {message && <Alert severity="success">{message}</Alert>}
-          <Button className="flex self-end !my-4" variant="contained" onClick={() => setShowModalEnroll(true)}>Enroll student</Button>
-          </Stack> */}
+          <Button className="flex self-end !my-4" variant="contained" size="small" onClick={() => setShowModalEnroll(true)}>Enroll student</Button>
+          </Stack>
 
           <Stack>
             {

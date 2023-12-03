@@ -70,7 +70,7 @@ export default function AllAnnouncement() {
                 if (responseAnnouncement.isSuccess) {
                     setSpecificAnnouncement(responseAnnouncement.data);
                     const responseComments = await AnnounceComment.viewAnnouncementComments({ id: responseAnnouncement.data[0].announcmentId });
-                    if(responseComments.isSuccess){
+                    if (responseComments.isSuccess) {
                         setSpecificComment(responseComments.data);
                     }
                     return;
@@ -103,48 +103,49 @@ export default function AllAnnouncement() {
             {error && <Alert>Something went wrong, try again later</Alert>}
 
             {/* Populating the data from specific course */}
-            {specificAnnouncement.map((announcement) => (
-                <Stack key={announcement.announcmentId} paddingX={2} paddingY={2} className="w-full shadow-md border md:w-[70%] lg:w-[60%] mx-auto mt-4 rounded-xl">
-                    <Stack direction={"row"} paddingBottom={4} spacing={2}>
-                        <Avatar />
-                        <Stack direction={"column"} className="w-full md:w-[30%]" justifyContent={"between"}>
-                            <Typography variant="h6" className="!text-md !text-gray-700 !font-semibold tracking-wider">
-                                {" "}
-                                {announcement.posterName}{" "}
-                            </Typography>
-                            {/* <Typography className="!text-sm"> {announcement.createAt} </Typography> */}
-                        </Stack>
-                    </Stack>
-                    <Stack>
-                        <Typography variant="h6" className="!text-md">
-                            {" "}
-                            {announcement.announcementTitle}{" "}
-                        </Typography>
-
-                        <Stack className=" ml-2 rounded-md" paddingY={2} paddingX={3}>
-                            <Typography fontSize={"small"}> {announcement.announcementContent} </Typography>
-                        </Stack>
-                    </Stack>
-                    <Divider className="!border-y" />
-                    {/* Annoucement comments */}
-                    {renderComments()}
-
-                    {/* Add Comments */}
-                    <Divider className="!border-y" />
-                    <form action="" onSubmit={handleSubmit(createComment)}>
-                        <input type="text" name="announcementId" value={announcement.announcmentId} hidden {...register("announcementId", { required: "ID is required" })} />
-                        <input type="text" name="userId" value={userId} hidden {...register("userId", { required: "ID is required" })} />
-                        <Stack className="mt-2 !flex-row items-center gap-1">
-                            <Stack className="!flex-row w-full gap-2 items-center relative">
-                                <TextareaAutosize className="w-full border px-2 focus:py-2 pr-20 !text-[14px] !text-black bg-slate-100 rounded-xl" placeholder="Write a comment" name="content" style={{ resize: "none" }} minRows={2} {...register('content', { required: "This is reqruied" })} />
-                                <Button type="submit" disabled={isSubmitting} variant="contained" size="small" className="!absolute w-[8%] bottom-3 right-1 h-6">
-                                    <Send fontSize="small" />
-                                </Button>
+            {specificAnnouncement &&
+                specificAnnouncement.map((announcement) => (
+                    <Stack key={announcement.announcmentId} paddingX={2} paddingY={2} className="w-full shadow-md border md:w-[70%] lg:w-[60%] mx-auto mt-4 rounded-xl">
+                        <Stack direction={"row"} paddingBottom={4} spacing={2}>
+                            <Avatar />
+                            <Stack direction={"column"} className="w-full md:w-[30%]" justifyContent={"between"}>
+                                <Typography variant="h6" className="!text-md !text-gray-700 !font-semibold tracking-wider">
+                                    {" "}
+                                    {announcement.posterName}{" "}
+                                </Typography>
+                                {/* <Typography className="!text-sm"> {announcement.createAt} </Typography> */}
                             </Stack>
                         </Stack>
-                    </form>
-                </Stack>
-            ))}
+                        <Stack>
+                            <Typography variant="h6" className="!text-md">
+                                {" "}
+                                {announcement.announcementTitle}{" "}
+                            </Typography>
+
+                            <Stack className=" ml-2 rounded-md" paddingY={2} paddingX={3}>
+                                <Typography fontSize={"small"}> {announcement.announcementContent} </Typography>
+                            </Stack>
+                        </Stack>
+                        <Divider className="!border-y" />
+                        {/* Annoucement comments */}
+                        {renderComments()}
+
+                        {/* Add Comments */}
+                        <Divider className="!border-y" />
+                        <form action="" onSubmit={handleSubmit(createComment)}>
+                            <input type="text" name="announcementId" value={announcement.announcmentId} hidden {...register("announcementId", { required: "ID is required" })} />
+                            <input type="text" name="userId" value={userId} hidden {...register("userId", { required: "ID is required" })} />
+                            <Stack className="mt-2 !flex-row items-center gap-1">
+                                <Stack className="!flex-row w-full gap-2 items-center relative">
+                                    <TextareaAutosize className="w-full border px-2 focus:py-2 pr-20 !text-[14px] !text-black bg-slate-100 rounded-xl" placeholder="Write a comment" name="content" style={{ resize: "none" }} minRows={2} {...register('content', { required: "This is reqruied" })} />
+                                    <Button type="submit" disabled={isSubmitting} variant="contained" size="small" className="!absolute w-[8%] bottom-3 right-1 h-6">
+                                        <Send fontSize="small" />
+                                    </Button>
+                                </Stack>
+                            </Stack>
+                        </form>
+                    </Stack>
+                ))}
         </Stack>
     );
 }
