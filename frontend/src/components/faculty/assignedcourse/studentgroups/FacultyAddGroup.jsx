@@ -111,7 +111,7 @@ export default function FacultyAddGroup() {
                                                             <FormControlLabel
                                                                 control={<Radio />}
                                                                 label={<Typography className="md:!text-sm">Leader</Typography>}
-                                                                checked={leader === student.studentName}
+                                                                checked={leader === student.studentId}
                                                                 onChange={() => handleLeaderChange(student.studentId)}
                                                             />
                                                         </Stack>

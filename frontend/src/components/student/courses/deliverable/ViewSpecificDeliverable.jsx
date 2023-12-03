@@ -13,7 +13,7 @@ import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import SpecificDeliverableAddSubmission from "./SpecificDeliverableAddSubmission";
 
 export default function ViewSpecificDeliverable() {
-    let { offeredCourseId, deliverableName, offeredCourseDeliverableId } = useParams()
+    let { deliverableName, offeredCourseDeliverableId } = useParams()
     const { userId } = useAuth()
     // const navigate = useNavigate()
     const [deliverable, setDeliverable] = useState([])
@@ -43,7 +43,6 @@ export default function ViewSpecificDeliverable() {
                 const response = await OfferedCourseDeliverable.getSingleOfferedCourseDeliverable({ 'id': offeredCourseDeliverableId })
                 if (response.isSuccess ) {
                     setDeliverable(response.data)
-                    console.log(response.data)
                     return
                 }
             } catch (error) {
@@ -57,14 +56,13 @@ export default function ViewSpecificDeliverable() {
         async function getSubmittedFiles() {
 
             const data = {
-                "courseDeliverableId": offeredCourseDeliverableId,
-                "userId": userId,
-                "offeredCourseId": offeredCourseId
+                "id": userId,
             }
             try {
                 const response = await Submission.getSubmissionList(data)
                 if (response.isSuccess) {
                     setSubmittedFiles(response.data)
+                    console.log(response.data)
                     return
                 }
             } catch (error) {
@@ -111,7 +109,7 @@ export default function ViewSpecificDeliverable() {
                             !loading && !error &&
                             <Stack className="h-40 overflow-auto border-2 rounded-lg pt-4">
                                 {
-                                    submittedFiles.length > 0 ? (
+                                    // submittedFiles.length > 0 ? (
                                         submittedFiles.map((data, index) => {
                                             return (
                                                 <Stack key={index} className="gap-1 hover:bg-gray-300">
@@ -123,7 +121,7 @@ export default function ViewSpecificDeliverable() {
                                                 </Stack>
                                             )
                                         })
-                                    ) : (<Alert severity="info">No submissions yet</Alert>)
+                                    // ) : (<Alert severity="info">No submissions yet</Alert>)
                                 }
                             </Stack>
                         }

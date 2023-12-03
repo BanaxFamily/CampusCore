@@ -8,6 +8,13 @@ export async function submissionOfDeliverable(data){
     })
     return response
 }
+export async function firstSubmissionDeliverable(data){
+    const response = await fetchData('api/submission/firstSubmission', {
+        method: "POST",
+        body: data
+    })
+    return response
+}
 
 export async function getSubmissionList(data){
     const response = await fetchData('api/submission/getAllByStudent', {
