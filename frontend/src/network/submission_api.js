@@ -43,3 +43,16 @@ export async function getSubmissionList(data){
     })
     return response
 }
+
+
+export async function getFacultyAllDeliverableByOfferedDeliverable(data){
+    const response = await fetchData('api/submission/getAllByOfferedCourseDeliverable', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response
+}

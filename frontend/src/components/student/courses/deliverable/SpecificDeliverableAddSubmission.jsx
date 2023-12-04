@@ -3,7 +3,7 @@ import { Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import AddDeliverableModal from "./AddDeliverableModal";
 
-export default function SpecificDeliverableAddSubmission({ deliverable }) {
+export default function SpecificDeliverableAddSubmission({ deliverable, userRole }) {
     const [openSubmission, setOpenSubmission] = useState(false);
     return (
         <Stack className="mt-2 " >
@@ -28,10 +28,10 @@ export default function SpecificDeliverableAddSubmission({ deliverable }) {
                                     <Typography className="!text-[13px] !font-medium !tracking-wider">{info.deliverableInstruction}</Typography>
                                 </Stack>
                             </Stack>
-
+                            {userRole === 'Student' &&
                             <Stack className="my-4">
                                 <Button variant="outlined" size="small" onClick={() => setOpenSubmission(true)} className="  flex self-end">Add submission</Button>
-                            </Stack>
+                            </Stack>}
                         </Stack>
                     )
                 })

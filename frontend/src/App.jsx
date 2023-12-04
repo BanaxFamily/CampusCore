@@ -28,6 +28,8 @@ import ViewSpecificCourse from "./components/faculty/assignedcourse/ViewSpecific
 import FacultyDeliverable from "./components/faculty/assignedcourse/deliverable/FacultyDeliverable";
 import FacultyStudentGroups from "./components/faculty/assignedcourse/studentgroups/FacultyStudentGroups";
 import FacultyUpdateAndAddGroupWrapper from "./components/faculty/assignedcourse/studentgroups/FacultyUpdateAndAddGroupsWrapper";
+import FacultyShowAllDeliverables from "./components/faculty/assignedcourse/submissions/FacultyShowAllDeliverables";
+import FacultyViewSpecificDeliverables from "./components/faculty/assignedcourse/submissions/FacultyViewSpecificDeliverables";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
@@ -84,8 +86,6 @@ export default function App() {
                   </Route>
                 </Route>
               </Route>
-              {/* <Route path={`/issues`} element={<Issues />} /> */}
-              {/* <Route path={`/timetable`} element={<Timetable />} /> */}
             </>
           )}
           {userRole === "Admin" && (
@@ -131,6 +131,13 @@ export default function App() {
                     <Route path="add" element={<FacultyUpdateAndAddGroupWrapper />} />
                     <Route path="update/members/:groupName/:groupId" element={<FacultyUpdateAndAddGroupWrapper />} />
                     <Route path="update/group-details/:groupName/:groupId/:groupAdviserId" element={<FacultyUpdateAndAddGroupWrapper />} />
+                  </Route>
+                  <Route path="submissions/*" element={<Layout />}>
+                    <Route index element={<FacultyShowAllDeliverables />} />
+                    <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<Layout />}>
+                      <Route index element={<FacultyViewSpecificDeliverables />} />
+                      <Route path=":submissionId" element={<PdfViewer />} />
+                    </Route>
                   </Route>
                 </Route>
               </Route>

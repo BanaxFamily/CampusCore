@@ -55,24 +55,16 @@ const PdfViewer = () => {
                 <Stack className="mt-2">
                     <Typography variant="h6" component="h1" className="text-center">Final Version</Typography>
                 </Stack>
-                <div className="flex justify-end">
+                <Stack className="!flex-row">
                     <Button><ZoomIn /></Button>
                     <Button><ZoomOut /></Button>
-                </div>
+                </Stack>
                 <Stack className="w-full h-[500px] !flex-row gap-2">
-                    {/* <iframe
-                        title="PDF Viewer"
-                        width="100%"
-                        height="500px"
-                        src={`data:application/pdf;base64,${fileBase64}`}
-                        frameBorder="0"
-                        allowFullScreen
-                    /> */}
                     {
                         fileType === 'pdf' ? (
                             <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
                                 <Viewer fileUrl={`data:application/pdf;base64,${fileBase64}`} />
-                            </Worker>) : <img alt="Your Image" src={`data:image/png;base64,${fileBase64}`} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                            </Worker>) : <img alt="Your Image" src={`data:image/png;base64,${fileBase64}`}  style={{ maxWidth: '100%', maxHeight: '100%' }} />
                     }
                     <Stack className="w-1/2 ">
                         <IssueDean issueTitle="Issues" />
@@ -83,3 +75,9 @@ const PdfViewer = () => {
     );
 };
 export default PdfViewer;
+
+
+
+
+
+

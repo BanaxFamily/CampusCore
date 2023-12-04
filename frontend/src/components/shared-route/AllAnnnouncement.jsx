@@ -93,8 +93,8 @@ export default function AllAnnouncement() {
         }
     }
     const renderComments = () => {
-        return specificComment.map((comment) => (
-            <CommentWithLimit key={comment.id} comment={comment} />
+        return specificComment.map((comment, index) => (
+            <CommentWithLimit key={index} comment={comment} />
         ));
     };
 
@@ -105,7 +105,7 @@ export default function AllAnnouncement() {
             {/* Populating the data from specific course */}
             {specificAnnouncement &&
                 specificAnnouncement.map((announcement) => (
-                    <Stack key={announcement.announcmentId} paddingX={2} paddingY={2} className="w-full shadow-md border md:w-[70%] lg:w-[60%] mx-auto mt-4 rounded-xl">
+                    <Stack key={`${announcement.announcmentId}uniq`} paddingX={2} paddingY={2} className="w-full shadow-md border md:w-[70%] lg:w-[60%] mx-auto mt-4 rounded-xl">
                         <Stack direction={"row"} paddingBottom={4} spacing={2}>
                             <Avatar />
                             <Stack direction={"column"} className="w-full md:w-[30%]" justifyContent={"between"}>

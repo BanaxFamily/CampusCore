@@ -124,7 +124,9 @@ export default function ViewSpecificDeliverable() {
                                 <Button onClick={() => setShowSubmissionHistory(!showSubmissionHistory)} className="!my-2 !flex self-end" variant="outlined" size="small">Show Submission history</Button>
                                 {showSubmissionHistory &&
                                     <>
-                                        <Typography className="!pl-2 !text-[14px] !font-bold">Latest submitted file</Typography>
+                                        <Stack className="bg-blue-400">
+                                            <Typography className="!pl-2 !text-[14px] !text-white !font-bold">Latest submitted file</Typography>
+                                        </Stack>
                                         {
                                             submittedFiles.map((data, index) => {
                                                 return (
