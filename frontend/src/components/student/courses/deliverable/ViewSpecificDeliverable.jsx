@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { MoreHoriz } from "@mui/icons-material";
-import { Alert, CircularProgress, Divider, LinearProgress, Stack, Typography } from "@mui/material";
+import { Alert, Button, Divider, LinearProgress, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import * as OfferedCourseDeliverable from "../../../../network/offeredCourseDeliverable_api";
@@ -15,12 +15,10 @@ import SpecificDeliverableAddSubmission from "./SpecificDeliverableAddSubmission
 export default function ViewSpecificDeliverable() {
     let { deliverableName, offeredCourseDeliverableId } = useParams()
     const { userId } = useAuth()
-    // const navigate = useNavigate()
     const [deliverable, setDeliverable] = useState([])
-    // const [openSubmission, setOpenSubmission] = useState(false);
-
-    // const [pdfFile, setPdfFile] = useState(null);
     const [submittedFiles, setSubmittedFiles] = useState([])
+    const [latestVersion, setLatestVersion] = useState([])
+    const [showSubmissionHistory, setShowSubmissionHistory] = useState(false)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const breadCrumbUrl = [
@@ -41,7 +39,7 @@ export default function ViewSpecificDeliverable() {
         async function getSpecificDeliverable() {
             try {
                 const response = await OfferedCourseDeliverable.getSingleOfferedCourseDeliverable({ 'id': offeredCourseDeliverableId })
-                if (response.isSuccess ) {
+                if (response.isSuccess) {
                     setDeliverable(response.data)
                     return
                 }
@@ -61,8 +59,8 @@ export default function ViewSpecificDeliverable() {
             try {
                 const response = await Submission.getSubmissionList(data)
                 if (response.isSuccess) {
-                    console.log(response)
                     setSubmittedFiles(response.data)
+                    setLatestVersion(response.data[response.data.length - 1])
                     return
                 }
             } catch (error) {
@@ -103,25 +101,47 @@ export default function ViewSpecificDeliverable() {
                         <Typography variant="h6" className="!text-lg !font-semibold tracking-wide underline underline-offset-4">Submitted files</Typography>
                     </Stack>
                     <Stack>
-                        {loading && <CircularProgress color="inherit" />}
+                        {loading && <LinearProgress color="inherit" />}
                         {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
                         {
                             !loading && !error &&
-                            <Stack className="h-40 overflow-auto border-2 rounded-lg pt-4">
-                                {
-                                    // submittedFiles.length > 0 ? (
-                                        submittedFiles.map((data, index) => {
-                                            return (
-                                                <Stack key={index} className="gap-1 hover:bg-gray-300">
-                                                    <Stack className=" w-full px-2 justify-between items-center !flex-row ">
-                                                        <Typography className="!text-[14px] ">{data.title}</Typography>
-                                                        <NavLink to={`${data.submissionId}`} className="hover:!text-blue-500 hover:!rounded-none "><Typography variant="subtitle2">view</Typography><MoreHoriz /></NavLink>
-                                                        {/* ERROR : FILE IS DISPLAYING */}
+                            <Stack className=" max-h-100px overflow-auto border-2 rounded-lg">
+                                {/* Latest Version */}
+                                <Typography className="!pl-2 !text-[14px] !font-bold">Latest submitted file</Typography>
+                                <Stack className="gap-1 hover:bg-gray-300 pl-4">
+                                    <Stack className=" w-full px-2 justify-between items-center !flex-row ">
+                                        <Typography className="!text-[14px] ">{latestVersion.title}</Typography>
+                                        <NavLink to={`${latestVersion.submissionId}`} className="!flex mt-1 border border-blue-500 rounded-md px-2 rounded-mg !text-blue-500  ">
+                                            <Typography variant="subtitle2">view</Typography>
+                                            <MoreHoriz />
+                                        </NavLink>
+                                    </Stack>
+                                    <Divider />
+                                </Stack>
+
+
+                                {/* Show submitted files history */}
+                                <Button onClick={() => setShowSubmissionHistory(!showSubmissionHistory)} className="!my-2 !flex self-end" variant="outlined" size="small">Show Submission history</Button>
+                                {showSubmissionHistory &&
+                                    <>
+                                        <Typography className="!pl-2 !text-[14px] !font-bold">Latest submitted file</Typography>
+                                        {
+                                            submittedFiles.map((data, index) => {
+                                                return (
+                                                    <Stack key={index} className="gap-1 hover:bg-gray-300">
+                                                        <Stack className=" w-full pl-4 justify-between items-center !flex-row ">
+                                                            <Typography className="!text-[14px] ">{data.title}</Typography>
+                                                            <NavLink to={`${data.submissionId}`} className="!flex mt-1 hover:!text-blue-500 hover:!rounded-none ">
+                                                                <Typography variant="subtitle2">view</Typography>
+                                                                <MoreHoriz />
+                                                            </NavLink>
+                                                        </Stack>
+                                                        <Divider />
                                                     </Stack>
-                                                </Stack>
-                                            )
-                                        })
-                                    // ) : (<Alert severity="info">No submissions yet</Alert>)
+                                                )
+                                            })
+                                        }
+                                    </>
                                 }
                             </Stack>
                         }

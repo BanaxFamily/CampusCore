@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ZoomIn, ZoomOut } from "@mui/icons-material";
 import { Button, Stack, Typography } from "@mui/material";
 import { Viewer, Worker } from "@react-pdf-viewer/core";
@@ -7,6 +8,7 @@ import * as SubmissionApi from "../../../../network/submission_api"
 import { useEffect, useState } from "react";
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
+import IssueDean from "../../../dean/courses/submission/IssueDean";
 
 const PdfViewer = () => {
     let { submissionId } = useParams()
@@ -57,7 +59,7 @@ const PdfViewer = () => {
                     <Button><ZoomIn /></Button>
                     <Button><ZoomOut /></Button>
                 </div>
-                <div className="w-full h-[500px]">
+                <Stack className="w-full h-[500px] !flex-row gap-2">
                     {/* <iframe
                         title="PDF Viewer"
                         width="100%"
@@ -70,9 +72,12 @@ const PdfViewer = () => {
                         fileType === 'pdf' ? (
                             <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
                                 <Viewer fileUrl={`data:application/pdf;base64,${fileBase64}`} />
-                            </Worker>) : <img alt="Your Image" src={`data:image/png;base64,${fileBase64}`} style={{ maxWidth: '100%', maxHeight: '100%' }}/>
+                            </Worker>) : <img alt="Your Image" src={`data:image/png;base64,${fileBase64}`} style={{ maxWidth: '100%', maxHeight: '100%' }} />
                     }
-                </div>
+                    <Stack className="w-1/2 ">
+                        <IssueDean issueTitle="Issues" />
+                    </Stack>
+                </Stack>
             </div>
         </>
     );

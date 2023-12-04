@@ -33,7 +33,7 @@ export default function AddDeliverableModal({ onDismiss }) {
             const response = await Submission.firstSubmissionDeliverable(formData)
             console.log(response)
             if (response.isSuccess) {
-                // navigate(0)
+                navigate(0)
                 return
             }
 
