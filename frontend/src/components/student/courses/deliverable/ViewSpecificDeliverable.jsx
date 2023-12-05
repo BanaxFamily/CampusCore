@@ -107,11 +107,13 @@ export default function ViewSpecificDeliverable() {
                             !loading && !error &&
                             <Stack className=" max-h-100px overflow-auto border-2 rounded-lg">
                                 {/* Latest Version */}
-                                <Typography className="!pl-2 !text-[14px] !font-bold">Latest submitted file</Typography>
-                                <Stack className="gap-1 hover:bg-gray-300 pl-4">
+                                <Stack className="bg-blue-400">
+                                    <Typography className="!pl-2 !text-[14px] !text-white !font-bold">Latest submitted file</Typography>
+                                </Stack>
+                                <Stack className="gap-1 bg-slate-100 hover:text-blue-400 pl-4">
                                     <Stack className=" w-full px-2 justify-between items-center !flex-row ">
                                         <Typography className="!text-[14px] ">{latestVersion.title}</Typography>
-                                        <NavLink to={`${latestVersion.submissionId}`} className="!flex mt-1 border border-blue-500 rounded-md px-2 rounded-mg !text-blue-500  ">
+                                        <NavLink to={`${latestVersion.submissionId}`} className="!flex mt-1 border border-blue-500 rounded-md px-2 !text-blue-500  ">
                                             <Typography variant="subtitle2">view</Typography>
                                             <MoreHoriz />
                                         </NavLink>
@@ -125,15 +127,15 @@ export default function ViewSpecificDeliverable() {
                                 {showSubmissionHistory &&
                                     <>
                                         <Stack className="bg-blue-400">
-                                            <Typography className="!pl-2 !text-[14px] !text-white !font-bold">Latest submitted file</Typography>
+                                            <Typography className="!pl-2 !text-[14px] !text-white !font-bold">History</Typography>
                                         </Stack>
                                         {
                                             submittedFiles.map((data, index) => {
                                                 return (
-                                                    <Stack key={index} className="gap-1 hover:bg-gray-300">
+                                                    <Stack key={index} className="gap-1 bg-slate-100 hover:text-blue-400">
                                                         <Stack className=" w-full pl-4 justify-between items-center !flex-row ">
                                                             <Typography className="!text-[14px] ">{data.title}</Typography>
-                                                            <NavLink to={`${data.submissionId}`} className="!flex mt-1 hover:!text-blue-500 hover:!rounded-none ">
+                                                            <NavLink to={`${data.submissionId}`} className="!flex mt-1 border border-blue-500 rounded-md px-2 !text-blue-500 ">
                                                                 <Typography variant="subtitle2">view</Typography>
                                                                 <MoreHoriz />
                                                             </NavLink>

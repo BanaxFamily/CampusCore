@@ -9,9 +9,12 @@ import { useEffect, useState } from "react";
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import IssueDean from "../../../dean/courses/submission/IssueDean";
+import { useAuth } from "../../../../utils/AuthContext";
+import FacultyIssue from "../../../faculty/assignedcourse/submissions/FacultyIssue";
 
 const PdfViewer = () => {
     let { submissionId } = useParams()
+    let {userRole} = useAuth()
     const [fileBase64, setFileBase64] = useState(null)
     const [fileType, setFileType] = useState(null)
     const breadCrumbUrl = [
@@ -67,7 +70,8 @@ const PdfViewer = () => {
                             </Worker>) : <img alt="Your Image" src={`data:image/png;base64,${fileBase64}`}  style={{ maxWidth: '100%', maxHeight: '100%' }} />
                     }
                     <Stack className="w-1/2 ">
-                        <IssueDean issueTitle="Issues" />
+                        {userRole === 'Dean' && <IssueDean issueTitle="Issues" />}
+                        {userRole === 'Faculty' && <FacultyIssue issueTitle="Issues" />}
                     </Stack>
                 </Stack>
             </div>

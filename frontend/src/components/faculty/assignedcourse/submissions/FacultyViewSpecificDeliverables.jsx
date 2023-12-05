@@ -9,6 +9,7 @@ import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import SpecificDeliverableAddSubmission from "../../../student/courses/deliverable/SpecificDeliverableAddSubmission";
 import FacultySubmissions from "./FacultySubmissions";
+import FacultyIssue from "./FacultyIssue";
 
 export default function FacultyViewSpecificDeliverables() {
     let { deliverableName, offeredCourseDeliverableId, courseName } = useParams()
@@ -55,7 +56,6 @@ export default function FacultyViewSpecificDeliverables() {
                 const response = await SubmissionApi.getFacultyAllDeliverableByOfferedDeliverable({ "id": offeredCourseDeliverableId })
                 if (response.isSuccess) {
                     setSubmittedFiles(response.data)
-                    console.log(response.data)
                     return
                 }
             } catch (error) {
@@ -105,6 +105,13 @@ export default function FacultyViewSpecificDeliverables() {
                                 <FacultySubmissions submittedFiles={submittedFiles}/>
                             </Stack>
                         }
+                    </Stack>
+
+                    <Stack className="mt-2">
+                        <Typography variant="h6" className="!text-lg !font-semibold tracking-wide underline underline-offset-4">Issues</Typography>
+                    </Stack>
+                    <Stack>
+                        <FacultyIssue issueTitle={"Issues"}/>
                     </Stack>
                 </Stack>
             </Stack>

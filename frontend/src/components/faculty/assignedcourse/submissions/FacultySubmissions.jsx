@@ -13,11 +13,11 @@ export default function FacultySubmissions({submittedFiles}) {
             {
                 submittedFiles.map((data, index) => {
                     return (
-                        <Stack key={index} className="gap-1 hover:bg-gray-300">
-                            <Stack className=" w-full pl-4 justify-between items-center !flex-row ">
+                        <Stack key={index} className="gap-1 bg-slate-100 hover:text-blue-400">
+                            <Stack className=" w-full px-4 justify-between items-center !flex-row ">
                                 <Typography className="!text-[14px] ">{data.title}</Typography>
                                 <NavLink to={`${data.submissionId}`} className="!flex mt-1 hover:!text-blue-500 hover:!rounded-none ">
-                                    <Typography variant="subtitle2">view</Typography>
+                                    {/* <Typography variant="subtitle2">view</Typography> */}
                                     <MoreHoriz />
                                 </NavLink>
                             </Stack>

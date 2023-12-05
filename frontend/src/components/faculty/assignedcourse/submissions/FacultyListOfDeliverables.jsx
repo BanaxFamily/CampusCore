@@ -22,7 +22,7 @@ export default function FacultyListOfDeliverables({ data }) {
     return (
         <>
             <Stack onClick={handleToggleCollapse} className="!flex-row justify-between">
-                <Typography fontSize={'small'} className={`${isCollapsed ? '!text-black' : ''}  !font-semibold pr-2`}>
+                <Typography fontSize={'medium'} className={`${isCollapsed ? '!text-black' : ''}  !font-semibold pr-2`}>
                     Deliverables
                 </Typography>
                 {isCollapsed ? <ExpandLess /> : <ExpandMore />}
@@ -33,11 +33,11 @@ export default function FacultyListOfDeliverables({ data }) {
                         <Stack className="w-full mx-auto">
                             <Stack direction={'row'} className="items-center">
                                 <Stack className="w-full">
-                                    <Typography className="!font-medium !text-[14px] !text-black">{info.deliverableTitle}</Typography>
+                                    <Typography className="!font-medium !text-md !text-black">{info.deliverableTitle}</Typography>
                                 </Stack>
                                 <Stack>
-                                    <IconButton onClick={() => viewDeliverable(info.deliverableTitle, info.deliverableId, info.offeredCourseDeliverableId)} className="!rounded-none group-hover:hover:text-blue-300">
-                                        <Typography className="!text-sm pr-2">view </Typography><MoreHoriz />
+                                    <IconButton onClick={() => viewDeliverable(info.deliverableTitle, info.deliverableId, info.offeredCourseDeliverableId)} className="!rounded-none group-hover:!bg-transparent group-hover:hover:text-blue-300">
+                                        <Typography className="!text-md pr-2">view </Typography><MoreHoriz />
                                     </IconButton>
                                 </Stack>
                             </Stack>
