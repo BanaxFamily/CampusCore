@@ -43,6 +43,16 @@ export async function getSubmissionList(data){
     })
     return response
 }
+export async function getLatestVerionOfFile(data){
+    const response = await fetchData('api/submission/getLatestVersion', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    return response
+}
 
 
 export async function getFacultyAllDeliverableByOfferedDeliverable(data){
