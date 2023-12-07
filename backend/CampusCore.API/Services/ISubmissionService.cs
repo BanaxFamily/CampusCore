@@ -272,6 +272,7 @@ namespace CampusCore.API.Services
                                                     SubmissionId = x.Submission.Id,
                                                     Submitter = x.Submission.Submitter.FullName,
                                                     SubmitterId = x.Submission.SubmitterId,
+                                                    ForCourse = x.OfferedCourseDeliverable.OfferedCourse.Course.Name,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status,
@@ -405,7 +406,7 @@ namespace CampusCore.API.Services
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
                                                         && (isApproved && (cds.Submission.Status == "Faculty Level Approved")
-                                                        ||(!isApproved && cds.Submission.Status == "Unapproved") || cds.Submission.Status == "Adviser Level Approved"))
+                                                        || (!isApproved && cds.Submission.Status == "Unapproved") || cds.Submission.Status == "Adviser Level Approved"))
                                                 .Select(x => new
                                                 {
                                                     CourseDeliverableSubmissionId = x.Id,
@@ -852,10 +853,10 @@ namespace CampusCore.API.Services
 
             var submission = await _context.Submissions.FindAsync(model.SubmissionId);
 
-            
+
             submission.DAAdviser = DateTime.Now;
             submission.Status = "Adviser Level Approved";
-           
+
 
             _context.Submissions.Update(submission);
             var result = await _context.SaveChangesAsync();
