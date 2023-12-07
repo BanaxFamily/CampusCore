@@ -7,7 +7,7 @@ export default function FacultySubmissions({submittedFiles}) {
     return (
         <>
             <Stack className="bg-blue-400">
-                <Typography className="!pl-2 !text-[14px] !text-white !font-bold">Latest submitted file</Typography>
+                <Typography className="!pl-2 !text-[14px] py-2 uppercase !tracking-wide !text-white !font-bold">Latest submitted file</Typography>
             </Stack>
 
             {

@@ -20,11 +20,11 @@ export default function FacultyIssue({ issueTitle }) {
     //     }
     // }, [])
     return (
-        <div className="py-2 shadow-lg">
-            {submissionId && <DashBoardHeading desc="" title={`${issueTitle}`} classname="py-6" shadow="shadow-gray-300" />}
-            <div className={` px-2 ${submissionId ? 'max-h-[200px]' : 'max-h-[100px]'} bg-slate-100 py-2 overflow-y-auto`}>
+        <div className="py-2 ">
+            {submissionId && <DashBoardHeading desc="" title={`${issueTitle}`} classname="py-6"  />}
+            <div className={` px-2 ${submissionId ? 'max-h-[200px]' : 'max-h-[100px]'} py-2 overflow-y-auto`}>
                 <Stack direction="column" spacing={1}>
-                    <div className="w-full flex justify-between border border-gray-500 rounded-md items-center text-md px-2 hover:text-blue-400 hover:border-blue-400 ">
+                    <div className="w-full flex justify-between border bg-slate-100 border-gray-500 rounded-md items-center text-md px-2 hover:text-blue-400 hover:border-blue-400 ">
                         <Typography variant="p">Issue 1</Typography>
                         <Button variant="standard" className="cursor-pointer" edge="end" aria-label="details"> <MoreHoriz /></Button>
                     </div>

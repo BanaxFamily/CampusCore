@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Divider, LinearProgress, Stack, Typography } from "@mui/material";
+import { Alert, Button, Divider, LinearProgress, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as OfferedCourseDeliverable from "../../../../network/offeredCourseDeliverable_api";
@@ -10,6 +10,7 @@ import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import SpecificDeliverableAddSubmission from "../../../student/courses/deliverable/SpecificDeliverableAddSubmission";
 import FacultySubmissions from "./FacultySubmissions";
 import FacultyIssue from "./FacultyIssue";
+import { FileOpenSharp, History } from "@mui/icons-material";
 
 export default function FacultyViewSpecificDeliverables() {
     let { deliverableName, offeredCourseDeliverableId, courseName } = useParams()
@@ -91,11 +92,9 @@ export default function FacultyViewSpecificDeliverables() {
                         </>
                     }
                 </Stack>
-                <Stack className="w-1/2 px-1 overflow-hidden">
-                    <Stack className="my-2">
-                        <Typography variant="h6" className="!text-lg !font-semibold tracking-wide underline underline-offset-4">Submitted files</Typography>
-                    </Stack>
-                    <Stack>
+                <Stack className="w-1/2 px-1 gap-2 pb-4 overflow-hidden">
+                    <Button className="!mt-2 flex self-end" size="small" variant="outlined">Submission History<FileOpenSharp/></Button>
+                    <Stack className="mt-2">
                         {loading && <LinearProgress color="inherit" />}
                         {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
                         {
