@@ -21,13 +21,9 @@ namespace CampusCore.Shared
         public string SearchIssueComment { get; set; }
     }
 
-    public class IssueCommentListViewModel
+    public class GetIssueCommentViewModel
     {
-        public int Id { get; set; }
-        public int IssueId { get; set; } // foriegn Key from issueTable
-        public string UserId { get; set; } // foreign key from userTable
-        public string CommentText { get; set; }
-        public DateTime CommentDate { get; set; }
+        public int IssueId { get; set; }   
 
     }
 
