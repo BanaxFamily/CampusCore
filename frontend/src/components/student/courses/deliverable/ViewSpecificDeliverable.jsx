@@ -11,6 +11,10 @@ import DashBoardHeading from "../../../reusable/DashBoardHeading";
 // import PdfViewer from "./PdfViewer";
 import PdfViewer from "./PdfViewer";
 import SpecificDeliverableAddSubmission from "./SpecificDeliverableAddSubmission";
+import * as SubmissionApi from "../../../../network/submission_api";
+import Issues from "../../issues/Issues";
+import * as IssueApi from "../../../../network/issue_api"
+
 
 export default function ViewSpecificDeliverable() {
     let { deliverableName, offeredCourseDeliverableId } = useParams()
@@ -18,8 +22,12 @@ export default function ViewSpecificDeliverable() {
     const [deliverable, setDeliverable] = useState([])
     // eslint-disable-next-line no-unused-vars
     const [submittedFiles, setSubmittedFiles] = useState([])
-    const [submissionIdState, setSubmissionIdState] = useState([])
+    // eslint-disable-next-line no-unused-vars
+    const [submissionId, setSubmissionId] = useState([])
+    const [allIssues, setAllIssues] = useState([])
     const [loading, setLoading] = useState(true)
+    const [fileBase64, setFileBase64] = useState(null)
+    const [fileType, setFileType] = useState(null)
     const [error, setError] = useState(false)
     const breadCrumbUrl = [
         {
@@ -61,7 +69,19 @@ export default function ViewSpecificDeliverable() {
                 const response = await Submission.getSubmissionList(data)
                 if (response.isSuccess) {
                     setSubmittedFiles(response.data)
-                    setSubmissionIdState(response.data[0].submissionId)
+                    setSubmissionId(response.data[0].submissionId)
+                    if (response.data.length > 0) {
+                        // Get the base64 file or image
+                        const file = await SubmissionApi.getLatestVerionOfFile({ "id": response.data[0].submissionId })
+                        setFileBase64(file.data.fileB64)
+                        setFileType(file.data.fileType)
+
+                        const issues = await IssueApi.getAllIssue({
+                            "submissionId": response.data[0].submissionId,
+                            "filter": "open"
+                        })
+                        setAllIssues(issues.data)
+                    }
                     return
                 }
             } catch (error) {
@@ -75,7 +95,7 @@ export default function ViewSpecificDeliverable() {
         getSpecificDeliverable()
     }, [])
     return (
-        <Stack>
+        <Stack className="h-full">
             <BackNav>
                 <BreadCrumb data={breadCrumbUrl} />
             </BackNav>
@@ -84,7 +104,7 @@ export default function ViewSpecificDeliverable() {
             </Stack>
             <DashBoardHeading title={` ${deliverableName} `} />
 
-            <Stack className="w-full border-2 " direction={'row'}>
+            <Stack className="w-full border-x-2  " direction={'row'}>
                 <Stack className="w-4/6 px-10 border-r-2">
 
                     {loading && <LinearProgress />}
@@ -98,8 +118,12 @@ export default function ViewSpecificDeliverable() {
                     }
                     <Stack className="w-full h-[500px] gap-2">
                         <Typography className="!text-lg">Latest submitted file</Typography>
-                        <PdfViewer submissionId={submissionIdState} />
+                        <PdfViewer fileBase64={fileBase64} fileType={fileType} />
                     </Stack>
+                </Stack>
+                <Stack className="px-4 pt-2 flex-grow">
+                    {/* Show all issues */}
+                    <Issues issues={allIssues}/>
                 </Stack>
 
             </Stack>

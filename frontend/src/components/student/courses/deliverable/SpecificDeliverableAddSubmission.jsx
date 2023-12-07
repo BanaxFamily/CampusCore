@@ -1,10 +1,8 @@
 /* eslint-disable react/prop-types */
 import { Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import AddDeliverableModal from "./AddDeliverableModal";
 
 export default function SpecificDeliverableAddSubmission({ deliverable }) {
-    const [openSubmission, setOpenSubmission] = useState(false);
+    // const [openSubmission, setOpenSubmission] = useState(false);
     return (
         <Stack className="mt-2 " >
 
@@ -46,7 +44,7 @@ export default function SpecificDeliverableAddSubmission({ deliverable }) {
                 })
             }
 
-            {openSubmission && <AddDeliverableModal onDismiss={() => setOpenSubmission(false)} />}
+            {/* {openSubmission && <AddDeliverableModal onDismiss={() => setOpenSubmission(false)} />} */}
         </Stack >
     )
 }
