@@ -32,6 +32,16 @@ export async function getAllSubmissionVersions(data){
     })
     return response
 }
+export async function getAllSubmissionFaculty(data){
+    const response = await fetchData('api/submission/getAllSubmissionsForFaculty', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:  JSON.stringify(data)
+    })
+    return response
+}
 
 export async function getSubmissionList(data){
     const response = await fetchData('api/submission/getAllByStudent', {

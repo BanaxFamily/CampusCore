@@ -1,16 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Button, Divider, LinearProgress, Stack, Typography } from "@mui/material";
+import { Alert, Divider, LinearProgress, Stack, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import * as OfferedCourseDeliverable from "../../../../network/offeredCourseDeliverable_api";
 import * as SubmissionApi from "../../../../network/submission_api";
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
+import DynamicTable from "../../../reusable/DynamicTable";
 import SpecificDeliverableAddSubmission from "../../../student/courses/deliverable/SpecificDeliverableAddSubmission";
-import FacultySubmissions from "./FacultySubmissions";
-import FacultyIssue from "./FacultyIssue";
-import { FileOpenSharp, History } from "@mui/icons-material";
 
 export default function FacultyViewSpecificDeliverables() {
     let { deliverableName, offeredCourseDeliverableId, courseName } = useParams()
@@ -54,7 +52,7 @@ export default function FacultyViewSpecificDeliverables() {
         async function getSubmittedFiles() {
 
             try {
-                const response = await SubmissionApi.getFacultyAllDeliverableByOfferedDeliverable({ "id": offeredCourseDeliverableId })
+                const response = await SubmissionApi.getAllSubmissionFaculty({ "offeredCourseDeliverableId": offeredCourseDeliverableId, "isApproved": false })
                 if (response.isSuccess) {
                     setSubmittedFiles(response.data)
                     return
@@ -77,10 +75,10 @@ export default function FacultyViewSpecificDeliverables() {
             <Stack className="my-4">
                 <Divider className="!bg-black" />
             </Stack>
-            <DashBoardHeading title={`Viewing ${deliverableName} details`} />
+            <DashBoardHeading title={` ${deliverableName} `} />
 
             <Stack className="w-full border-2 " direction={'row'}>
-                <Stack className="w-4/6 border-r-2">
+                <Stack className="w-4/6 px-10 border-r-2">
 
                     {loading && <LinearProgress />}
                     {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
@@ -91,27 +89,55 @@ export default function FacultyViewSpecificDeliverables() {
 
                         </>
                     }
+                    <Stack className="w-full h-[500px] gap-2">
+                        <Stack className="!flex-row justify-between items-center">
+                            <Typography className="!text-lg">List of submissions</Typography>
+                            <Typography className="!text-sm text-slate-400">For approval</Typography>
+                        </Stack>
+                        <Stack className="border">
+                            <DynamicTable>
+                                <TableHead>
+                                    <TableRow className="bg-slate-300">
+                                        <TableCell className="!w-[30%] !text-md !text-black !font-bold border "> Student / Group name </TableCell>
+                                        <TableCell className=" !text-md !text-black !font-bold border !text-center"> Title </TableCell>
+                                        <TableCell className="!w-[15%] !text-md !text-black !font-bold border "> Status</TableCell>
+                                        <TableCell className="!w-[15%] !text-md !text-black !font-bold border "> Action</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        submittedFiles.map((file, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell className="!text-[12px] 2xl:text-[14px] border">{file.groupName ? file.groupName : file.submitter}</TableCell>
+                                                <TableCell className="!text-[12px] 2xl:text-[14px] border">{file.title}</TableCell>
+                                                <TableCell className="!text-[12px] 2xl:text-[14px] border ">{file.status}</TableCell>
+                                                <TableCell className="!text-[12px] 2xl:text-[14px] border ">
+                                                    <NavLink to={`${file.submissionId}`}>
+                                                            View
+                                                    </NavLink>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </TableBody>
+                            </DynamicTable>
+                        </Stack>
+                    </Stack>
                 </Stack>
-                <Stack className="w-1/2 px-1 gap-2 pb-4 overflow-hidden">
-                    <Button className="!mt-2 flex self-end" size="small" variant="outlined">Submission History<FileOpenSharp/></Button>
-                    <Stack className="mt-2">
-                        {loading && <LinearProgress color="inherit" />}
-                        {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
-                        {
-                            !loading && !error &&
-                            <Stack className=" max-h-100px overflow-auto border-2 rounded-lg">
-                                {/* Latest Version */}
-                                <FacultySubmissions submittedFiles={submittedFiles}/>
-                            </Stack>
-                        }
-                    </Stack>
+                {/* Side Informations */}
+                <Stack>
+                    <div className="grid grid-cols-2 px-2 gap-1 pt-4">
+                        <div className="border h-28 px-6 flex justify-center items-center rounded-md shadow-md">
+                            <p className="text-center">Submitted 14</p>
+                        </div>
+                        <div className="border h-28 px-6 flex justify-center items-center rounded-md shadow-md">
+                            <p className="text-center">Missing 14</p>
+                        </div>
+                        <div className="border h-28 px-6 flex justify-center items-center rounded-md shadow-md">
+                            <p className="text-center">Approved 14</p>
+                        </div>
+                    </div>
 
-                    <Stack className="mt-2">
-                        <Typography variant="h6" className="!text-lg !font-semibold tracking-wide underline underline-offset-4">Issues</Typography>
-                    </Stack>
-                    <Stack>
-                        <FacultyIssue issueTitle={"Issues"}/>
-                    </Stack>
                 </Stack>
             </Stack>
         </Stack >

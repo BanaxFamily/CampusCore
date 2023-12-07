@@ -2,10 +2,14 @@
 import { Button, Divider, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import ViewIssue from "./ViewIssue";
+import { useAuth } from "../../../utils/AuthContext";
+import FacultyApprovalModal from "../../faculty/assignedcourse/submissions/FacultyApprovalModal";
 
 export default function Issues({ issues }) {
+  const {userRole} = useAuth()
   const [openSubmission, setOpenSubmission] = useState(false);
   const [toViewIssue, setToViewIssue] = useState([]);
+  const [openApproval, setOpenApproval] = useState([]);
 
   function viewSpecificIssue(data){
     setToViewIssue(data)
@@ -15,7 +19,8 @@ export default function Issues({ issues }) {
   return (
     <>
       <Stack className="my-4">
-        <Button variant="outlined" size="small" onClick={() => setOpenSubmission(true)} className="  !flex self-end">Add submission</Button>
+        {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setOpenSubmission(true)} className="  !flex self-end">Add submission</Button>}
+        {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenApproval(true)} className="  !flex self-end">Aprrove submission</Button>}
       </Stack>
       <Stack className="!flex-row justify-between items-center">
         <Typography className="!text-lg">Issues</Typography>
@@ -43,6 +48,7 @@ export default function Issues({ issues }) {
       </Stack>
 
       {openSubmission && <ViewIssue toViewIssue={toViewIssue} />}
+      {userRole === "Faculty" && openApproval && <FacultyApprovalModal  onDismiss={() => setOpenApproval(false)}/>}
     </>
   )
 }

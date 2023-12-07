@@ -28,23 +28,11 @@ export default function SpecificDeliverableAddSubmission({ deliverable }) {
                                     <Typography className="!text-md !font-medium text-slate-600 !tracking-wider">{info.deliverableInstruction}</Typography>
                                 </Stack>
                             </Stack>
-                            {/* {userRole === 'Student' &&
-                                (!deliverable ? (
-                                    <Stack className="my-4">
-                                        <Button variant="outlined" size="small" onClick={() => setOpenSubmission(true)} className="  flex self-end">Add submission</Button>
-                                    </Stack>
-                                ) : (
-                                    <Stack className="my-4">
-                                        <Button variant="outlined" size="small" onClick={() => setOpenSubmission(true)} className="  flex self-end">Add new version</Button>
-                                    </Stack>
-                                ))
-                            } */}
                         </Stack>
                     )
                 })
             }
 
-            {/* {openSubmission && <AddDeliverableModal onDismiss={() => setOpenSubmission(false)} />} */}
         </Stack >
     )
 }

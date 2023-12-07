@@ -3,18 +3,6 @@
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 
 const PdfViewer = ({ fileBase64, fileType }) => {
-    // const [fileBase64, setFileBase64] = useState(null)
-    // const [fileType, setFileType] = useState(null)
-
-    // useEffect(() => {
-    //     async function showAllSubmittedFiles() {
-
-    //         const response = await SubmissionApi.getLatestVerionOfFile({ "id": submissionId })
-    //         setFileBase64(response.data.fileB64)
-    //         setFileType(response.data.fileType)
-    //     }
-    //     showAllSubmittedFiles()
-    // }, [])
 
     return (
         <>

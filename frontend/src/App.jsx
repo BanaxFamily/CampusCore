@@ -30,6 +30,7 @@ import FacultyStudentGroups from "./components/faculty/assignedcourse/studentgro
 import FacultyUpdateAndAddGroupWrapper from "./components/faculty/assignedcourse/studentgroups/FacultyUpdateAndAddGroupsWrapper";
 import FacultyShowAllDeliverables from "./components/faculty/assignedcourse/submissions/FacultyShowAllDeliverables";
 import FacultyViewSpecificDeliverables from "./components/faculty/assignedcourse/submissions/FacultyViewSpecificDeliverables";
+import FacultyViewSubmission from "./components/faculty/assignedcourse/submissions/FacultyViewSubmission";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
@@ -136,7 +137,7 @@ export default function App() {
                     <Route index element={<FacultyShowAllDeliverables />} />
                     <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<Layout />}>
                       <Route index element={<FacultyViewSpecificDeliverables />} />
-                      <Route path=":submissionId" element={<PdfViewer />} />
+                      <Route path=":submissionId" element={<FacultyViewSubmission />} />
                     </Route>
                   </Route>
                 </Route>
