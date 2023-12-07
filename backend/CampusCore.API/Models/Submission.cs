@@ -27,8 +27,11 @@ namespace CampusCore.API.Models
 
         
 
-        // public varchar faculty_digital_signature { get; set; } // lacking foreign key from UserTable re: digital signature
-        // public varchar dean_digital_signature { get; set; } // lacking foreign key from UserTable re: digital signature
+        // digital signatures
+        public string AdviserSignature { get; set; }
+        public string FacultySignature { get; set; }
+        public string DeanSignature { get; set; }
+        public string PRCSignature { get; set; }
 
 
 

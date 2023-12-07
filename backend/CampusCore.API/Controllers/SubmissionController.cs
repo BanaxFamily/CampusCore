@@ -241,7 +241,7 @@ namespace CampusCore.API.Controllers
 
         [HttpPost("approve")]
         //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> ApproveAsync([FromBody] SubmissionApproveViewModel model)
+        public async Task<IActionResult> ApproveAsync([FromBody] DigitalSignatureViewModel model)
         {
             if (ModelState.IsValid)
             {
