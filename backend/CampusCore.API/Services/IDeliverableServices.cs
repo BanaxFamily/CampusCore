@@ -34,6 +34,9 @@ namespace CampusCore.API.Services
                 Name = model.Name,
                 Description = model.Description,
                 Instruction = model.Instruction,
+                ForAdviser = model.ForAdviser,
+                GroupSubmission = model.GroupSubmission,
+                HighestApprovalNeeded = model.HighestApprovalNeeded
             };
 
 
@@ -42,10 +45,12 @@ namespace CampusCore.API.Services
 
             if (result > 0)
             {
-                return new ResponseManager
+                var deliverableId = deliverable.Id;
+                return new DataResponseManager
                 {
                     Message = "Deliverable created successfully!",
-                    IsSuccess = true
+                    IsSuccess = true,
+                    Data = deliverableId
                 };
 
             }
@@ -202,7 +207,10 @@ namespace CampusCore.API.Services
                 deliverable.Name = model.Name;
                 deliverable.Description = model.Description;
                 deliverable.Instruction = model.Instruction;
-                
+                deliverable.ForAdviser = model.ForAdviser;
+                deliverable.GroupSubmission = model.GroupSubmission;
+                deliverable.HighestApprovalNeeded = model.HighestApprovalNeeded;
+
 
                 // Save changes to the database
                 var result = await _context.SaveChangesAsync();

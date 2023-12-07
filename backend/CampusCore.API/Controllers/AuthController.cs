@@ -11,12 +11,12 @@ namespace CampusCore.API.Controllers
     public class AuthController : Controller
     {
         private IUserService _userService;
-        public AuthController (IUserService userService)
+        public AuthController(IUserService userService)
         {
             _userService = userService;
         }
 
-       
+
         // /api/auth/add
         [HttpPost("add")]
         public async Task<IActionResult> UserAddAsync([FromBody] UserAddViewModel model)
@@ -27,7 +27,7 @@ namespace CampusCore.API.Controllers
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
-                
+
                 return BadRequest(result);
             }
             return BadRequest("Some properties are not valid"); //status code: 400
@@ -61,7 +61,7 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid"); //status code: 400
         }
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteAsync([FromBody] UserDeleteViewModel model)
+        public async Task<IActionResult> DeleteAsync([FromBody] StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace CampusCore.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody]UserUpdateViewModel model)
+        public async Task<IActionResult> UpdateAsync([FromBody] UserUpdateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -92,11 +92,28 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for update"); //status code: 400
         }
 
+        [HttpPut("updateDetails")]
+        public async Task<IActionResult> UpdateDetailsAsync([FromBody] UpdateDetailsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var result = await _userService.UpdateDetailsAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); //status code: 400
+        }
+
+
         // /api/auth/login
-        [HttpPost ("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody] UserLoginViewModel model)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 var result = await _userService.LoginAsync(model);
                 if (result.IsSuccess)
@@ -107,9 +124,24 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid");
         }
 
+        // /api/auth/logout
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.LogoutAsync(id);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+
         // api/auth/getById
         [HttpPost("getById")]
-        public async Task<IActionResult> GetByIdAsync(UserGetByIdViewModel model)
+        public async Task<IActionResult> GetByIdAsync(StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -135,7 +167,21 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid");
         }
-       
+
+        [HttpPost("updatePassword")]
+        public async Task<IActionResult> UpdatePasswordAsync(UpdatePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.UpdatePasswordAsync(model);
+                if (result.IsSuccess)
+                    return Ok(result);
+                return BadRequest(result);
+
+            }
+            return BadRequest("Some properties are not valid");
+        }
+
 
 
     }

@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
+import { DeleteForever } from "@mui/icons-material";
+import { Button, TableBody, TableHead } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import { NavLink } from "react-router-dom";
+import * as OfferedCourse from "../../../network/offeredCourse_api";
 import DynamicTable from "../../reusable/DynamicTable";
-import { TableBody, TableHead, Button } from "@mui/material";
-import { DeleteForever } from "@mui/icons-material";
-import * as OfferedCourse from "../../../network/offeredCourse_api"
 
 
 export default function BasicTable({ courseOffered }) {
@@ -32,6 +33,7 @@ export default function BasicTable({ courseOffered }) {
           <TableCell align="right">Semester</TableCell>
           <TableCell align="right">Year</TableCell>
           <TableCell align="center">Action</TableCell>
+          <TableCell align="center" > Enrolled Students</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -48,6 +50,9 @@ export default function BasicTable({ courseOffered }) {
             <TableCell align="center">{course.acadYear}</TableCell>
             <TableCell align="right">
               <Button onClick={() => deleteConfirmation(course.id)}><DeleteForever className="text-red-500 hover:text-red-300"/></Button>
+            </TableCell>
+            <TableCell align="center">
+              <NavLink to={`${course.course.name}/${course.id}/enrolled-students`} ><Button size="small" className="hover:text-blue-300">View</Button></NavLink>
             </TableCell>
           </TableRow>
         ))}

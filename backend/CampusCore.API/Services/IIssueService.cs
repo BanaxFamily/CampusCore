@@ -100,6 +100,7 @@ namespace CampusCore.API.Services
 
                 var searchResults = await _context.Issues
                     .Where(oc => EF.Functions.Like(oc.Name, $"%{searchKey}%"))
+                    .Include(si => si.User)
                     .ToListAsync();
 
 
@@ -135,8 +136,18 @@ namespace CampusCore.API.Services
                 {
                     var result = await _context.SubmissionIssues
                                                 .Where(si => si.SubmissionId == submissionId)
-                                                .Select(si => si.Issue)
-                                                .Where(i => i.Status == "open")
+                                                .Where(i => i.Issue.Status == "open")
+                                                .Select( x => new
+                                                    {
+                                                        SubmissionId = x.SubmissionId,
+                                                        IssueId = x.Issue.Id,
+                                                        IssueTitle = x.Issue.Name,
+                                                        IssueOpenedBy = x.Issue.User.FullName,
+                                                        IssueOpenedById = x.Issue.UserId,
+                                                        IssueStatus = x.Issue.Status
+
+                                                    }
+                                                 )
                                                 .ToListAsync();
                     return new DataResponseManager
                     {
@@ -162,8 +173,18 @@ namespace CampusCore.API.Services
                 {
                     var result = await _context.SubmissionIssues
                                                 .Where(si => si.SubmissionId == submissionId)
-                                                .Select(si => si.Issue)
-                                                .Where(i => i.Status == "closed")
+                                                .Where(i => i.Issue.Status == "closed")
+                                                .Select(x => new
+                                                {
+                                                    SubmissionId = x.SubmissionId,
+                                                    IssueId = x.Issue.Id,
+                                                    IssueTitle = x.Issue.Name,
+                                                    IssueOpenedBy = x.Issue.User.FullName,
+                                                    IssueOpenedById = x.Issue.UserId,
+                                                    IssueStatus = x.Issue.Status
+
+                                                }
+                                                 )
                                                 .ToListAsync();
 
                     return new DataResponseManager
@@ -189,7 +210,17 @@ namespace CampusCore.API.Services
                 {
                     var result = await _context.SubmissionIssues
                                                 .Where(si => si.SubmissionId == submissionId)
-                                                .Select(si => si.Issue)
+                                                .Select(x => new
+                                                {
+                                                    SubmissionId = x.SubmissionId,
+                                                    IssueId = x.Issue.Id,
+                                                    IssueTitle = x.Issue.Name,
+                                                    IssueOpenedBy = x.Issue.User.FullName,
+                                                    IssueOpenedById = x.Issue.UserId,
+                                                    IssueStatus = x.Issue.Status
+
+                                                }
+                                                 )
                                                 .ToListAsync();
 
                     return new DataResponseManager
@@ -225,8 +256,18 @@ namespace CampusCore.API.Services
                 {
                     var result = await _context.SubmissionIssues
                                                 .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
-                                                .Select(si => si.Issue)
-                                                .Where(i => i.Status == "open")
+                                                .Where(i => i.Issue.Status == "open")
+                                                .Select(x => new
+                                                {
+                                                    SubmissionId = x.SubmissionId,
+                                                    IssueId = x.Issue.Id,
+                                                    IssueTitle = x.Issue.Name,
+                                                    IssueOpenedBy = x.Issue.User.FullName,
+                                                    IssueOpenedById = x.Issue.UserId,
+                                                    IssueStatus = x.Issue.Status
+
+                                                }
+                                                 )
                                                 .ToListAsync();
 
                     return new DataResponseManager
@@ -252,8 +293,18 @@ namespace CampusCore.API.Services
                 {
                     var result = await _context.SubmissionIssues
                                                 .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
-                                                .Select(si => si.Issue)
-                                                .Where(i => i.Status == "closed")
+                                                .Where(i => i.Issue.Status == "closed")
+                                                .Select(x => new
+                                                {
+                                                    SubmissionId = x.SubmissionId,
+                                                    IssueId = x.Issue.Id,
+                                                    IssueTitle = x.Issue.Name,
+                                                    IssueOpenedBy = x.Issue.User.FullName,
+                                                    IssueOpenedById = x.Issue.UserId,
+                                                    IssueStatus = x.Issue.Status
+
+                                                }
+                                                 )
                                                 .ToListAsync();
 
                     return new DataResponseManager
@@ -279,7 +330,17 @@ namespace CampusCore.API.Services
                 {
                     var result = await _context.SubmissionIssues
                                                 .Where(si => si.Submission.GroupId == userGroupID || si.Submission.SubmitterId == userId)
-                                                .Select(si => si.Issue)
+                                                .Select(x => new
+                                                {
+                                                    SubmissionId = x.SubmissionId,
+                                                    IssueId = x.Issue.Id,
+                                                    IssueTitle = x.Issue.Name,
+                                                    IssueOpenedBy = x.Issue.User.FullName,
+                                                    IssueOpenedById = x.Issue.UserId,
+                                                    IssueStatus = x.Issue.Status
+
+                                                }
+                                                 )
                                                 .ToListAsync();
 
                     return new DataResponseManager
@@ -308,7 +369,19 @@ namespace CampusCore.API.Services
             try
             {
 
-                var result = await _context.Issues.ToListAsync();
+                var result = await _context.Issues
+                    .Select(x => new
+                    {
+                        
+                        IssueId = x.Id,
+                        IssueTitle = x.Name,
+                        IssueOpenedBy = x.User.FullName,
+                        IssueOpenedById = x.UserId,
+                        IssueStatus = x.Status
+
+                    }
+                                                 )
+                    .ToListAsync();
                 return new DataResponseManager
                 {
                     IsSuccess = true,
@@ -363,7 +436,10 @@ namespace CampusCore.API.Services
 
             try
             {
-                var result = await _context.Issues.FindAsync(model.Id);
+                var result = await _context.Issues
+                                            .Include(i => i.User)
+                                            .Where(i => i.Id == model.Id)
+                                            .ToListAsync();
 
                 return new DataResponseManager
                 {

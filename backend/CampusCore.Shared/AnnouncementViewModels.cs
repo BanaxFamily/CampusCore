@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpressiveAnnotations.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,32 +13,20 @@ namespace CampusCore.Shared
         public int OfferedCourseId { get; set; } // foreign key from OfferedCourseTable
         public string Title { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
 
     }
-    public class AnnouncementListViewModel
+
+    public class AnnouncementGetAllModel
     {
-        public string SearchAnnouncement { get; set; }
-
+        
+        public string UserId { get; set; }
     }
-    public class AnnouncementDeleteModel
-    {
-        public int Id { get; set; }
 
-    }
-    public class AnnouncementGetByIdModel
-    {
-        public int Id { get; set; }
-
-    }
     public class AnnouncementUpdateViewModel
     {
         public int Id { get; set; }
-        public string UserId { get; set; } // foreign key from UserTable
-        public int OfferedCourseId { get; set; } // foreign key from OfferedCourseTable
         public string Title { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
 
     }
 }

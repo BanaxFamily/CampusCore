@@ -4,6 +4,7 @@ using CampusCore.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting;
+using static CampusCore.Shared.GetSubmissionsForFacultyViewModel;
 
 namespace CampusCore.API.Controllers
 {
@@ -12,21 +13,39 @@ namespace CampusCore.API.Controllers
     public class SubmissionController : Controller
     {
         private ISubmissionService _submissionService;
+        private IVersionService _versionService;
 
-        public SubmissionController(ISubmissionService submissionService)
+        public SubmissionController(ISubmissionService submissionService, IVersionService versionService)
         {
             _submissionService = submissionService;
+            _versionService = versionService;
         }
 
         //POST
         //CreateAsync(SubmissionAddViewModel model);
-        [HttpPost("create")]
-        //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> CreateAsync(SubmissionAddViewModel model)
+        [HttpPost("firstSubmission")]
+        //Authorize(Roles = "Student")]
+        public async Task<IActionResult> FirstSubmission([FromForm] FirstSubmissionViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.CreateAsync(model);
+                var result = await _submissionService.FirstSubmission(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+        [HttpPost("addNewVersion")]
+        //Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddNewVersion([FromForm] AddNewVersionViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _submissionService.AddNewVersion(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -38,13 +57,13 @@ namespace CampusCore.API.Controllers
 
         //        POST
         //        GetAllByCourseAsync(IntIdViewModel model);
-        [HttpPost("getAllByCourse")]
+        [HttpPost("getAllByOfferedCourseDeliverable")]
         ////Authorize(Roles = "Dean,Faculty")]
         public async Task<IActionResult> GetAllByCourseAsync(IntIdViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.GetAllByCourseDeliverableAsync(model);
+                var result = await _submissionService.GetAllByOfferedCourseDeliverableAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200
@@ -58,7 +77,7 @@ namespace CampusCore.API.Controllers
         //        GetAllByStudentAsync(StringIdViewModel model);
         [HttpPost("getAllByStudent")]
         ////Authorize(Roles = "Dean,Faculty")]
-        public async Task<IActionResult> GetAllByStudentAsync(StringIdViewModel model)
+        public async Task<IActionResult> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -132,13 +151,13 @@ namespace CampusCore.API.Controllers
         //this model contains OfferedCourseId since Faculty, Dean, PRC will view this when inside an offered course
         //POST
         //GetUnapproved(IntIdViewModel model);
-        [HttpPost("getUnapproved")]
+        [HttpPost("getAllSubmissionsForFaculty")]
         //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> GetUnapproved([FromBody] IntIdViewModel model)
+        public async Task<IActionResult> GetAllSubmissionsForFaculty(GetSubmissionsForFacultyViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.GetUnapproved(model);
+                var result = await _submissionService.GetAllSubmissionsForFaculty(model);
 
                 if (result.IsSuccess)
                     return Ok(result); // Status code: 200
@@ -151,13 +170,13 @@ namespace CampusCore.API.Controllers
         //this model contains OfferedCourseId since Faculty, Dean, PRC will view this when inside an offered course
         //        POST
         //        GetApprovedFaculty(IntIdViewModel model);
-        [HttpPost("getFacultyApproved")]
+        [HttpPost("getAllSubmissionsForDean")]
         //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> GetApprovedFaculty([FromBody] IntIdViewModel model)
+        public async Task<IActionResult> GetAllSubmissionsForDean(GetSubmissionsForDeanViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.GetApprovedFaculty(model);
+                var result = await _submissionService.GetAllSubmissionsForDean(model);
 
                 if (result.IsSuccess)
                     return Ok(result); // Status code: 200
@@ -170,13 +189,13 @@ namespace CampusCore.API.Controllers
         //this model contains OfferedCourseId since Faculty, Dean, PRC will view this when inside an offered course
         //POST
         //GetApprovedDean(IntIdViewModel model);
-        [HttpPost("getDeanApproved")]
+        [HttpPost("getAllSubmissionsForPRC")]
         //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> GetApprovedDean([FromBody] IntIdViewModel model)
+        public async Task<IActionResult> GetAllSubmissionsForPRC(GetSubmissionsForPRCViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.GetApprovedDean(model);
+                var result = await _submissionService.GetAllSubmissionsForPRC(model);
 
                 if (result.IsSuccess)
                     return Ok(result); // Status code: 200
@@ -189,13 +208,13 @@ namespace CampusCore.API.Controllers
         //this model contains OfferedCourseId since Faculty, Dean, PRC will view this when inside an offered course
         //POST
         //GetApprovedPRC(IntIdViewModel model);
-        [HttpPost("getPRCApproved")]
+        [HttpPost("getAllSubmissionsForAdviserReview")]
         //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> GetApprovedPRC([FromBody] IntIdViewModel model)
+        public async Task<IActionResult> GetAllSubmissionsForAdviserReview(GetSubmissionsForAdviserViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.GetApprovedPRC(model);
+                var result = await _submissionService.GetAllSubmissionsForAdviserReview(model);
 
                 if (result.IsSuccess)
                     return Ok(result); // Status code: 200
@@ -234,6 +253,86 @@ namespace CampusCore.API.Controllers
                 return BadRequest(result);
             }
             return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+        
+        [HttpPost("adviserApprove")]
+        //Authorize(Roles = "Dean")]
+        public async Task<IActionResult> AdviserApprove(SubmissionAdviserApproveViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _submissionService.AdviserApprove(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+
+        [HttpPost("getAllSubmissionVersions")]
+        //Authorize(Roles = "Dean,Faculty,Student")]
+        public async Task<IActionResult> GetAllSubmissionVersionsAsync(IntIdViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _versionService.GetAllSubmissionVersionsAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+        [HttpPost("getVersionById")]
+        //Authorize(Roles = "Dean,Faculty,Student")]
+        public async Task<IActionResult> GetVersionById(IntIdViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _versionService.GetByIdAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+        [HttpGet("getAllVersions")]
+        //Authorize(Roles = "Dean,Faculty,Student")]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _versionService.GetAllAsync();
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+        
+        [HttpPost("getLatestVersion")]
+        //Authorize(Roles = "Dean,Faculty,Student")]
+        public async Task<IActionResult> GetLatestVersionAsync(IntIdViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _versionService.GetLatestVersionAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
         }
 
 

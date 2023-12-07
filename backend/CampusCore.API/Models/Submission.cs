@@ -11,12 +11,11 @@ namespace CampusCore.API.Models
         public DateTime? DAFaculty { get; set; } = null;//
         public DateTime? DADean { get; set; } = null;//
         public DateTime? DAPRC { get; set; } = null;//
+        public DateTime? DAAdviser { get; set; } = null;//
 
         public string Title { get; set; }//
-        public string Version { get; set; } //set title by getting how many versions are there in a submission then +1
         public string Status { get; set; }//
-        public DateTime DateSubmitted { get; set; }
-        public string FilePath { get; set; }
+        
 
 
         [ForeignKey("UserId")]

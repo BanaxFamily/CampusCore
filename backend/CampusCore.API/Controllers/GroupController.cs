@@ -197,5 +197,50 @@ namespace CampusCore.API.Controllers
             return BadRequest("Some properties are not valid for update"); // Status code: 400
         }
 
+        [HttpPost("getNoGroupStudents")]
+        public async Task<IActionResult> GetStudentsWithNoGroup(IntIdViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _groupService.GetStudentsWithNoGroup(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+
+        [HttpPost("getStudentsForUpdate")]
+        public async Task<IActionResult> GetStudentsForUpdate(GetStudentsForUpdateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _groupService.GetStudentsForUpdate(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+
+        
+        [HttpPost("getGroupOfStudent")]
+        public async Task<IActionResult> GetGroupOfStudent(GetGroupOfStudentViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _groupService.GetGroupOfStudent(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
     }
 }

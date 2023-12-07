@@ -5,16 +5,17 @@ import { useForm } from "react-hook-form";
 import * as UserApi from "../../../network/user_api";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
 import Modal from "../Modal";
+import { useNavigate } from "react-router-dom";
 
 export default function UpdateModal(props) {
   const { user } = props;
+  const navigate = useNavigate()
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
   // const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    reset,
     formState: { isSubmitting },
   } = useForm();
 
@@ -22,9 +23,9 @@ export default function UpdateModal(props) {
 
     try {
       const response = await UserApi.updateUser(credentials);
+      console.log(response)
       if (response.isSuccess) {
-        setSuccess("User updated successfully!");
-        reset();
+        setSuccess(response.message);
         return;
       }
 
@@ -49,7 +50,7 @@ export default function UpdateModal(props) {
       setTimeout(() => {
         setError(null)
         setSuccess(null);
-      }, 3000);
+      }, 5000);
     }
   }
 
@@ -60,10 +61,12 @@ export default function UpdateModal(props) {
     }
   };
 
-  console.log(user.password)
   return (
     <Modal
-      onDismiss={props.onClose}
+      onDismiss={() => {
+        props.onClose
+        navigate(0)
+      }}
       heading={<DashBoardHeading title="Update user" desc="" />}
     >
       {error && <Alert severity="error">{error}!</Alert>}
@@ -178,7 +181,7 @@ export default function UpdateModal(props) {
                   w-full md:w-3/4 flex place-self-end justify-end  rounded-lg
                   py-4 mt-4 tracking-wider md:py-8"
                 >
-                  Add account
+                  Update account
                 </Button>
               </div>
             </div>

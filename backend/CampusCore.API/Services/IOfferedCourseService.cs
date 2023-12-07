@@ -12,6 +12,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateOfferedCourseAsync(OfferedCourseUpdateViewModel model);
         Task<ResponseManager> ViewOfferedCourseBySemAsync(OfferedCourseBySem model);
         Task<ResponseManager> OfferedCourseGetByIdAsync(IntIdViewModel model);
+        Task<ResponseManager> FacultyCourseLoadAsync(StringIdViewModel model);
         Task<ResponseManager> OfferedCourseGetNeedDeansApprovalAsync();
 
 
@@ -45,12 +46,43 @@ namespace CampusCore.API.Services
             _context.OfferedCourses.Add(offeredCourse);
             var result = await _context.SaveChangesAsync();
 
+            
+
+            
+
             if (result > 0)
             {
-                return new ResponseManager
+                //add each course deliverable to offered course as well
+                var deliverables = await _context.CourseDeliverables
+                                           .Where(cd => cd.CourseId == model.CourseId)
+                                           .ToListAsync();
+                foreach (var item in deliverables)
                 {
-                    Message = "Offered course added successfully!",
-                    IsSuccess = true
+                    
+                    var offeredCourseDeliverable = new OfferedCourseDeliverable
+                    {
+                        OfferedCourseId = offeredCourse.Id,
+                        DeliverableId = item.DeliverableId,
+                        Deadline = null
+                    };
+                    _context.OfferedCourseDeliverables.Add(offeredCourseDeliverable);
+                    var res = await _context.SaveChangesAsync();
+
+                    if(res > 0)
+                    {
+                        return new ResponseManager
+                        {
+                            Message = "Offered course added successfully!",
+                            IsSuccess = true
+                        };
+                    }
+                }
+                
+                return new ErrorResponseManager
+                {
+                    Message = "Error attaching deliverables to offered course!",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Error adding offered course deliverable in DB" }
                 };
 
             }
@@ -303,9 +335,33 @@ namespace CampusCore.API.Services
                 };
             }
         }
-        
-        
-    
 
+        public async Task<ResponseManager> FacultyCourseLoadAsync(StringIdViewModel model)
+        {
+            try
+            {
+                var result = await _context.OfferedCourses
+                                            .Include(oc => oc.Course)
+                                            .Include(oc => oc.FacultyAssigned)
+                                            .Where(oc => oc.FacultyId  == model.Id)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Course loads retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching course loads",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
     }
 }

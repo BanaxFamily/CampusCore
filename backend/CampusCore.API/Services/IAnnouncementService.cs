@@ -1,6 +1,8 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CampusCore.API.Services
 {
@@ -12,14 +14,18 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateAnnouncementAsync(AnnouncementUpdateViewModel model);
         //Task<ResponseManager> GetByIdAnnouncementAsync(int id);
         Task<ResponseManager> GetByIdAnnouncementAsync(IntIdViewModel model);
+        Task<ResponseManager> GetByOfferedCourseAnnouncementAsync(IntIdViewModel model);
+        Task<ResponseManager> GetAllByUserAnnouncementAsync(StringIdViewModel model);
 
     }
 
     public class AnnouncementService : IAnnouncementService
     {
+        private UserManager<User> _userManager;
         private AppDbContext _context;
-        public AnnouncementService(AppDbContext context)
+        public AnnouncementService(UserManager<User> userManager, AppDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
         public async Task<ResponseManager> CreateAnnouncementAsync(AnnouncementAddViewModel model)
@@ -34,7 +40,7 @@ namespace CampusCore.API.Services
                 OfferedCourseId = model. OfferedCourseId,
                 Title = model.Title,
                 Content = model.Content,
-                CreatedAt = model.CreatedAt,
+                CreatedAt = DateTime.Now,
 
             };
 
@@ -124,6 +130,194 @@ namespace CampusCore.API.Services
             }
         }
 
+        public async Task<ResponseManager> GetByOfferedCourseAnnouncementAsync(IntIdViewModel model)
+        {
+            try
+            {
+                var result = await _context.Announcements
+                                            .Include(a => a.User)
+                                            .Include(a => a.OfferedCourse)
+                                            .Where(a => a.OfferedCourseId == model.Id)
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Announcements retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching announcements",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetAllByUserAnnouncementAsync(StringIdViewModel model)
+        {
+            try
+            {
+                var userId = model.Id;
+                var users = await _userManager.FindByIdAsync(userId);
+                var roles = await _userManager.GetRolesAsync(users);
+                var role = roles.FirstOrDefault();
+
+                if (role != null)
+                {
+                    var announcements = new List<Announcement>();
+
+                    if (role == "Faculty")
+                    {
+                        var courseLoads = await _context.OfferedCourses
+                                              .Include(oc => oc.Course)
+                                              .Include(oc => oc.FacultyAssigned)
+                                              .Where(oc => oc.FacultyId == userId)
+                                              .ToListAsync();
+
+                        if (courseLoads.Count > 0)
+                        {
+                            foreach (var item in courseLoads)
+                            {
+                                var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    if (role == "Dean")
+                    {
+                        var courseLoads = await _context.OfferedCourseDeliverables
+                                              .Where(ocd => ocd.Deliverable.HighestApprovalNeeded == "Dean Level")
+                                              .ToListAsync();
+
+                        if (courseLoads.Count > 0)
+                        {
+                            foreach (var item in courseLoads)
+                            {
+                                var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    if (role == "Student")
+                    {
+                        var enrolledCourses = await _context.CourseEnrollments
+                                                                      .Where(oc => oc.StudentId == userId)
+                                                                      .ToListAsync();
+
+                        if (enrolledCourses.Count > 0)
+                        {
+                            foreach (var item in enrolledCourses)
+                            {
+                                var result = await _context.Announcements
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    if (role == "PRC")
+                    {
+                        var courseLoads = await _context.OfferedCourseDeliverables
+                                                                      .Where(ocd => ocd.Deliverable.HighestApprovalNeeded == "PRC Level")
+                                                                      .ToListAsync();
+
+                        if (courseLoads.Count > 0)
+                        {
+                            foreach (var item in courseLoads)
+                            {
+                                var result = await _context.Announcements
+                                            .Include(a => a.User)
+                                            .Include(a => a.OfferedCourse)
+                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .ToListAsync();
+
+                                announcements.AddRange(result);
+                            }
+                            return new DataResponseManager
+                            {
+                                IsSuccess = true,
+                                Message = "Announcements fetched successfully",
+                                Data = announcements
+                            };
+                        }
+                        return new ResponseManager
+                        {
+                            IsSuccess = true,
+                            Message = "No announcements . . ."
+                        };
+                    }
+                    else
+                    {
+                        return new ErrorResponseManager
+                        {
+                            IsSuccess = false,
+                            Message = "This role does not have access to announcements",
+                            Errors = new List<string> {"Admin role does not have access to announcements"}
+                        };
+                    }
+                }
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching announcement",
+                    Errors = new List<string> {"Role of the user is null!"}
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching announcement",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
 
 
         public async Task<ResponseManager> DeleteAnnouncementAsync(IntIdViewModel model)
@@ -191,11 +385,10 @@ namespace CampusCore.API.Services
                 }
 
                 // Update the Announcement properties from the model
-                announcement.UserId = model.UserId;
-                announcement.OfferedCourseId = model.OfferedCourseId;
+            
                 announcement.Title = model.Title;
                 announcement.Content = model.Content;
-                announcement.CreatedAt = model.CreatedAt;
+                announcement.CreatedAt = DateTime.Now;
 
                 // Save changes to the database
                 var result = await _context.SaveChangesAsync();

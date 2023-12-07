@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -34,6 +35,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.EnableSensitiveDataLogging();
 });
 
 
@@ -59,18 +61,22 @@ builder.Services.AddAuthentication(auth =>
 
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserLogService, UserLogService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ICourseDeliverableService, CourseDeliverableService>();
 builder.Services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
 builder.Services.AddScoped<IDeliverableServices, DeliverableService>();
 builder.Services.AddScoped<IOfferedCourseService, OfferedCourseService>();
+builder.Services.AddScoped<IOfferedCourseDeliverableService, OfferedCourseDeliverableService>();
 builder.Services.AddScoped<IAnnouncementCommentService, AnnouncementCommentService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IIssueCommentService, IssueCommentService>();
-builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
+//builder.Services.AddScoped<IPublicResearchRepositoryService, PublicResearchRepositoryService>();
 builder.Services.AddScoped<IIssueService, IssueService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+builder.Services.AddScoped<IVersionService, VersionService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 
 var app = builder.Build();
@@ -82,7 +88,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-#region "creating roles"
+#region "seed"
 // Add your role and permission configuration code here
 using (var scope = app.Services.CreateScope())
 {

@@ -34,7 +34,6 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
 
   async function onSubmit(credentials) {
     const response = await OfferCourse.addOfferCourse(credentials);
-    console.log(credentials)
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
@@ -101,15 +100,23 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                 />
 
                 <TextField
-                  required
-                  id="outline-semester"
-                  label="Semester"
-                  name="sem"
-                  variant="filled"
-                  {...register("sem", { required: "this si required" })}
 
-                // value={selectedItem.name || ''}
-                />
+                  id="filled-sem"
+                  select
+                  label="Semester"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  required
+                  variant="outlined"
+                  name="sem"
+                  {...register("sem", { required: "select one option" })}
+                >
+                  <option value=""></option>
+                  <option value="first">first</option>
+                  <option value="second">second</option>
+                  <option value="summer">summer</option>
+                </TextField>
 
                 <TextField
                   required
@@ -117,7 +124,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   name="acadYear"
                   label="Year"
                   variant="filled"
-                  {...register("acadYear", { required: "this si required" })}
+                  {...register("acadYear", { required: "this is required" })}
 
                 // value={selectedItem.name || ''}
                 />
@@ -130,14 +137,12 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   variant="filled"
                   {...register("schedule", { required: "this si required" })}
 
-                // value={selectedItem.name || ''}
                 />
 
                 <TextField
                   id="filled-role"
                   select
                   label="Faculty"
-                  // defaultValue="  "
                   SelectProps={{
                     native: true,
                   }}

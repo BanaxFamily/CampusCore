@@ -28,21 +28,26 @@ namespace CampusCore.API.Services
             if (model == null)
                 throw new NullReferenceException("Register Model is null");
 
+            var students = model.StudentIdArray;
 
-            var courseEnrollment = new CourseEnrollment
+            foreach (var studentId in students)
             {
-                OfferedCourseId = model.OfferedCourseId,
-                StudentId = model.StudentId
-            };
+                var courseEnrollment = new CourseEnrollment
+                {
+                    OfferedCourseId = model.OfferedCourseId,
+                    StudentId = studentId
+                };
 
-            _context.CourseEnrollments.Add(courseEnrollment);
+                _context.CourseEnrollments.Add(courseEnrollment);
+            }
+            
             var result = await _context.SaveChangesAsync();
 
             if (result > 0)
             {
                 return new ResponseManager
                 {
-                    Message = "Enrolled course added successfully!",
+                    Message = "Students enrolled successfully!",
                     IsSuccess = true
                 };
 
@@ -52,7 +57,7 @@ namespace CampusCore.API.Services
 
             return new ErrorResponseManager
             {
-                Message = "Failed to add Course Enrollment",
+                Message = "Failed to enroll students",
                 IsSuccess = false,
                 Errors = new List<string>() { "Error adding enrolled course in the Database" }
             };
@@ -113,9 +118,10 @@ namespace CampusCore.API.Services
                 var result = await _context.CourseEnrollments
                              .Include(ce => ce.OfferedCourse)
                              .Include(ce => ce.OfferedCourse.Course)
-                             .Include(ce => ce.OfferedCourse.FacultyAssigned.FullName)
+                             .Include(ce => ce.OfferedCourse.FacultyAssigned)
                              .Where(ce => ce.StudentId == model.StudentId)
                              .ToListAsync();
+                
 
                 return new DataResponseManager
                 {

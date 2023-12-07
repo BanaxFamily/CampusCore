@@ -24,7 +24,7 @@ export default function CourseLoadWrapper() {
   } = useForm();
 
   useEffect(() => {
-
+    setDisplayAll(false)
     async function getAllOfferedCourse() {
       const response = await OfferedCourse.viewAllOfferedCourse()
       setAllOfferedCourseData(response.data)
@@ -36,6 +36,7 @@ export default function CourseLoadWrapper() {
         (course) => course.status.toLowerCase() !== "close"
       ));
     }
+    setDisplayAll(true)
     getAllOfferedCourse()
     openCourses()
   }, [])
@@ -75,13 +76,14 @@ export default function CourseLoadWrapper() {
                       native: true,
                     }}
                     required
-                    variant="filled"
+                    variant="outlined"
                     name="sem"
                     {...register("sem", { required: "select one option" })}
                   >
                     <option value=""></option>
-                    <option value="first">1st</option>
-                    <option value="second">2st</option>
+                    <option value="first">first</option>
+                    <option value="second">second</option>
+                    <option value="summer">summer</option>
                   </TextField>
                   <TextField
                     sx={{
@@ -98,7 +100,7 @@ export default function CourseLoadWrapper() {
                     id="outline-year"
                     name="acadYear"
                     label="Year"
-                    variant="filled"
+                    variant="outlined"
                     {...register("acadYear", { required: "this si required" })}
 
                   />
@@ -110,9 +112,6 @@ export default function CourseLoadWrapper() {
             </form>
 
             <Button
-              // sx={{
-              //   width: { sm: 200, md: 120 }
-              // }}
               onClick={() => {
                 setSortedCourse(allOfferedCourseData);
               }}
@@ -131,23 +130,20 @@ export default function CourseLoadWrapper() {
               variant="outlined"
               className="mr-2 text-[15px] font-semibold hover:text-black"
             >
-              Add new
+              Assign course
               <GiNotebook size={25} />
             </Button>
 
           </div>
         </div>
       </div>
-      <Divider />
+      <Stack className="my-4">
+        <Divider />
+      </Stack>
 
-      {
-        sortedCourse.length > 0 ? <OfferedCourseTable courseOffered={sortedCourse} /> : <p>No record found</p>
-      }
+      {sortedCourse.length > 0 ? <OfferedCourseTable courseOffered={sortedCourse} /> : <p>No record found</p>}
 
-      {/* {
-        displayAll && <OfferedCourseTable courseOffered={allOfferedCourseData} />
-      } */}
-
+      {/* ASSIGNED A COURSE MODAL  TO A PROFESSOR */}
       {offeredCourseAdd && (
         <AddOfferedCourse
           offeredCourse={openCoursesData}

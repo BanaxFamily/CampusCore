@@ -83,10 +83,10 @@ namespace CampusCore.Shared
         //
         public string Option { get; set; }
         public string SearchKey { get; set; }
-        
+
         public enum Options
         {
-            Name, 
+            Name,
             Username,
             Id
         }
@@ -100,9 +100,6 @@ namespace CampusCore.Shared
 
     public class UserUpdateViewModel
     {
-
-        
-
         public string Id { get; set; }
 
         [Required]
@@ -131,7 +128,7 @@ namespace CampusCore.Shared
 
     public class UserDeleteViewModel
     {
-        public  string  Id { get; set; }
+        public string Id { get; set; }
     }
     public class UserGetByRoleViewModel
     {
@@ -145,13 +142,41 @@ namespace CampusCore.Shared
         public string Id { get; set; }
         public string? Idno { get; set; }
 
-        public string Username { get; set; }    
-        public string FirstName { get; set;}
-        public string LastName { get; set;}
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
         public string Status { get; set; }
         public string Role { get; set; }
 
-    }   
-    
+    }
+    public class UpdateDetailsViewModel
+    {
+        public string Id { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class UpdatePasswordViewModel
+    {
+        public string Id { get; set; }
+
+        [Required]
+        [MinLength(6, ErrorMessage = "Password must not be less than 6 characters")]
+        [MaxLength(30, ErrorMessage = "Password must not be more than 30 characters")]
+        public string Password { get; set; }
+
+        [Required]
+        [MinLength(6, ErrorMessage = "Password must not be less than 6 characters")]
+        [MaxLength(30, ErrorMessage = "Password must not be more than 30 characters")]
+        public string NewPassword { get; set; }
+        [Required]
+        [Compare("NewPassword", ErrorMessage = "Password and Confirmation Password must match.")]
+
+        public string RePassword { get; set; }
+    }
+
+
+
+
 }
