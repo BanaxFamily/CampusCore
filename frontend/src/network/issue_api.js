@@ -1,22 +1,24 @@
 import { fetchData } from "./user_api";
 
-export async function addAnnouncementComment(data){
-    const response = await fetchData("api/announcementComment/add", {
+export async function addNewIssue(data){
+    const response = await fetchData('api/issue/add', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data)
     })
-    return response;
+
+    return response
 }
-export async function viewAnnouncementComments(data){
-    const response = await fetchData("api/announcementComment/viewComments", {
+export async function getAllIssue(data){
+    const response = await fetchData('api/issue/getAllBySubmission', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data)
     })
-    return response;
+
+    return response
 }

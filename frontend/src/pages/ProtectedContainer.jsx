@@ -25,7 +25,7 @@ const ProtectedContainer = (props) => {
             <div className="flex sm:flex-col-reverse sm:justify-center md:flex-row">
               <div className="hidden md:block w-full sm:w-1/2  md:w-[28%] lg:w-[12rem] xl:w-[16rem] 2xl:w-[34rem] mr-2 ">
                 <div className={`hidden fixed 2xl:absolute left-0 w-full bg-mainBlueColor  sm:w-1/2  md:w-[25%] lg:pr-6 lg:w-[16%] 2xl:w-[28rem] md:block h-screen `}>
-                  <div className=" flex flex-col w-full mt-10 lg:mx-2 2xl:m-10 opacity-80 hover:opacity-100 ">
+                  <div className=" flex flex-col w-full mt-10 lg:mx-2 2xl:m-10 ">
                     <Route onDismiss={() => setOpenSideNavigation(!openSideNavigation)}/>
                     <div className={`  flex items-center shadow-gray-400 mb-2 p-2 rounded-full  ease-in duration-300 group`}>
                       <NavLink to={'/logout'} onClick={logOutUser} className={'flex flex-row gap-6 w-full md:gap-6 text-[14px] group-hover:text-paleRed text-white'}>

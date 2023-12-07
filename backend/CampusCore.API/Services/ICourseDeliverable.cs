@@ -9,7 +9,6 @@ namespace CampusCore.API.Services
         Task<ResponseManager> CreateCourseDeliverableAsync(CourseDeliverableAddViewModel model);
         Task<ResponseManager> GetByCourseAsync(IntIdViewModel model);
         Task<ResponseManager> GetAllAsync();
-        Task<ResponseManager> UpdateAsync(CourseDeliverableUpdateViewModel model);
         Task<ResponseManager> DeleteCourseDeliverableAsync(IntIdViewModel model);
     }
 
@@ -31,8 +30,7 @@ namespace CampusCore.API.Services
             var courseDeliverable = new CourseDeliverable
             {
                 CourseId = model.CourseId,
-                DeliverableId = model.DeliverableId,
-                DeliverableDeadline = model.DeliverableDeadline
+                DeliverableId = model.DeliverableId
             };
 
 
@@ -41,11 +39,7 @@ namespace CampusCore.API.Services
 
             if (result > 0)
             {
-                return new ResponseManager
-                {
-                    Message = "current course deliverable added successfully!",
-                    IsSuccess = true
-                };
+                
 
                 var res = await _context.OfferedCourses
                                    .Where(oc=> oc.CourseId == model.CourseId)
@@ -62,18 +56,31 @@ namespace CampusCore.API.Services
                             Deadline = null
                         };
                         _context.OfferedCourseDeliverables.Add(offeredCourseDeliverable);
-                        var re = await _context.SaveChangesAsync();
-
-                        if (re > 0)
-                        {
-                            return new ResponseManager
-                            {
-                                Message = "Course deliverable added successfully and updated existing offered courses!",
-                                IsSuccess = true
-                            };
-                        }
+                        
                     }
+                    var re = await _context.SaveChangesAsync();
+
+                    if (re <= 0)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "Course deliverable template updated but associated offered course is not updated",
+                            IsSuccess = false,
+                            Errors = new List<string> { "There's a problem with updating the item in the offered-course-deliverable table"}
+                        };
+                    }
+
+                    return new ResponseManager
+                    {
+                        Message = "Course deliverable added successfully and updated existing offered courses!",
+                        IsSuccess = true
+                    };
                 }
+                return new ResponseManager
+                {
+                    Message = "Course deliverable added successfully and updated existing offered courses!",
+                    IsSuccess = true
+                };
 
             }
 
@@ -164,7 +171,6 @@ namespace CampusCore.API.Services
 
         public async Task<ResponseManager> GetByCourseAsync(IntIdViewModel model)
         {
-
                 try
                 {
                     var result = await _context.CourseDeliverables
@@ -192,39 +198,6 @@ namespace CampusCore.API.Services
 
 
 
-        public async Task<ResponseManager> UpdateAsync(CourseDeliverableUpdateViewModel model)
-        {
-            if (model == null)
-                throw new NullReferenceException("Register Model is null");
-
-
-            var courseDeliverable = new CourseDeliverable
-            {
-                DeliverableDeadline = model.DeliverableDeadline
-            };
-
-
-            _context.CourseDeliverables.Add(courseDeliverable);
-            var result = await _context.SaveChangesAsync();
-
-            if (result > 0)
-            {
-                return new ResponseManager
-                {
-                    Message = "current course deliverable added successfully!",
-                    IsSuccess = true
-                };
-
-            }
-
-
-
-            return new ErrorResponseManager
-            {
-                Message = "Course enrollemnt is not added",
-                IsSuccess = false,
-                Errors = new List<string>() { "Error updating adding current course deliverable in DB" }
-            };
-        }
+        
     }
 }

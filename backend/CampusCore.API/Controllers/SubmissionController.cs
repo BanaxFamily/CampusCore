@@ -22,13 +22,29 @@ namespace CampusCore.API.Controllers
 
         //POST
         //CreateAsync(SubmissionAddViewModel model);
-        [HttpPost("create")]
-        //Authorize(Roles = "Dean")]
-        public async Task<IActionResult> CreateAsync([FromForm] SubmissionAddViewModel model)
+        [HttpPost("firstSubmission")]
+        //Authorize(Roles = "Student")]
+        public async Task<IActionResult> FirstSubmission([FromForm] FirstSubmissionViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _submissionService.CreateAsync(model);
+                var result = await _submissionService.FirstSubmission(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+        [HttpPost("addNewVersion")]
+        //Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddNewVersion([FromForm] AddNewVersionViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _submissionService.AddNewVersion(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200

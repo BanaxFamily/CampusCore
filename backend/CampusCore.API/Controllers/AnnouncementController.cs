@@ -1,7 +1,10 @@
-﻿using CampusCore.API.Services;
+﻿using CampusCore.API.Models;
+using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CampusCore.API.Controllers
 {
@@ -10,10 +13,14 @@ namespace CampusCore.API.Controllers
     public class AnnouncementController : Controller
     {
         private IAnnouncementService _announcementService;
+        private UserManager<User> _userManager;
+        private AppDbContext _context;
 
-        public AnnouncementController(IAnnouncementService announcementService)
+        public AnnouncementController(IAnnouncementService announcementService, UserManager<User> userManager, AppDbContext context)
         {
             _announcementService = announcementService;
+            _userManager = userManager;
+            _context = context;
         }
 
         // /api/announcement/create
@@ -65,10 +72,12 @@ namespace CampusCore.API.Controllers
 
         //api/announcement/getByUser
         [HttpPost("getByUser")]
-        public async Task<IActionResult> GetAllByUserAsync(AnnouncementGetAllModel model)
+        public async Task<IActionResult> GetAllByUserAsync(StringIdViewModel model)
         {
             if (ModelState.IsValid)
             {
+                
+                
                 var result = await _announcementService.GetAllByUserAnnouncementAsync(model);
 
                 if (result.IsSuccess)

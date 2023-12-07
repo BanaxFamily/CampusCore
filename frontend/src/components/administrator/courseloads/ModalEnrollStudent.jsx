@@ -13,11 +13,11 @@ export default function ModalEnrollStudent(props) {
     let { courseName, courseId } = useParams()
     const navigate = useNavigate()
     const [students, setStudents] = useState(null)
-    const [selectedStudent, setSelectedStudent] = useState("");
-    const [selectedName, setSelectedName] = useState([]);
+    const [selectedStudents, setSelectedStudents] = useState([]);
+    const [selectedNames, setSelectedNames] = useState([]);
     const [successMessage, setSuccessMessage] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
-    const { register, handleSubmit, setValue, reset, formState: { isSubmitting } } = useForm()
+    const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
 
     useEffect(() => {
         async function getStudentRole() {
@@ -36,11 +36,16 @@ export default function ModalEnrollStudent(props) {
 
     async function addEnrolled(data) {
         try {
-            const response = await EnrollmentApi.addEnrollmentStudent(data)
+            const dataTobeInserted = {
+                "StudentIdArray": [...selectedStudents],
+                ...data
+            }
+            const response = await EnrollmentApi.addEnrollmentStudent(dataTobeInserted)
+
             if (response.isSuccess) {
                 setSuccessMessage(response.message)
-                setSelectedStudent("")
-                setSelectedName(null)
+                setSelectedStudents([])
+                setSelectedNames([])
                 reset()
             }
 
@@ -57,10 +62,28 @@ export default function ModalEnrollStudent(props) {
         }
     }
 
-    const handleToggle = (value, name) => () => {
-        setSelectedStudent(value);
-        setSelectedName(name);
-        setValue("studentId", value || "");
+    // const handleToggle = (value, name) => () => {
+    //     setSelectedStudent(value);
+    //     setSelectedName(name);
+    //     setValue("studentId", value || "");
+    // };
+    const handleToggle = (value, name) => {
+        const selectedIndex = selectedStudents.indexOf(value);
+        let newSelectedStudents = [...selectedStudents];
+        let newSelectedNames = [...selectedNames];
+
+        if (selectedIndex === -1) {
+            // Add student to the selected list
+            newSelectedStudents = [...selectedStudents, value];
+            newSelectedNames = [...selectedNames, name];
+        } else {
+            // Remove student from the selected list
+            newSelectedStudents.splice(selectedIndex, 1);
+            newSelectedNames.splice(selectedIndex, 1);
+        }
+
+        setSelectedStudents(newSelectedStudents);
+        setSelectedNames(newSelectedNames);
     };
 
     return (
@@ -79,7 +102,7 @@ export default function ModalEnrollStudent(props) {
             <Stack spacing={1} className="mb-4">
                 {/* Dispaly selected course and student name */}
                 <Typography className="text-black">Course: <span className="underline font-semibold">{courseName}</span></Typography>
-                <Typography className="text-black">Selected Student: <span className="underline font-semibold">{selectedName ? selectedStudent : <Person />}</span></Typography>
+                <Typography className="text-black">Selected Student: <span className="underline font-semibold">{selectedNames ? selectedStudents : <Person />}</span></Typography>
             </Stack>
             <Divider className="!bg-black" />
             <Stack direction={'row'} spacing={2} className="w-full my-2" >
@@ -89,8 +112,8 @@ export default function ModalEnrollStudent(props) {
                 </Stack>
                 <Stack className="w-1/2"><Button variant="outlined" onClick={() => {
                     // Clear the selected name
-                    setSelectedStudent("")
-                    setSelectedName(null)
+                    setSelectedStudents([])
+                    setSelectedNames([])
                     reset()
                 }} className="!border-red-400 !text-red-400 hover:!bg-red-800 flex self-end">Clear</Button></Stack>
             </Stack>
@@ -117,8 +140,10 @@ export default function ModalEnrollStudent(props) {
                                         // <ListItem onClick={() => handleToggle(data)} key={index}>
                                         <ListItem onClick={() => handleToggle(student.id)} key={`item-${index}`} className="hover:bg-gray-300">
                                             <Checkbox
-                                                checked={student.id === selectedStudent}
-                                                onChange={handleToggle(student.id, student.fullName)}
+                                                checked={selectedStudents.includes(student.id)}
+                                                // checked={student.id === selectedStudents}
+                                                // onChange={handleToggle(student.id, student.fullName)}
+                                                onChange={() => handleToggle(student.id, student.fullName)}
                                             />
                                             <ListItemText primary={`${student.idno} | ${student.lastName}, ${student.firstName}`} />
                                         </ListItem>
@@ -131,7 +156,7 @@ export default function ModalEnrollStudent(props) {
             {/* Mounting to send the data to API  */}
             <form action="" onSubmit={handleSubmit(addEnrolled)}>
                 <Stack>
-                    <input type="text" hidden defaultValue={selectedStudent} name="studentId" {...register('studentId')} />
+                    {/* <input type="text" hidden defaultValue={selectedStudents} name="studentId" {...register('studentId')} /> */}
                     <input type="text" hidden defaultValue={courseId} name="offeredCourseId"{...register('offeredCourseId')} />
 
                     {isSubmitting ? <IconButton size="small"><CircularProgress fontSize="inherit"/></IconButton> : <Button type="submit" variant="contained" className="flex self-end">Enroll Student</Button>}

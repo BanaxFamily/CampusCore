@@ -49,12 +49,12 @@ export default function CourseLoadWrapper() {
 
   return (
     <WrapperLayout>
-      <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
+      <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-full tracking-wider">
         <div className="flex justify-between w-full">
-          <Stack direction="row" className="gap-2">
+          <Stack className=" gap-2 mx-auto md:mx-0 md:justify-between md:w-full sm:!flex-row">
 
             <form action="" onSubmit={handleSubmit(sortBySemAndYear)} className="flex gap-1">
-              <Stack direction="row" className="gap-2">
+              <Stack className="gap-2">
                 <div className="flex gap-1">
 
 
@@ -106,35 +106,42 @@ export default function CourseLoadWrapper() {
                   />
 
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="w-full flex self-end hover:text-black" variant="outlined"> Search</Button>
+                <Button type="submit" disabled={isSubmitting} className="w-full flex self-end !text-[12px] hover:text-black" variant="outlined"> Search</Button>
               </Stack>
 
             </form>
 
-            <Button
-              onClick={() => {
-                setSortedCourse(allOfferedCourseData);
-              }}
-              variant="outlined"
-              className="mr-2 flex w-full  self-end text-[15px] font-semibold hover:text-black"
-            >
-              view all
-            </Button>
+            <Stack className="gap-3">
+
+              <Button
+                onClick={() => {
+                  setSortedCourse(allOfferedCourseData);
+                }}
+                variant="outlined"
+                size="mall"
+                className="mr-2 flex w-full  self-end !text-[12px] font-semibold hover:text-black"
+              >
+                view all
+              </Button>
+
+              {/* Assign a course Button */}
+              <div className=" flex flex-col gap-1 justify-center items-center  ">
+                <Button
+                  onClick={() => {
+                    setOfferedCourseAdd(true);
+                  }}
+                  size="small"
+                  variant="outlined"
+                  className="mr-2 text-[15px] font-semibold hover:text-black"
+                >
+                  Assign course
+                  <GiNotebook size={25} />
+                </Button>
+
+              </div>
+            </Stack>
 
           </Stack>
-          <div className=" flex flex-col gap-1 justify-center items-center  ">
-            <Button
-              onClick={() => {
-                setOfferedCourseAdd(true);
-              }}
-              variant="outlined"
-              className="mr-2 text-[15px] font-semibold hover:text-black"
-            >
-              Assign course
-              <GiNotebook size={25} />
-            </Button>
-
-          </div>
         </div>
       </div>
       <Stack className="my-4">
