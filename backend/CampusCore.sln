@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CampusCore.API", "CampusCor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CampusCore.Shared", "CampusCore.Shared\CampusCore.Shared.csproj", "{EC772555-5C86-46C6-BD6C-E5B96B4F755E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProjectClass", "TestProjectClass\TestProjectClass.csproj", "{CD96C0A4-3AE4-423D-90DA-66F37D1EAEF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EC772555-5C86-46C6-BD6C-E5B96B4F755E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC772555-5C86-46C6-BD6C-E5B96B4F755E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC772555-5C86-46C6-BD6C-E5B96B4F755E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD96C0A4-3AE4-423D-90DA-66F37D1EAEF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD96C0A4-3AE4-423D-90DA-66F37D1EAEF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD96C0A4-3AE4-423D-90DA-66F37D1EAEF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD96C0A4-3AE4-423D-90DA-66F37D1EAEF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

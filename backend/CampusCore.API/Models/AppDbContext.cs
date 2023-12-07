@@ -11,6 +11,10 @@ namespace CampusCore.API.Models
            
         }
 
+        public AppDbContext()
+        {
+        }
+
         public DbSet<User> Users { get; set; }
         public DbSet<UserLog> UserLogs { get; set; }
         public DbSet<Course> Courses { get; set; }
