@@ -12,14 +12,12 @@ import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import StudentAnnouncementCourse from "../announcement/StudentAnnouncementCourse";
-import * as GroupApi from "../../../../network/group_api"
-import { useAuth } from "../../../../utils/AuthContext";
+// import { useAuth } from "../../../../utils/AuthContext";
 
 export default function DeliverableWrapper() {
-  let {userId} = useAuth()
+  // let {userId} = useAuth()
   let { courseName, offeredCourseId } = useParams()
   const [deliverable, setDeliverables] = useState([])
-  const [groupId, setGroupId] = useState("")
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const breadCrumbUrl = [
@@ -36,12 +34,18 @@ export default function DeliverableWrapper() {
     async function showListOfDeliverables() {
       try {
         const response = await OfferedCourseDeliverable.getFacultyOfferedCourseDeliverables({ 'id': offeredCourseId })
-        const groupId = await GroupApi.getGroupId({ 'studentId': userId, 'offeredCourseId': offeredCourseId })
-        if (response.isSuccess && groupId.isSuccess) {
+        // const groupId = await GroupApi.getGroupId({ 'studentId': userId, 'offeredCourseId': offeredCourseId })
+        // const groupData = groupId.data
+        if (response.isSuccess) {
           setDeliverables(response.data)
-          setGroupId(groupId.data.studentGroupId)
+          // if(groupData.length <= 0 || groupData === null){
+          //   setGroupId(null)
+          // }else{
+          //   setGroupId(groupId.data.studentGroupId)
+          // }
           return
         }
+
       } catch (error) {
         console.error(error)
         setError(true)
@@ -66,9 +70,9 @@ export default function DeliverableWrapper() {
 
 
       <Stack className="!flex-row">
-        <Stack paddingY={4} className="!px-10 w-full gap-4">
+        <Stack paddingY={4} className="md:!px-10 w-full gap-4">
           {/* THIS IS FOR ANNOUNCEMENTS COMPONENT */}
-          <StudentAnnouncementCourse /> 
+          <StudentAnnouncementCourse />
           <Divider/>
           {
             !loading && !error &&
@@ -77,14 +81,15 @@ export default function DeliverableWrapper() {
 
                 {
                   deliverable.length > 0 ? (
-                    <ListOfDeliverables data={deliverable} groupId={groupId} />
-                  ) : (<Alert severity="error">Something went wrong. Try again later</Alert>)
+                    // <ListOfDeliverables data={deliverable} groupId={groupId} />
+                    <ListOfDeliverables data={deliverable} />
+                  ) : (<Alert severity="info">No deliverables yet</Alert>)
                 }
               </Stack>
             </>
           }
         </Stack>
-        <Stack className="border-l-2 p-2">
+        <Stack className="!hidden md:!block border-l-2 p-2">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateCalendar', 'DateCalendar']}>
               <DemoItem label="Deadlines">

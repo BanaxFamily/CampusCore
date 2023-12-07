@@ -111,7 +111,7 @@ export default function FacultyAddGroup() {
                                                             <FormControlLabel
                                                                 control={<Radio />}
                                                                 label={<Typography className="md:!text-sm">Leader</Typography>}
-                                                                checked={leader === student.studentName}
+                                                                checked={leader === student.studentId}
                                                                 onChange={() => handleLeaderChange(student.studentId)}
                                                             />
                                                         </Stack>
@@ -135,7 +135,7 @@ export default function FacultyAddGroup() {
                                     }}
                                     variant="outlined"
                                     size='small'
-                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('name')}
+                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                                     name="adviserId"
                                     {...register("adviserId", { required: "select one option" })}
                                 >

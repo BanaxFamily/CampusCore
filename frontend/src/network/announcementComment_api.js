@@ -10,3 +10,13 @@ export async function addAnnouncementComment(data){
     })
     return response;
 }
+export async function viewAnnouncementComments(data){
+    const response = await fetchData("api/announcementComment/viewComments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    return response;
+}

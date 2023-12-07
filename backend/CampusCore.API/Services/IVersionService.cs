@@ -108,6 +108,7 @@ namespace CampusCore.API.Services
                         VersionNumber = item.Version.VersionNumber,
                         DateSubmitted = item.Version.DateSubmitted,
                         FileB64 = fileB64,
+                        FilePath = item.Version.FilePath,
                         FileType = item.Version.FileType,
                         TargetedIssues = item.Version.TargetedIssues != null
                                             ? item.Version.TargetedIssues.Split(',')

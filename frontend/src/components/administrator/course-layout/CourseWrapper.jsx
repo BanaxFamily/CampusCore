@@ -68,12 +68,12 @@ export default function CourseWrapper({ courses }) {
         </span>
         {/* Used Search function with the combination of View users and filter method */}
         {/* currently un-used the react hook form*/}
-        <form className="flex" onSubmit={handleSubmit(handleCourseSearch)}>
+        <form className="flex items-center"  onSubmit={handleSubmit(handleCourseSearch)}>
           <input
             type="text"
             placeholder="search by name...."
             name="searchKey"
-            className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
+            className=" text-white h-8 bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none"
             {...register("searchKey", { required: true })}
           />
           <button className="cursor-pointer">
@@ -81,15 +81,15 @@ export default function CourseWrapper({ courses }) {
           </button>
         </form>
       </div>
-      <div className="overflow-auto border shadow-md h-[30rem] shadow-gray-500 rounded-sm">
+      <div className="overflow-auto border shadow-md shadow-gray-500 rounded-xl">
         <DynamicTable>
           <TableHead>
-            <TableRow className="uppercase">
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell colSpan={2} align="center">action</TableCell>
+            <TableRow className="bg-slate-300">
+              <TableCell className=" w-[5%] !text-[13px] 2xl:text-md !text-black !font-bold">ID</TableCell>
+              <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold">Name</TableCell>
+              <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold">Description</TableCell>
+              <TableCell className=" w-[5%] !text-[13px] 2xl:text-md !text-black !font-bold">Status</TableCell>
+              <TableCell className=" w-[10%] !text-[13px] 2xl:text-md !text-black !font-bold" colSpan={2} align="center">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -37,3 +37,13 @@ export async function getSpecificCourse(data){
   })
   return response;
 }
+export async function getAnnouncementByStudent(data){
+  const response = await fetchData("api/announcement/getByUser", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data)
+  })
+  return response;
+}

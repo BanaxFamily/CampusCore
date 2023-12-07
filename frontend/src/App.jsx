@@ -38,10 +38,8 @@ import ViewSpecificAnnouncement from "./components/student/courses/announcement/
 import DeliverableWrapper from "./components/student/courses/deliverable/DeliverableWrapper";
 import PdfViewer from "./components/student/courses/deliverable/PdfViewer";
 import ViewSpecificDeliverable from "./components/student/courses/deliverable/ViewSpecificDeliverable";
-import Issues from "./components/student/issues/Issues";
 import ResearchRepo from "./components/student/repo/ResearchRepo";
 import SettingWrapper from "./components/student/settings/SettingWrapper";
-import Timetable from "./components/student/timetable/Timetable";
 import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
@@ -71,6 +69,7 @@ export default function App() {
           <Route path={`/`} element={<Home />} />
           <Route path={`/home`} element={<Home />} />
           <Route path={`/manage/profile`} element={<ManageProfile />} />
+
           {userRole === "Student" && (
             <>
               <Route path={`/research`} element={<ResearchRepo />} />
@@ -81,12 +80,12 @@ export default function App() {
                   <Route path="announcements/view/:announcementId" element={< ViewSpecificAnnouncement />} />
                   <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/group/:groupId/*" element={<LayoutCourse />} >
                     <Route index element={<ViewSpecificDeliverable />} />
-                    <Route path=":filePath" element={<PdfViewer />} />
+                    <Route path=":submissionId" element={<PdfViewer />} />
                   </Route>
                 </Route>
               </Route>
-              <Route path={`/issues`} element={<Issues />} />
-              <Route path={`/timetable`} element={<Timetable />} />
+              {/* <Route path={`/issues`} element={<Issues />} /> */}
+              {/* <Route path={`/timetable`} element={<Timetable />} /> */}
             </>
           )}
           {userRole === "Admin" && (

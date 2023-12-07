@@ -1,62 +1,53 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { CancelOutlined, CheckBox, CheckCircleOutlineOutlined, CheckOutlined, CheckRounded, OfflineBoltOutlined } from "@mui/icons-material";
-import { TableCell, TableRow } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import { IconButton, TableCell, TableRow } from "@mui/material";
 import React from "react";
-import { AiOutlineCheckCircle } from "react-icons/ai";
-import { FaPencil } from "react-icons/fa6";
-import { MdDeleteForever } from "react-icons/md";
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from "react-icons/ai";
 
 export default function TableBodyUser(props) {
   return (
     <TableRow className="hover:bg-slate-200">
-      <TableCell className={`${props.className}`}>{props.index}</TableCell>
-      <TableCell className={`${props.className}`}>{props.user.idno}</TableCell>
-      <TableCell className={`${props.className}`}>{props.user.username}</TableCell>
-      <TableCell className={`${props.className}`}>{props.user.firstName}</TableCell>
-      <TableCell className={`${props.className}`}>{props.user.lastName}</TableCell>
-      <TableCell className={`${props.className}`}>{props.user.email}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.index}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.user.idno}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.user.username}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.user.firstName}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">{props.user.lastName}</TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border overflow-x-autow">{props.user.email}</TableCell>
 
-      <TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">
         {props.user.status === "active" ? (
           <form action="">
-            <button>
-              <CheckCircleOutlineOutlined color="success"/>
-            </button>
+            <IconButton>
+              <AiOutlineCheckCircle color="green" size={20} />
+            </IconButton>
           </form>
         ) : (
           <form>
-            <button>
-              <CancelOutlined color="disabled"/>
-            </button>
+            <IconButton>
+              <AiOutlineCloseCircle color="red" size={20} />
+            </IconButton>
           </form>
         )}
       </TableCell>
       <TableCell className={props.className}>{props.user.role}</TableCell>
-      <TableCell>
-        <div className=" flex items-center justify-center">
-          <button
-            className="text-sm flex self-center text-green-500 px-
-                hover:text-green-900 hover:cursor-pointer"
-          >
-            <FaPencil size={20} onClick={props.showModalUpdate} />
-          </button>
-        </div>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">
+        <IconButton size="small">
+          <Edit size="small" className="text-green-500" onClick={props.openModalUpdate} />
+        </IconButton>
       </TableCell>
-      <TableCell>
+      <TableCell className="!text-[12px] 2xl:text-[14px] border">
         <div className=" flex items-center justify-center">
-          <button
-            className="text-sm flex self-center text-red-500 uppercase px-
-              hover:text-red-900 hover:cursor-pointer"
-          >
-            <MdDeleteForever
-              size={25}
+          <IconButton size="small">
+            <Delete
+              className="text-red-500"
+              size="small"
               onClick={(e) => {
                 props.onDeleteUserCliked(props.user);
                 e.stopPropagation();
               }}
             />
-          </button>
+          </IconButton>
         </div>
       </TableCell>
     </TableRow>

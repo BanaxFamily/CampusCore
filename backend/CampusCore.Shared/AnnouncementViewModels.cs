@@ -18,10 +18,8 @@ namespace CampusCore.Shared
 
     public class AnnouncementGetAllModel
     {
-        [RequiredIf("UserId==null", ErrorMessage = "Need to provide either a OfferedCourseId or a UserId")]
-        public int? OfferedCourseId { get; set; } = null;
-        [RequiredIf("OfferedCourseId==null", ErrorMessage = "Need to provide either a OfferedCourseId or a UserId")]
-        public string? UserId { get; set; } = null;//submission id
+        
+        public string UserId { get; set; }
     }
 
     public class AnnouncementUpdateViewModel

@@ -67,7 +67,7 @@ export default function CourseModal({ onClose }) {
             <button
               disabled={isSubmitting}
               type="submit"
-              className="w-1/4 flex self-end justify-center 
+              className="w-1/4 flex self-end justify-center
               bg-mainBlueColor text-white font-bold tracking-wide py-1 rounded-md
               hover:cursor-pointer hover:bg-mainBlueColor/90"
             >
