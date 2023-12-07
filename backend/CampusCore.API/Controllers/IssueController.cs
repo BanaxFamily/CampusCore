@@ -67,7 +67,7 @@ namespace CampusCore.API.Controllers
 
         // /api/issue/getAllByUser
         //insert method here
-        [HttpPost("getAllByUser")]
+        /*[HttpPost("getAllByUser")]
         public async Task<IActionResult> GetAllByUser(IssueGetAllModel model)
         {
             if (ModelState.IsValid)
@@ -80,7 +80,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest(result);
             }
             return BadRequest("Some properties are not valid"); //status code: 400
-        }
+        }*/
 
         
         //api/Issue/search

@@ -33,12 +33,12 @@ namespace CampusCore.API.Controllers
 
         // /api/issueComment/viewList
         //insert method here
-        [HttpGet("viewList")]
-        public async Task<IActionResult> ViewListAsync()
+        [HttpGet("getCommentsForIssue")]
+        public async Task<IActionResult> GetIssueCommentsForIssue(GetIssueCommentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _issueCommentService.ViewIssueCommentListAsync();
+                var result = await _issueCommentService.GetIssueCommentsForIssue(model);
 
                 if (result.IsSuccess)
                     return Ok(result); //Status code: 200

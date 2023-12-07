@@ -13,7 +13,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateIssueAsync(IssueUpdateViewModel model);
         Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model);
-        Task<ResponseManager> GetAllByUserAsync(IssueGetAllModel model); //get issue that concerns a user (can be student or faculty, the one who needs to resolve the issue) not the one who opened the issue
+        //Task<ResponseManager> GetAllByUserAsync(IssueGetAllModel model); //get issue that concerns a user (can be student or faculty, the one who needs to resolve the issue) not the one who opened the issue
         Task<ResponseManager> GetAllBySubmissionAsync(IssueGetAllModel model);
 
 
@@ -242,7 +242,7 @@ namespace CampusCore.API.Services
             }
 
         }
-        public async Task<ResponseManager> GetAllByUserAsync(IssueGetAllModel model)
+        /*public async Task<ResponseManager> GetAllByUserAsync(IssueGetAllModel model)
         {
             var userId = model.UserId;
             var userGroupID = _context.StudentGroups
@@ -361,7 +361,7 @@ namespace CampusCore.API.Services
                 }
             }
 
-        }
+        }*/
 
 
         public async Task<ResponseManager> ViewIssueListAsync()

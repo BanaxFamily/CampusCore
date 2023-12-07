@@ -36,10 +36,8 @@ namespace CampusCore.Shared
     
     public class IssueGetAllModel
     {
-        [RequiredIf("UserId==null",ErrorMessage ="Need to provide either a SubmissionId or a UserId")]
-        public int? SubmissionId { get; set; } = null;
-        [RequiredIf("SubmissionId==null", ErrorMessage = "Need to provide either a SubmissionId or a UserId")]
-        public string? UserId { get; set; } = null;//submission id
+        
+        public int SubmissionId { get; set; }
         public string Filter { get; set; } = "open";
     }
 

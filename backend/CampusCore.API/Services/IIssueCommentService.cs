@@ -7,7 +7,7 @@ namespace CampusCore.API.Services
     public interface IIssueCommentService
     {
         Task<ResponseManager> CreateIssueCommentAsync(IssueCommentAddViewModel model);
-        Task<ResponseManager> ViewIssueCommentListAsync();
+        Task<ResponseManager> GetIssueCommentsForIssue(GetIssueCommentViewModel model);
         Task<ResponseManager> IssueCommentGetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> DeleteIssueCommentAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateIssueCommentAsync(IssueCommentUpdateViewModel model);
@@ -97,15 +97,24 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> ViewIssueCommentListAsync()
+        public async Task<ResponseManager> GetIssueCommentsForIssue(GetIssueCommentViewModel model)
         {
 
 
             try
             {
                 var result = await _context.IssueComments
-                                            .Include(ic => ic.Issue)
-                                            .Include(ic => ic.User)
+                                            .Where(ic=> ic.IssueId == model.IssueId)
+                                            .Select( x => new
+                                            {
+                                                IssueId = x.IssueId,
+                                                Comment = x.CommentText,
+                                                Commenter = x.User.LastName,
+                                                CommenterId = x.UserId,
+                                                DateTime = x.CommentDate
+
+                                            })
+                                            .OrderBy(x => x.DateTime)
                                             .ToListAsync();
 
                 return new DataResponseManager
