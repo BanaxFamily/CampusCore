@@ -1,9 +1,7 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Text.RegularExpressions;
+using static CampusCore.Shared.GetSubmissionsForFacultyViewModel;
 
 namespace CampusCore.API.Services
 {
@@ -13,17 +11,19 @@ namespace CampusCore.API.Services
     {
         Task<ResponseManager> FirstSubmission(FirstSubmissionViewModel model);
         Task<ResponseManager> AddNewVersion(AddNewVersionViewModel model);
-        Task<ResponseManager> GetAllByOfferedCourseDeliverableAsync(IntIdViewModel model);
-        Task<ResponseManager> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model);
+        Task<ResponseManager> GetAllByOfferedCourseDeliverableAsync(IntIdViewModel model); //basis for faculty
+        Task<ResponseManager> GetAllByStudentAsync(GetSubmissionsByStudentViewModel model); //for student
         Task<ResponseManager> GetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> SearchNameAsync(StringSearchViewModel model);
         Task<ResponseManager> DeleteAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateAsync(SubmissionUpdateViewModel model);
-        Task<ResponseManager> GetUnapproved(IntIdViewModel model);
-        Task<ResponseManager> GetApprovedFaculty(IntIdViewModel model);
-        Task<ResponseManager> GetApprovedDean(IntIdViewModel model);
-        Task<ResponseManager> GetApprovedPRC(IntIdViewModel model);
+        Task<ResponseManager> GetAllSubmissionsForFaculty(GetSubmissionsForFacultyViewModel model);
+        Task<ResponseManager> GetAllSubmissionsForDean(GetSubmissionsForDeanViewModel model);
+        Task<ResponseManager> GetAllSubmissionsForPRC(GetSubmissionsForPRCViewModel model);
+        Task<ResponseManager> GetAllSubmissionsForAdviserReview(GetSubmissionsForAdviserViewModel model);
         Task<ResponseManager> Approve(SubmissionApproveViewModel model);
+        Task<ResponseManager> AdviserApprove(SubmissionAdviserApproveViewModel model);
+
 
 
 
@@ -55,7 +55,7 @@ namespace CampusCore.API.Services
         }
 
 
-       
+
         public async Task<ResponseManager> DeleteAsync(IntIdViewModel model)
         {
             try
@@ -113,7 +113,7 @@ namespace CampusCore.API.Services
             var offeredCourseDeliverableId = model.OfferedDeliverableId;
             try
             {
-                
+
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(cds =>
                                                             cds.Submission.SubmitterId == studentId ||
@@ -122,7 +122,7 @@ namespace CampusCore.API.Services
                                                                     sg.GroupId == cds.Submission.GroupId.Value &&
                                                                     sg.StudentId == studentId))
                                                   )
-                                                .Where(cds=> cds.OfferedCourseDeliverableId == offeredCourseDeliverableId)
+                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId)
                                                  .Select(x => new
                                                  {
                                                      CourseDeliverableSubmissionId = x.Id,
@@ -209,20 +209,21 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetApprovedDean(IntIdViewModel model)
+        public async Task<ResponseManager> GetAllSubmissionsForPRC(GetSubmissionsForPRCViewModel model)
         {
-            var offeredCourseDeliverableId = model.Id;
+            var isApproved = model.IsApproved;
             try
             {
 
                 var submissions = await _context.CourseDeliverableSubmissions
-                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
-                                                              && cds.Submission.Status == "Dean Level Approved")
+                                                .Where(cds => cds.OfferedCourseDeliverable.Deliverable.HighestApprovalNeeded == "PRC Level"
+                                                               && cds.Submission.Status == (isApproved ? "PRC Level Approved" : "Dean Level Approved"))
                                                 .Select(x => new
                                                 {
                                                     CourseDeliverableSubmissionId = x.Id,
                                                     SubmissionId = x.Submission.Id,
                                                     Submitter = x.Submission.Submitter.FullName,
+                                                    SubmitterId = x.Submission.SubmitterId,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status,
@@ -255,20 +256,22 @@ namespace CampusCore.API.Services
 
         }
 
-        public async Task<ResponseManager> GetApprovedFaculty(IntIdViewModel model)
+        public async Task<ResponseManager> GetAllSubmissionsForDean(GetSubmissionsForDeanViewModel model)
         {
-            var offeredCourseDeliverableId = model.Id;
+            var courseId = model.CourseId;
+            var isApproved = model.IsApproved;
             try
             {
 
                 var submissions = await _context.CourseDeliverableSubmissions
-                                                .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
-                                                              && cds.Submission.Status == "Faculty Level Approved")
+                                                .Where(cds => cds.OfferedCourseDeliverable.OfferedCourse.CourseId == courseId
+                                                               && cds.Submission.Status == (isApproved ? "Dean Level Approved" : "Faculty Level Approved"))
                                                 .Select(x => new
                                                 {
                                                     CourseDeliverableSubmissionId = x.Id,
                                                     SubmissionId = x.Submission.Id,
                                                     Submitter = x.Submission.Submitter.FullName,
+                                                    SubmitterId = x.Submission.SubmitterId,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status,
@@ -392,20 +395,23 @@ namespace CampusCore.API.Services
 
         }
 
-        public async Task<ResponseManager> GetUnapproved(IntIdViewModel model)
+        public async Task<ResponseManager> GetAllSubmissionsForFaculty(GetSubmissionsForFacultyViewModel model)
         {
-            var offeredCourseDeliverableId = model.Id;
+            var offeredCourseDeliverableId = model.OfferedCourseDeliverableId;
+            var isApproved = model.IsApproved;
             try
             {
 
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
-                                                        && cds.Submission.Status == "Unapproved")
+                                                        && (isApproved && (cds.Submission.Status == "Faculty Level Approved")
+                                                        ||(!isApproved && cds.Submission.Status == "Unapproved") || cds.Submission.Status == "Adviser Level Approved"))
                                                 .Select(x => new
                                                 {
                                                     CourseDeliverableSubmissionId = x.Id,
                                                     SubmissionId = x.Submission.Id,
                                                     Submitter = x.Submission.Submitter.FullName,
+                                                    SubmitterId = x.Submission.SubmitterId,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status,
@@ -475,7 +481,7 @@ namespace CampusCore.API.Services
 
             try
             {
-                
+
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(oc => EF.Functions.Like(oc.Submission.Title, $"%{model.SearchKey}%"))
                                                 .Select(x => new
@@ -519,7 +525,7 @@ namespace CampusCore.API.Services
                 throw new NullReferenceException("Submission Model is null");
 
 
-            var submission = await _context.Submissions.FindAsync(model.Id);
+            var submission = await _context.Submissions.FindAsync(model.SubmissionId);
 
             switch (model.Role)
             {
@@ -590,7 +596,7 @@ namespace CampusCore.API.Services
                                                     .Where(ocd => ocd.Id == model.OfferedCourseDeliverableId)
                                                     .Select(ocd => ocd.Deliverable.GroupSubmission)
                                                     .FirstOrDefaultAsync();
-                if(isGroupSubmission && model.GroupId == null)
+                if (isGroupSubmission && model.GroupId == null)
                 {
                     return new ErrorResponseManager
                     {
@@ -788,6 +794,88 @@ namespace CampusCore.API.Services
                     Errors = new List<string>() { ex.Message }
                 };
             }
+        }
+
+        public async Task<ResponseManager> GetAllSubmissionsForAdviserReview(GetSubmissionsForAdviserViewModel model)
+        {
+            var groupId = model.GroupId;
+            var adviserId = model.AdviserId;
+            var isApproved = model.IsApproved;
+            try
+            {
+
+                var submissions = await _context.CourseDeliverableSubmissions
+                                                .Where(cds => cds.Submission.GroupId == groupId
+                                                        && cds.Submission.Group.AdviserId == adviserId
+                                                        && cds.Submission.Status == (isApproved ? "Adviser Level Approved" : "Unapproved"))
+                                                .Select(x => new
+                                                {
+                                                    CourseDeliverableSubmissionId = x.Id,
+                                                    SubmissionId = x.Submission.Id,
+                                                    Submitter = x.Submission.Submitter.FullName,
+                                                    SubmitterId = x.Submission.SubmitterId,
+                                                    GroupName = x.Submission.Group.Name,
+                                                    Title = x.Submission.Title,
+                                                    Status = x.Submission.Status,
+                                                    DAFaculty = x.Submission.DAFaculty,
+                                                    DADean = x.Submission.DADean,
+                                                    DAPRC = x.Submission.DAPRC,
+                                                })
+                                                .ToListAsync();
+
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Submissions for adviser retrieved successfully",
+                    Data = submissions
+                };
+
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching submissions from course deliverable submissions table",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> AdviserApprove(SubmissionAdviserApproveViewModel model)
+        {
+            if (model == null)
+                throw new NullReferenceException("Submission Model is null");
+
+
+            var submission = await _context.Submissions.FindAsync(model.SubmissionId);
+
+            
+            submission.DAAdviser = DateTime.Now;
+            submission.Status = "Adviser Level Approved";
+           
+
+            _context.Submissions.Update(submission);
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return new ResponseManager
+                {
+                    Message = "Submission is now Adviser Level Approved!",
+                    IsSuccess = true
+                };
+
+            }
+
+            return new ErrorResponseManager
+            {
+                Message = "Submission is not updated",
+                IsSuccess = false,
+                Errors = new List<string>() { "Error updating submission in DB" }
+            };
         }
     }
 }

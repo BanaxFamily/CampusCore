@@ -11,6 +11,7 @@ namespace CampusCore.API.Models
         public DateTime? DAFaculty { get; set; } = null;//
         public DateTime? DADean { get; set; } = null;//
         public DateTime? DAPRC { get; set; } = null;//
+        public DateTime? DAAdviser { get; set; } = null;//
 
         public string Title { get; set; }//
         public string Status { get; set; }//
