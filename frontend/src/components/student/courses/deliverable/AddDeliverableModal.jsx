@@ -23,12 +23,14 @@ export default function AddDeliverableModal({ onDismiss }) {
         formData.append("submitterId", data.submitterId)
         formData.append("offeredCourseDeliverableId", data.offeredCourseDeliverableId)
         formData.append("file", data.file[0])
-        formData.append("FileType", data.FileType)
-        formData.append("TargetedIssues", [1])
-        formData.append("groupId", groupId)
+        formData.append("fileType", data.FileType)
+        // formData.append("targetedIssues", [1])
+        if (groupId !== "null") {
+            formData.append("groupId", groupId);
+        }
 
         try {
-            const response = await Submission.submissionOfDeliverable(formData)
+            const response = await Submission.firstSubmissionDeliverable(formData)
             console.log(response)
             if (response.isSuccess) {
                 navigate(0)

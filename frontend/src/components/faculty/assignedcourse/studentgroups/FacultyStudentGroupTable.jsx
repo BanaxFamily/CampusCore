@@ -39,24 +39,23 @@ export default function FacultyStudentGroupTable() {
     }
 
     return (
-        <Stack className="mx-auto rounded-t-md group">
+        <Stack className="mx-auto rounded-t-md group px-2">
             <NavLink to={'add'} className="border text-[12px] py-1 px-3 hover:bg-blue-400 my-2 tracking-wider rounded-md bg-blue-500 text-white uppercase  flex self-end !mr-4 !mt-2 " size="small">Add group</NavLink>
             <DynamicTable>
                 <TableHead>
                     <TableRow className="bg-slate-300">
-                        <TableCell className="border !text-black !font-bold"> Group name </TableCell>
-                        {/* <TableCell className="border !text-black !font-bold"> Leader </TableCell> */}
-                        <TableCell className="border !text-black !font-bold"> Adviser </TableCell>
-                        <TableCell className="border !text-black !font-bold" align="center"> Action</TableCell>
+                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Group name </TableCell>
+                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Adviser </TableCell>
+                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold" align="center"> Action</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                         {
                             groups.map((group,index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{group.groupName}</TableCell>
-                                    <TableCell>{group.adviser}</TableCell>
-                                    <TableCell align="center"> <Button onClick={() => viewMembers(group.groupId,group.groupName, group.adviserId)} size="small" className="!text-sm">view </Button></TableCell>
+                                    <TableCell className="!text-[12px] 2xl:text-[14px] border">{group.groupName}</TableCell>
+                                    <TableCell className="!text-[12px] 2xl:text-[14px] border">{group.adviser}</TableCell>
+                                    <TableCell className="!text-[12px] 2xl:text-[14px] border" align="center"> <Button onClick={() => viewMembers(group.groupId,group.groupName, group.adviserId)} size="small" className="!text-sm">view </Button></TableCell>
                                 </TableRow>
                             ))
                         }

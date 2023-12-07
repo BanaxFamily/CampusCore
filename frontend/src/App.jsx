@@ -28,6 +28,8 @@ import ViewSpecificCourse from "./components/faculty/assignedcourse/ViewSpecific
 import FacultyDeliverable from "./components/faculty/assignedcourse/deliverable/FacultyDeliverable";
 import FacultyStudentGroups from "./components/faculty/assignedcourse/studentgroups/FacultyStudentGroups";
 import FacultyUpdateAndAddGroupWrapper from "./components/faculty/assignedcourse/studentgroups/FacultyUpdateAndAddGroupsWrapper";
+import FacultyShowAllDeliverables from "./components/faculty/assignedcourse/submissions/FacultyShowAllDeliverables";
+import FacultyViewSpecificDeliverables from "./components/faculty/assignedcourse/submissions/FacultyViewSpecificDeliverables";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
@@ -38,10 +40,8 @@ import ViewSpecificAnnouncement from "./components/student/courses/announcement/
 import DeliverableWrapper from "./components/student/courses/deliverable/DeliverableWrapper";
 import PdfViewer from "./components/student/courses/deliverable/PdfViewer";
 import ViewSpecificDeliverable from "./components/student/courses/deliverable/ViewSpecificDeliverable";
-import Issues from "./components/student/issues/Issues";
 import ResearchRepo from "./components/student/repo/ResearchRepo";
 import SettingWrapper from "./components/student/settings/SettingWrapper";
-import Timetable from "./components/student/timetable/Timetable";
 import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
@@ -71,6 +71,7 @@ export default function App() {
           <Route path={`/`} element={<Home />} />
           <Route path={`/home`} element={<Home />} />
           <Route path={`/manage/profile`} element={<ManageProfile />} />
+
           {userRole === "Student" && (
             <>
               <Route path={`/research`} element={<ResearchRepo />} />
@@ -81,12 +82,10 @@ export default function App() {
                   <Route path="announcements/view/:announcementId" element={< ViewSpecificAnnouncement />} />
                   <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/group/:groupId/*" element={<LayoutCourse />} >
                     <Route index element={<ViewSpecificDeliverable />} />
-                    <Route path=":filePath" element={<PdfViewer />} />
+                    <Route path=":submissionId" element={<PdfViewer />} />
                   </Route>
                 </Route>
               </Route>
-              <Route path={`/issues`} element={<Issues />} />
-              <Route path={`/timetable`} element={<Timetable />} />
             </>
           )}
           {userRole === "Admin" && (
@@ -132,6 +131,13 @@ export default function App() {
                     <Route path="add" element={<FacultyUpdateAndAddGroupWrapper />} />
                     <Route path="update/members/:groupName/:groupId" element={<FacultyUpdateAndAddGroupWrapper />} />
                     <Route path="update/group-details/:groupName/:groupId/:groupAdviserId" element={<FacultyUpdateAndAddGroupWrapper />} />
+                  </Route>
+                  <Route path="submissions/*" element={<Layout />}>
+                    <Route index element={<FacultyShowAllDeliverables />} />
+                    <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<Layout />}>
+                      <Route index element={<FacultyViewSpecificDeliverables />} />
+                      <Route path=":submissionId" element={<PdfViewer />} />
+                    </Route>
                   </Route>
                 </Route>
               </Route>

@@ -68,11 +68,11 @@ export default function AddModalUser(props) {
                     select
                     label="User type"
                     size="small"
+                    InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                     SelectProps={{
                       native: true,
                     }}
                     helperText="Please select a type of user"
-                    variant="filled"
                     name="role"
                     {...register("role", { required: "select one option" })}
                   >
@@ -89,11 +89,8 @@ export default function AddModalUser(props) {
                   id="outline-idno"
                   name="idno"
                   label="ID #"
-                  variant="filled"
                   size="small"
-
-                  // value={selectedItem.id || ''}
-
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("idno", { required: true })}
                 />
 
@@ -101,7 +98,6 @@ export default function AddModalUser(props) {
                   id="outline-firstname"
                   name="firstName"
                   label="Firstname"
-                  variant="filled"
                   size="small"
 
                   // value={selectedItem.id || ''}
@@ -113,11 +109,8 @@ export default function AddModalUser(props) {
                   id="outline-lastName"
                   name="lastName"
                   label="Lastname"
-                  variant="filled"
                   size="small"
-
-                  // value={selectedItem.id || ''}
-
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("lastName", { required: true })}
                 />
 
@@ -125,11 +118,8 @@ export default function AddModalUser(props) {
                   id="outline-username"
                   name="username"
                   label="Username"
-                  variant="filled"
                   size="small"
-
-                  // value={selectedItem.id || ''}
-
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("username", { required: true })}
                 />
               </div>
@@ -142,14 +132,12 @@ export default function AddModalUser(props) {
                     select
                     label="Status"
                     size="small"
-
-                    // defaultValue=""
+                    InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                     SelectProps={{
                       native: true,
                     }}
 
                     helperText="Please select if user is active or not"
-                    variant="filled"
                     name="status"
                     {...register("status", { required: "select one option" })}
                   >
@@ -165,11 +153,8 @@ export default function AddModalUser(props) {
                   id="outline-email"
                   name="email"
                   label="Email"
-                  variant="filled"
                   size="small"
-
-                  // value={selectedItem.id || ''}
-
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("email", { required: true })}
                 />
 
@@ -178,12 +163,9 @@ export default function AddModalUser(props) {
                   id="outline-password"
                   name="password"
                   label="Password"
-                  variant="filled"
                   type="password"
                   size="small"
-
-                  // value={selectedItem.id || ''}
-
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("password", { required: true })}
                 />
 
@@ -192,20 +174,19 @@ export default function AddModalUser(props) {
                   id="outline-confirmPass"
                   name="rePassword"
                   label="Confirm password"
-                  variant="filled"
                   size="small"
                   type="password"
-                  // value={selectedItem.id || ''}
-
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("rePassword", { required: true })}
                 />
                 <Button
                   type="submit"
                   disabled={isSubmitting}
                   variant="contained"
+                  size="small"
                   className="text-white font-bold
                   w-full md:w-3/4 flex place-self-end justify-end  rounded-lg
-                  py-4 mt-4 tracking-wider md:py-2"
+                  py-4 !mt-2 tracking-wider md:py-2"
                 >
                   Add account
                 </Button>

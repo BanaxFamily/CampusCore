@@ -1,20 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Divider, LinearProgress, Stack } from "@mui/material";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as OfferedCourseDeliverable from '../../../../network/offeredCourseDeliverable_api';
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
-import ListOfDeliverables from "./ListOfDeliverables";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import StudentAnnouncementCourse from "../announcement/StudentAnnouncementCourse";
+import FacultyListOfDeliverables from "./FacultyListOfDeliverables";
 // import { useAuth } from "../../../../utils/AuthContext";
 
-export default function DeliverableWrapper() {
+export default function FacultyShowAllDeliverables() {
   // let {userId} = useAuth()
   let { courseName, offeredCourseId } = useParams()
   const [deliverable, setDeliverables] = useState([])
@@ -22,11 +21,14 @@ export default function DeliverableWrapper() {
   const [loading, setLoading] = useState(true)
   const breadCrumbUrl = [
     {
-      url: '../',
-      name: 'Enrolled courses',
+      url: '../../',
+      name: 'Assigned courses',
     },
     {
-      name: `Information`
+      url: '../',
+      name: courseName
+    }, {
+      name: 'Deliverables'
     }
   ]
 
@@ -34,15 +36,8 @@ export default function DeliverableWrapper() {
     async function showListOfDeliverables() {
       try {
         const response = await OfferedCourseDeliverable.getFacultyOfferedCourseDeliverables({ 'id': offeredCourseId })
-        // const groupId = await GroupApi.getGroupId({ 'studentId': userId, 'offeredCourseId': offeredCourseId })
-        // const groupData = groupId.data
         if (response.isSuccess) {
           setDeliverables(response.data)
-          // if(groupData.length <= 0 || groupData === null){
-          //   setGroupId(null)
-          // }else{
-          //   setGroupId(groupId.data.studentGroupId)
-          // }
           return
         }
 
@@ -64,16 +59,14 @@ export default function DeliverableWrapper() {
       <Stack className="my-4">
         <Divider className="!bg-black" />
       </Stack>
-      <DashBoardHeading title={`Informations for ${courseName}`} />
+      <DashBoardHeading title={`Deliverables Submissions ${courseName}`} />
       {loading && <LinearProgress />}
       {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
 
 
       <Stack className="!flex-row">
         <Stack paddingY={4} className="md:!px-10 w-full gap-4">
-          {/* THIS IS FOR ANNOUNCEMENTS COMPONENT */}
-          <StudentAnnouncementCourse />
-          <Divider/>
+          <Divider />
           {
             !loading && !error &&
             <>
@@ -81,8 +74,7 @@ export default function DeliverableWrapper() {
 
                 {
                   deliverable.length > 0 ? (
-                    // <ListOfDeliverables data={deliverable} groupId={groupId} />
-                    <ListOfDeliverables data={deliverable} />
+                    <FacultyListOfDeliverables data={deliverable} />
                   ) : (<Alert severity="info">No deliverables yet</Alert>)
                 }
               </Stack>

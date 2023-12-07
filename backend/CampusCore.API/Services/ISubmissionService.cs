@@ -688,7 +688,7 @@ namespace CampusCore.API.Services
                 return new DataResponseManager
                 {
                     Message = "Submission is addeded successfully",
-                    IsSuccess = false,
+                    IsSuccess = true,
                     Data = submission.Id
                 };
 
