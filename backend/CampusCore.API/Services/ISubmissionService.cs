@@ -132,10 +132,7 @@ namespace CampusCore.API.Services
                                                      Submitter = x.Submission.Submitter.FullName,
                                                      GroupName = x.Submission.Group.Name,
                                                      Title = x.Submission.Title,
-                                                     Status = x.Submission.Status,
-                                                     DAFaculty = x.Submission.DAFaculty,
-                                                     DADean = x.Submission.DADean,
-                                                     DAPRC = x.Submission.DAPRC,
+                                                     Status = x.Submission.Status
                                                  })
                                                 .ToListAsync();
 
@@ -176,9 +173,6 @@ namespace CampusCore.API.Services
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
                                                 })
                                                 .ToListAsync();
 
@@ -229,9 +223,6 @@ namespace CampusCore.API.Services
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
                                                 })
                                                 .ToListAsync();
 
@@ -277,10 +268,7 @@ namespace CampusCore.API.Services
                                                     ForCourse = x.OfferedCourseDeliverable.OfferedCourse.Course.Name,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
-                                                    Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
+                                                    Status = x.Submission.Status
                                                 })
                                                 .ToListAsync();
 
@@ -322,10 +310,7 @@ namespace CampusCore.API.Services
                                                     Submitter = x.Submission.Submitter.FullName,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
-                                                    Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
+                                                    Status = x.Submission.Status
                                                 })
                                                 .ToListAsync();
 
@@ -366,10 +351,7 @@ namespace CampusCore.API.Services
                                                     Submitter = x.Submission.Submitter.FullName,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
-                                                    Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
+                                                    Status = x.Submission.Status
                                                 })
                                                 .ToListAsync();
 
@@ -417,10 +399,7 @@ namespace CampusCore.API.Services
                                                     SubmitterId = x.Submission.SubmitterId,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
-                                                    Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
+                                                    Status = x.Submission.Status
                                                 })
                                                 .ToListAsync();
 
@@ -494,10 +473,7 @@ namespace CampusCore.API.Services
                                                     Submitter = x.Submission.Submitter.FullName,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
-                                                    Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
+                                                    Status = x.Submission.Status
                                                 })
                                                 .ToListAsync();
 
@@ -562,20 +538,71 @@ namespace CampusCore.API.Services
             if (encryptGeneratedPrivateKey == storedEncryptedPrivateKey)
             {
 
-
+                
                 switch (model.Role)
                 {
                     case "Faculty":
-                        submission.DAFaculty = DateTime.Now;
-                        submission.Status = "Faculty Level Approved";
+                        var facultyApproval = new Approval
+                        {
+                            ApproverId =  model.UserId,
+                            ApproverRole = model.Role,
+                            Level = "Faculty Level",
+                            ApprovalDate = DateTime.Now,
+                            digitalSignature = encryptGeneratedPrivateKey
+                        };
+                        _context.Approvals.Add(facultyApproval);
+                        var fresult = await _context.SaveChangesAsync();
+                        if (fresult > 0)
+                        {
+                            _context.SubmissionApprovals.Add(new SubmissionApproval
+                            {
+                                SubmissionId = model.SubmissionId,
+                                ApprovalId = facultyApproval.Id
+                            });
+                            submission.Status = "Faculty Level Approved";
+                        }
                         break;
                     case "Dean":
-                        submission.DADean = DateTime.Now;
-                        submission.Status = "Dean Level Approved";
+                        var deanApproval = new Approval
+                        {
+                            ApproverId = model.UserId,
+                            ApproverRole = model.Role,
+                            Level = "Dean Level",
+                            ApprovalDate = DateTime.Now,
+                            digitalSignature = encryptGeneratedPrivateKey
+                        };
+                        _context.Add(deanApproval);
+                        var dresult = await _context.SaveChangesAsync();
+                        if (dresult > 0)
+                        {
+                            _context.SubmissionApprovals.Add(new SubmissionApproval
+                            {
+                                SubmissionId = model.SubmissionId,
+                                ApprovalId = deanApproval.Id
+                            });
+                            submission.Status = "Dean Level Approved";
+                        }
                         break;
                     case "PRC":
-                        submission.DAPRC = DateTime.Now;
-                        submission.Status = "PRC Level Approved";
+                        var prcApproval = new Approval
+                        {
+                            ApproverId = model.UserId,
+                            ApproverRole = model.Role,
+                            Level = "PRC Level",
+                            ApprovalDate = DateTime.Now,
+                            digitalSignature = encryptGeneratedPrivateKey
+                        };
+                        _context.Add(prcApproval); 
+                        var presult = await _context.SaveChangesAsync();
+                        if (presult > 0)
+                        {
+                            _context.SubmissionApprovals.Add(new SubmissionApproval
+                            {
+                                SubmissionId = model.SubmissionId,
+                                ApprovalId = prcApproval.Id
+                            });
+                            submission.Status = "Dean Level Approved";
+                        }
                         break;
                     default:
                         break;
@@ -863,10 +890,7 @@ namespace CampusCore.API.Services
                                                     SubmitterId = x.Submission.SubmitterId,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
-                                                    Status = x.Submission.Status,
-                                                    DAFaculty = x.Submission.DAFaculty,
-                                                    DADean = x.Submission.DADean,
-                                                    DAPRC = x.Submission.DAPRC,
+                                                    Status = x.Submission.Status
                                                 })
                                                 .ToListAsync();
 
@@ -898,31 +922,86 @@ namespace CampusCore.API.Services
 
 
             var submission = await _context.Submissions.FindAsync(model.SubmissionId);
+            var user = await _userManager.FindByIdAsync(model.UserId);
 
-
-            submission.DAAdviser = DateTime.Now;
-            submission.Status = "Adviser Level Approved";
-
-
-            _context.Submissions.Update(submission);
-            var result = await _context.SaveChangesAsync();
-
-            if (result > 0)
+            var encryption = _context.EncryptionKeys.FirstOrDefault();
+            if (encryption == null)
             {
-                return new ResponseManager
+                return new ErrorResponseManager
                 {
-                    Message = "Submission is now Adviser Level Approved!",
-                    IsSuccess = true
+                    Message = "Submission is not approved",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "No encryption keys stored" }
                 };
-
             }
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
 
-            return new ErrorResponseManager
+            if (isPasswordCorrect == false)
             {
-                Message = "Submission is not updated",
-                IsSuccess = false,
-                Errors = new List<string>() { "Error updating submission in DB" }
-            };
+                return new ErrorResponseManager
+                {
+                    Message = "Invalid Password!",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Invalid password inputted" }
+                };
+            }
+            var generatedPrivateKey = KeyGeneratorStorage.GeneratePrivateKey(model.Password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
+
+            var encryptGeneratedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(generatedPrivateKey, encryption.Key, encryption.Iv);
+            var storedEncryptedPrivateKey = user.EncryptedPrivateKey;
+
+
+            if (encryptGeneratedPrivateKey == storedEncryptedPrivateKey)
+            {
+                var adviserApproval = new Approval
+                {
+                    ApproverId = model.UserId,
+                    ApproverRole = "Adviser",
+                    Level = "Adviser Level",
+                    ApprovalDate = DateTime.Now,
+                    digitalSignature = encryptGeneratedPrivateKey
+                };
+                _context.Add(adviserApproval);
+                var dresult = await _context.SaveChangesAsync();
+                if (dresult > 0)
+                {
+                    _context.SubmissionApprovals.Add(new SubmissionApproval
+                    {
+                        SubmissionId = model.SubmissionId,
+                        ApprovalId = adviserApproval.Id
+                    });
+                    submission.Status = "Adviser Level Approved";
+                }
+
+
+                _context.Submissions.Update(submission);
+                var result = await _context.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    return new ResponseManager
+                    {
+                        Message = "Submission is now Adviser Level Approved!",
+                        IsSuccess = true
+                    };
+
+                }
+                return new ErrorResponseManager
+                {
+                    Message = "Submission is not updated",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Error updating submission in DB" }
+                };
+            }
+            else
+            {
+                return new ErrorResponseManager
+                {
+                    Message = "Error attaching digital signature",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Digital signature invalid" }
+                };
+            }
         }
     }
 }

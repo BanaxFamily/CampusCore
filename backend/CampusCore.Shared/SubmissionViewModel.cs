@@ -41,6 +41,8 @@ namespace CampusCore.Shared
     public class SubmissionAdviserApproveViewModel
     {
         public int SubmissionId { get; set; }
+        public string UserId { get; set; }
+        public string Password { get; set; }
     }
 
     public class GetSubmissionsByStudentViewModel
