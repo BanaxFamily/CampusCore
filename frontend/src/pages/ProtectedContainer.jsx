@@ -23,10 +23,10 @@ const ProtectedContainer = (props) => {
         <div className=" h-screen">
           <div className="mx-auto static 2xl:relative">
             <div className="flex sm:flex-col-reverse sm:justify-center md:flex-row">
-              <div className="hidden md:block w-full sm:w-[25rem] md:w-[25rem] lg:w-[30rem] xl:w-[24rem] 2xl:w-[20rem] mr-2 ">
-                <div className={`hidden fixed 2xl:absolute left-0 w-full bg-mainBlueColor  sm:w-1/2  md:w-[18rem] lg:pr-6 md:block h-screen `}>
+              <div className="hidden md:block w-full sm:w-[25rem] md:w-[14rem]  mr-2 ">
+                <div className={`hidden fixed 2xl:absolute left-0 w-full bg-mainBlueColor  sm:w-1/2  md:w-[14rem] lg:pr-6 md:block h-screen `}>
                   <div className=" flex flex-col w-full mt-10 lg:mx-2 2xl:m-10 ">
-                    <Route onDismiss={() => setOpenSideNavigation(!openSideNavigation)}/>
+                    <Route onDismiss={() => setOpenSideNavigation(!openSideNavigation)} />
                     <div className={`  flex items-center shadow-gray-400 mb-2 p-2 rounded-full  ease-in duration-300 group`}>
                       <NavLink to={'/logout'} onClick={logOutUser} className={'flex flex-row gap-6 w-full md:gap-6 text-[14px] group-hover:text-paleRed text-white'}>
                         <Logout />
@@ -42,21 +42,7 @@ const ProtectedContainer = (props) => {
                   <div className="mx-auto px-2 sm:px-8 md:px-0 lg:p-0  ">{props.component}</div>
                 </div>
               </div>
-              {/* {userRole !== "Admin" && (
-                location.pathname.startsWith('/courses/submission/view/') && (
-                  <div className="hidden lg:block w-[25%] mx-2 h-screen">
-                    <div
-                      className={`hidden fixed 2xl:absolute right-0 w-full  sm:w-1/2  md:w-[24%] lg:w-1/5 md:block h-screen `}
-                    >
-                      <div className="py-6">
-                        <div className="w-full mx-auto sm:shadow-md rounded-md">
-                          <Status />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              )} */}
+
             </div>
           </div>
         </div>
