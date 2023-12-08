@@ -128,14 +128,14 @@ export default function ViewSpecificDeliverable() {
 
                         </>
                     }
-                    <Stack className="w-full h-[500px] gap-2">
-                        <Stack className="!flex-row w-full justify-between ">
-                            <Typography className="!text-lg">Latest submitted file</Typography>
-                            <Button size="small" onClick={getAllSubmittedVersions} className="!text-sm"> submission history</Button>
-                        </Stack>
-                        {!showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} fileBase64={fileBase64} fileType={fileType} />}
-                        {showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} allSubmittedVersions={allSubmittedVersions} />}
+                    {/* <Stack className="w-full h-[500px] overflow-y-auto gap-2"> */}
+                    <Stack className="!flex-row w-full justify-between ">
+                        <Typography className="!text-lg">Latest submitted file</Typography>
+                        <Button size="small" onClick={getAllSubmittedVersions} className="!text-sm"> submission history</Button>
                     </Stack>
+                    {!showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} fileBase64={fileBase64} fileType={fileType} />}
+                    {showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} allSubmittedVersions={allSubmittedVersions} />}
+                    {/* </Stack> */}
                 </Stack>
                 <Stack className="px-4 pt-2 flex-grow">
                     {/* Show all issues */}

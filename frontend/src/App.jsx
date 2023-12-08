@@ -47,6 +47,7 @@ import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
 import PrcApprovedSubmissions from "./components/prc/PrcApprovedSubmissions";
 import SharedRepository from "./components/shared-route/SharedRepository";
+import DeanPublishRequest from "./components/dean/publishrequest/DeanPublishRequest";
 
 
 export default function App() {
@@ -121,6 +122,8 @@ export default function App() {
                 </Route>
                 <Route path={`submission/view/file/:id`} element={<View />} /> */}
               </Route>
+              <Route path="/publish-request" element={<DeanPublishRequest />} />
+
             </>
           )}
           {userRole === "Faculty" && (
@@ -156,7 +159,10 @@ export default function App() {
               </Route>
             </>
           )}
-          <Route path="/repository" element={<SharedRepository/>}/>
+          <Route path="/repository/*" element={<Layout />}>
+            <Route index element={<SharedRepository />} />
+            <Route path=":researchId" element={<PdfViewer />} />
+          </Route>
           <Route path="/settings" element={<SettingWrapper />} />
           <Route path="/logout" element={<Navigate to="/login" />} />
         </Route>

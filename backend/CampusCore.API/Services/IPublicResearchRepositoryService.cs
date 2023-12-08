@@ -64,34 +64,6 @@ namespace CampusCore.API.Services
                     Errors = new List<string>() { "Submission version not found in DB" }
                 };
             }
-            //to get authors
-            var members = await _context.StudentGroups
-                                        .Include(sg=> sg.Student)
-                                        .Where(sg => sg.Id == submissionVersion.Submission.GroupId)
-                                        .ToListAsync();
-            string authors;
-            if (members.Any())
-            {
-                authors = string.Join(", ", members.Select(group => group.Student.FullName));
-                foreach (var member in members)
-                {
-                    _context.UserPublishedResearch.Add(new UserPublishedResearch
-                    {
-                        ResearchId = model.SubmissionId,
-                        AuthorId = member.StudentId,
-                    });
-
-                }
-            }
-            else
-            {
-                authors = submissionVersion.Submission.Submitter.FullName;
-                _context.UserPublishedResearch.Add(new UserPublishedResearch
-                {
-                    ResearchId = model.SubmissionId,
-                    AuthorId = submissionVersion.Submission.SubmitterId,
-                });
-            }
 
             var file = submissionVersion.Version.FilePath;
             FormFile formFile;
@@ -113,11 +85,11 @@ namespace CampusCore.API.Services
             var stream = new MemoryStream(fileBytes);
             // Create an IFormFile instance using the MemoryStream and other necessary parameters
             formFile = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(file))
-                {
-                    Headers = new HeaderDictionary(),
-                    ContentType = "application/octet-stream", // Set the appropriate content type
-                };
-            
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "application/octet-stream", // Set the appropriate content type
+            };
+
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
             var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
@@ -126,32 +98,78 @@ namespace CampusCore.API.Services
             {
                 await formFile.CopyToAsync(fileStream);
             }
-
-
-            var publicResearchRepository = new PublicResearchRepository
+            //to get authors
+            var members = await _context.StudentGroups
+                                        .Include(sg => sg.Student)
+                                        .Where(sg => sg.Id == submissionVersion.Submission.GroupId)
+                                        .ToListAsync();
+            string authors;
+            if (members.Any())
             {
-                Title = model.Title,
-                Authors = authors,
-                SubmissionId = model.SubmissionId,
-                FilePath = filePath,
-                DateUploaded = DateTime.Now,
-                Status = "Pending",
-            };
-
-
-            _context.ResearchRepository.Add(publicResearchRepository);
-            var result = await _context.SaveChangesAsync();
-
-            if (result > 0)
-            {
-                return new ResponseManager
+                authors = string.Join(", ", members.Select(group => group.Student.FullName));
+                var publicResearchRepository = new PublicResearchRepository
                 {
-                    Message = "Request for final research upload added successfully!",
-                    IsSuccess = true
+                    Title = model.Title,
+                    Authors = authors,
+                    SubmissionId = model.SubmissionId,
+                    FilePath = filePath,
+                    DateUploaded = DateTime.Now,
+                    Status = "Pending",
                 };
 
-            }
 
+                _context.ResearchRepository.Add(publicResearchRepository);
+                var result = await _context.SaveChangesAsync();
+                foreach (var member in members)
+                {
+                    _context.UserPublishedResearch.Add(new UserPublishedResearch
+                    {
+                        ResearchId = publicResearchRepository.Id,
+                        AuthorId = member.StudentId,
+                    });
+
+                }
+                var res = await _context.SaveChangesAsync();
+                if (res > 0)
+                {
+                    return new ResponseManager
+                    {
+                        Message = "Request for final research upload added successfully!",
+                        IsSuccess = true
+                    };
+                }
+            }
+            else
+            {
+                var publicResearchRepository = new PublicResearchRepository
+                {
+                    Title = model.Title,
+                    Authors = submissionVersion.Submission.Submitter.FullName,
+                    SubmissionId = model.SubmissionId,
+                    FilePath = filePath,
+                    DateUploaded = DateTime.Now,
+                    Status = "Pending",
+                };
+
+
+                _context.ResearchRepository.Add(publicResearchRepository);
+                var result = await _context.SaveChangesAsync();
+                authors = submissionVersion.Submission.Submitter.FullName;
+                _context.UserPublishedResearch.Add(new UserPublishedResearch
+                {
+                    ResearchId = publicResearchRepository.Id,
+                    AuthorId = submissionVersion.Submission.SubmitterId,
+                });
+                var res = await _context.SaveChangesAsync();
+                if (res > 0)
+                {
+                    return new ResponseManager
+                    {
+                        Message = "Request for final research upload added successfully!",
+                        IsSuccess = true
+                    };
+                }
+            }
 
 
             return new ErrorResponseManager
@@ -354,6 +372,7 @@ namespace CampusCore.API.Services
                                                 DateUploaded = item.DateUploaded,
                                                 DateApproved = item.DateApproved,
                                                 Status = item.Status,
+                                                ResearchId = item.Id,
                                                 ViewCount = _context.ResearchViewLogs
                                     .Where(r => r.ResearchId == item.Id)
                                     .Count()
@@ -393,7 +412,10 @@ namespace CampusCore.API.Services
                                                 DateUploaded = item.DateUploaded,
                                                 DateApproved = item.DateApproved,
                                                 Status = item.Status,
+                                                SubmissionId = item.SubmissionId,
+                                                RequestId = item.Id,
                                                 ViewCount = _context.ResearchViewLogs
+
                                     .Where(r => r.ResearchId == item.Id)
                                     .Count()
                                             })
@@ -615,8 +637,8 @@ namespace CampusCore.API.Services
             try
             {
                 var result = await _context.SubmissionApprovals
-                                            .Where(sa=> sa.SubmissionId == model.SubmissionId)
-                                            .Select( x=> new
+                                            .Where(sa => sa.SubmissionId == model.SubmissionId)
+                                            .Select(x => new
                                             {
                                                 ApproverId = x.Approval.ApproverId,
                                                 ApproverName = x.Approval.Approver.FullName,
@@ -627,7 +649,7 @@ namespace CampusCore.API.Services
                                             })
                                             .ToListAsync();
 
-                
+
 
                 return new DataResponseManager
                 {
