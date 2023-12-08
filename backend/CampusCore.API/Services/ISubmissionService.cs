@@ -1,5 +1,6 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static CampusCore.Shared.GetSubmissionsForFacultyViewModel;
 
@@ -21,7 +22,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> GetAllSubmissionsForDean(GetSubmissionsForDeanViewModel model);
         Task<ResponseManager> GetAllSubmissionsForPRC(GetSubmissionsForPRCViewModel model);
         Task<ResponseManager> GetAllSubmissionsForAdviserReview(GetSubmissionsForAdviserViewModel model);
-        Task<ResponseManager> Approve(SubmissionApproveViewModel model);
+        Task<ResponseManager> Approve(DigitalSignatureViewModel model);
         Task<ResponseManager> AdviserApprove(SubmissionAdviserApproveViewModel model);
 
 
@@ -32,12 +33,13 @@ namespace CampusCore.API.Services
     public class SubmissionService : ISubmissionService
     {
         private AppDbContext _context;
+        private UserManager<User> _userManager;
         private string _uploadPath;
 
-        public SubmissionService(AppDbContext context)
+        public SubmissionService(AppDbContext context, UserManager<User> userManager)
         {
             _context = context;
-
+            _userManager = userManager;
             // Get the root directory of your application
             var currentDirectory = Directory.GetCurrentDirectory();
             var goUp = Directory.GetParent(currentDirectory);
@@ -272,6 +274,7 @@ namespace CampusCore.API.Services
                                                     SubmissionId = x.Submission.Id,
                                                     Submitter = x.Submission.Submitter.FullName,
                                                     SubmitterId = x.Submission.SubmitterId,
+                                                    ForCourse = x.OfferedCourseDeliverable.OfferedCourse.Course.Name,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status,
@@ -405,7 +408,7 @@ namespace CampusCore.API.Services
                 var submissions = await _context.CourseDeliverableSubmissions
                                                 .Where(cds => cds.OfferedCourseDeliverableId == offeredCourseDeliverableId
                                                         && (isApproved && (cds.Submission.Status == "Faculty Level Approved")
-                                                        ||(!isApproved && cds.Submission.Status == "Unapproved") || cds.Submission.Status == "Adviser Level Approved"))
+                                                        || (!isApproved && cds.Submission.Status == "Unapproved") || cds.Submission.Status == "Adviser Level Approved"))
                                                 .Select(x => new
                                                 {
                                                     CourseDeliverableSubmissionId = x.Id,
@@ -519,7 +522,7 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> Approve(SubmissionApproveViewModel model)
+        public async Task<ResponseManager> Approve(DigitalSignatureViewModel model)
         {
             if (model == null)
                 throw new NullReferenceException("Submission Model is null");
@@ -527,44 +530,88 @@ namespace CampusCore.API.Services
 
             var submission = await _context.Submissions.FindAsync(model.SubmissionId);
 
-            switch (model.Role)
-            {
-                case "Faculty":
-                    submission.DAFaculty = DateTime.Now;
-                    submission.Status = "Faculty Level Approved";
-                    break;
-                case "Dean":
-                    submission.DADean = DateTime.Now;
-                    submission.Status = "Dean Level Approved";
-                    break;
-                case "PRC":
-                    submission.DAPRC = DateTime.Now;
-                    submission.Status = "PRC Level Approved";
-                    break;
-                default:
-                    break;
-            }
+            var user = await _userManager.FindByIdAsync(model.UserId);
 
-            _context.Submissions.Update(submission);
-            var result = await _context.SaveChangesAsync();
-
-            if (result > 0)
+            var encryption = _context.EncryptionKeys.FirstOrDefault();
+            if (encryption == null)
             {
-                return new ResponseManager
+                return new ErrorResponseManager
                 {
-                    Message = "Submission updated successfully!",
-                    IsSuccess = true
+                    Message = "Submission is not approved",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "No encryption keys stored" }
                 };
-
             }
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
 
-            return new ErrorResponseManager
+            if(isPasswordCorrect == false)
             {
-                Message = "Submission is not updated",
-                IsSuccess = false,
-                Errors = new List<string>() { "Error updating submission in DB" }
-            };
+                return new ErrorResponseManager
+                {
+                    Message = "Invalid Password!",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Invalid password inputted" }
+                };
+            }
+            var generatedPrivateKey = KeyGeneratorStorage.GeneratePrivateKey(model.Password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
+
+            var encryptGeneratedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(generatedPrivateKey, encryption.Key, encryption.Iv);
+            var storedEncryptedPrivateKey = user.EncryptedPrivateKey;
+
+
+            if (encryptGeneratedPrivateKey == storedEncryptedPrivateKey)
+            {
+
+
+                switch (model.Role)
+                {
+                    case "Faculty":
+                        submission.DAFaculty = DateTime.Now;
+                        submission.Status = "Faculty Level Approved";
+                        break;
+                    case "Dean":
+                        submission.DADean = DateTime.Now;
+                        submission.Status = "Dean Level Approved";
+                        break;
+                    case "PRC":
+                        submission.DAPRC = DateTime.Now;
+                        submission.Status = "PRC Level Approved";
+                        break;
+                    default:
+                        break;
+                }
+
+                _context.Submissions.Update(submission);
+                var result = await _context.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    return new ResponseManager
+                    {
+                        Message = "Submission updated successfully!",
+                        IsSuccess = true
+                    };
+
+                }
+
+                return new ErrorResponseManager
+                {
+                    Message = "Submission is not updated",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Error updating submission in DB" }
+                };
+            }
+            else
+            {
+                return new ErrorResponseManager
+                {
+                    Message = "Error attaching digital signature",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Digital signature invalid" }
+                };
+            }
         }
+        
 
         public async Task<ResponseManager> FirstSubmission(FirstSubmissionViewModel model)
         {
@@ -852,10 +899,10 @@ namespace CampusCore.API.Services
 
             var submission = await _context.Submissions.FindAsync(model.SubmissionId);
 
-            
+
             submission.DAAdviser = DateTime.Now;
             submission.Status = "Adviser Level Approved";
-           
+
 
             _context.Submissions.Update(submission);
             var result = await _context.SaveChangesAsync();

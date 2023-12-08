@@ -4,6 +4,7 @@ using CampusCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231207220042_AddedEncryptedKeyPairToUserModel")]
+    partial class AddedEncryptedKeyPairToUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,27 +218,6 @@ namespace CampusCore.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Deliverables");
-                });
-
-            modelBuilder.Entity("CampusCore.API.Models.Encryption", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<byte[]>("Iv")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("Key")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EncryptionKeys");
                 });
 
             modelBuilder.Entity("CampusCore.API.Models.Group", b =>
@@ -934,9 +915,9 @@ namespace CampusCore.API.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<byte[]>("EncryptedPrivateKey")
+                    b.Property<string>("EncryptedKeyPair")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

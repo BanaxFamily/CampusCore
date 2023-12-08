@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -95,6 +96,7 @@ using (var scope = app.Services.CreateScope())
     var serviceProvider = scope.ServiceProvider;
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+    var context = serviceProvider.GetRequiredService<AppDbContext>();
 
     var roles = new[] { "Admin", "Dean", "Faculty", "Student", "PRC" };
 
@@ -106,9 +108,6 @@ using (var scope = app.Services.CreateScope())
         }
     }
     
-
-
-
 
     //seeding admin account
     string username = "admin";
@@ -124,7 +123,31 @@ using (var scope = app.Services.CreateScope())
         await userManager.AddToRoleAsync(user, "Admin");
     }
 
+    var encryptionKey = context.EncryptionKeys.FirstOrDefault();
+
+    if (encryptionKey == null)
+    {
+        byte[] key;
+        byte[] iv;
+
+        using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+        {
+            key = new byte[32]; // 256 bits for AES-256
+            iv = new byte[16]; // 128 bits for AES
+
+            rng.GetBytes(key);
+            rng.GetBytes(iv);
+        }
+        
+
+        // Save to the database
+        context.EncryptionKeys.Add(new Encryption { Key = key, Iv = iv });
+        context.SaveChanges();
+    }
+
 }
+
+
 #endregion
 
 
