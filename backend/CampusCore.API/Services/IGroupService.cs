@@ -20,6 +20,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model);
         Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model);
         Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
+        Task<ResponseManager> GetAllAdvisoree(StringIdViewModel model);//group name
     }
 
     public class GroupService : IGroupService
@@ -637,6 +638,37 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = false,
                     Message = "An error occurred while fetching students of offered course in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetAllAdvisoree(StringIdViewModel model)
+        {
+            try
+            {
+                var result = await _context.StudentGroups
+                                            .Where(g => g.Group.AdviserId == model.Id)
+                                            .Select(sg => new {
+                                                GroupId = sg.GroupId,
+                                                GroupName = sg.Group.Name,
+                                                ForCourse = sg.Group.OfferedCourse.Course.Name
+                                            })
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = $"groups of adviser {model.Id} retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching groups in DB",
                     Errors = new List<string> { ex.Message }
                 };
             }
