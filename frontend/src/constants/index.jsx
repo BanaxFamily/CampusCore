@@ -10,9 +10,9 @@ export const studentLinks = [
   },
 
   {
-    id: "research",
+    id: "repository",
     link: "/repository",
-    title: "Research repository",
+    title: "Repository",
     icon: <Storage />,
   },
   {
@@ -120,13 +120,25 @@ export const deanLink = [
     title: "Deliverable management",
     icon: <DeveloperBoard />,
   },
-
+  {
+    id: "profile",
+    link: "/publish-request",
+    title: "Publish request",
+    icon: <DeveloperBoard />,
+  },
   {
     id: "repository",
     link: "/faculty/course-loads/subjects",
     title: "Offered courses",
     icon: <LocalPostOffice />,
   },
+  {
+    id: "repository",
+    link: "/repository",
+    title: "Repository",
+    icon: <Storage />,
+  },
+
   // {
   //   id: "groups",
   //   link: "/student-groups",
@@ -154,6 +166,12 @@ export const facultyLinks = [
     link: "course/assigned",
     title: "Course assigned",
     icon: <Book />,
+  },
+  {
+    id: "repository",
+    link: "/repository",
+    title: "Repository",
+    icon: <Storage />,
   },
   {
     id: "setting",
