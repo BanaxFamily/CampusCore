@@ -9,12 +9,9 @@ namespace CampusCore.Shared
     public class PublicResearchRepositoryAddViewModel
     {
         public string Title { get; set; }
-        public string Description { get; set; }
-        public string Authors { get; set; }
         public int SubmissionId { get; set; } // lacking foreign key from SubmissionTable
         public string FilePath { get; set; }
         public DateTime DateUploaded { get; set; }
-        public string Status { get; set; }
 
     }
 
