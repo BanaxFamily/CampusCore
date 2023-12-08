@@ -101,7 +101,7 @@ namespace CampusCore.API.Services
             //to get authors
             var members = await _context.StudentGroups
                                         .Include(sg => sg.Student)
-                                        .Where(sg => sg.Id == submissionVersion.Submission.GroupId)
+                                        .Where(sg => sg.Group.Id == submissionVersion.Submission.GroupId)
                                         .ToListAsync();
             string authors;
             if (members.Any())
