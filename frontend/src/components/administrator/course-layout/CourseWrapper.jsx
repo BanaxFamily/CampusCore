@@ -31,7 +31,23 @@ export default function CourseWrapper({ courses }) {
   } = useForm();
 
   async function handleDeleteCourse(id) {
-    const response = await CourseApi.deleteCourse(id);
+    const shouldDelete = window.confirm("Are you sure you want to delete this course?");
+
+    if (shouldDelete) {
+      try {
+        const response = await CourseApi.deleteCourse(id);
+        // Handle the response or perform additional actions after successful deletion
+        if(response.isSuccess){
+          navigate(0)
+        }
+      } catch (error) {
+        // Handle errors if the deletion fails
+        console.error("Error deleting course:", error);
+      }
+    } else {
+      // Handle the case when the user cancels the deletion
+      console.log("Deletion canceled by the user.");
+    }
   }
 
   async function handleCourseSearch(key) {
@@ -68,7 +84,7 @@ export default function CourseWrapper({ courses }) {
         </span>
         {/* Used Search function with the combination of View users and filter method */}
         {/* currently un-used the react hook form*/}
-        <form className="flex items-center"  onSubmit={handleSubmit(handleCourseSearch)}>
+        <form className="flex items-center" onSubmit={handleSubmit(handleCourseSearch)}>
           <input
             type="text"
             placeholder="search by name...."

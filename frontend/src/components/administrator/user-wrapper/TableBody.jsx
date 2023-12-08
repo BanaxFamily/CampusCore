@@ -32,8 +32,8 @@ export default function TableBodyUser(props) {
       </TableCell>
       <TableCell className={props.className}>{props.user.role}</TableCell>
       <TableCell className="!text-[12px] 2xl:text-[14px] border">
-        <IconButton size="small">
-          <Edit size="small" className="text-green-500" onClick={props.openModalUpdate} />
+        <IconButton size="small" onClick={props.showModalUpdate}>
+          <Edit size="small" className="text-green-500"  />
         </IconButton>
       </TableCell>
       <TableCell className="!text-[12px] 2xl:text-[14px] border">
