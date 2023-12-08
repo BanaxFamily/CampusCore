@@ -91,5 +91,60 @@ namespace TestProjectClass
             Assert.Equal("Announcement is not created", errorResponseManager.Message);
             // You can further assert the error list or other properties if needed
         }
+
+        [Fact]
+        public async Task TestViewAnnouncementListSuccess()
+        {
+            // Arrange
+            var controller = new AnnouncementController(_announcementServiceMock.Object, _userManagerMock, _context);
+
+            // Set up the mock service to return a success response
+            _announcementServiceMock.Setup(service => service.ViewAnnouncementListAsync())
+                .ReturnsAsync(new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Announcements retrieved successfully",
+                    Data = new List<Announcement>() // Your test data here
+                });
+
+            // Act
+            var result = await controller.ViewListAsync() as ObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode); // Assuming Ok returns status code 200
+                                                  // Check only the success message in DataResponseManager
+            var dataResponseManager = Assert.IsType<DataResponseManager>(result.Value);
+            Assert.Equal("Announcements retrieved successfully", dataResponseManager.Message);
+            // You can further assert the data or other properties if needed
+        }
+
+        [Fact]
+        public async Task TestViewAnnouncementListFailed()
+        {
+            // Arrange
+            var controller = new AnnouncementController(_announcementServiceMock.Object, _userManagerMock, _context);
+
+            // Set up the mock service to return a failure response
+            _announcementServiceMock.Setup(service => service.ViewAnnouncementListAsync())
+                .ReturnsAsync(new ErrorResponseManager
+                {
+                    Message = "An error occurred while fetching announcements",
+                    IsSuccess = false,
+                    Errors = new List<string> { "Error message from the service" }
+                });
+
+            // Act
+            var result = await controller.ViewListAsync() as ObjectResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(400, result.StatusCode); // Assuming BadRequest returns status code 400
+                                                  // Check only the error message in ErrorResponseManager
+            var errorResponseManager = Assert.IsType<ErrorResponseManager>(result.Value);
+            Assert.Equal("An error occurred while fetching announcements", errorResponseManager.Message);
+            // You can further assert the error list or other properties if needed
+        }
+
     }
 }
