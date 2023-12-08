@@ -3,7 +3,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Alert, Button, Checkbox, Collapse, FormControlLabel, Radio, Stack, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 // import * as CourseEnrollmentApi from "../../../../network/courseEnrollment_api";
 import * as UserRole from "../../../../network/getUserRole_api";
 import * as GroupApi from "../../../../network/group_api";
@@ -11,6 +11,7 @@ import * as GroupApi from "../../../../network/group_api";
 
 export default function FacultyAddGroup() {
     let { offeredCourseId } = useParams()
+    const navigate = useNavigate()
     const [chooseMember, setChooseMember] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
@@ -18,7 +19,7 @@ export default function FacultyAddGroup() {
     const [students, setStudents] = useState([])
     const [members, setSelectedMembers] = useState([]);
     const [leader, setLeader] = useState("")
-    const { register, reset, handleSubmit } = useForm()
+    const { register, handleSubmit } = useForm()
 
 
     function handleCheckboxChange(member) {
@@ -66,7 +67,7 @@ export default function FacultyAddGroup() {
         try {
             const response = await GroupApi.createGroup(studentGroupData)
             if(response.isSuccess){
-                reset()
+                navigate(0)
                 return
             }
         } catch (error) {

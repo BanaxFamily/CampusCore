@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Stack } from "@mui/material";
+import { Alert, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as RepoApi from "../../../network/publicresearchrepo_api";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
@@ -26,7 +26,7 @@ export default function DeanPublishRequest() {
             <DashBoardHeading title="Publish request" />
 
             <Stack className="my-2">
-                <DeanPublishRequestTable allRequest={allRequest}/>
+                {allRequest.length < 1? <Alert severity="info" className="uppercase">No request yet</Alert> : <DeanPublishRequestTable allRequest={allRequest}/>}
             </Stack>
         </Stack>
     )

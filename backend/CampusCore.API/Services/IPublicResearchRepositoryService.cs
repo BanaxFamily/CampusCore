@@ -279,6 +279,7 @@ namespace CampusCore.API.Services
                                                 DateUploaded = item.DateUploaded,
                                                 DateApproved = item.DateApproved,
                                                 Status = item.Status,
+                                                SubmissionId = item.SubmissionId,
                                                 ViewCount = _context.ResearchViewLogs
                                     .Where(r => r.ResearchId == item.Id)
                                     .Count()

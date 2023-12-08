@@ -26,7 +26,7 @@ export default function DeanPublishRequestTable({ allRequest }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {allRequest ? allRequest.map((rq, index) => (
+                    {allRequest && allRequest.map((rq, index) => (
                         <TableRow key={index}>
                             <TableCell className=" !text-[13px] 2xl:text-md !text-black border ">{rq.title}</TableCell>
                             <TableCell className=" !text-[13px] 2xl:text-md !text-black border ">{rq.authors}</TableCell>
@@ -49,7 +49,7 @@ export default function DeanPublishRequestTable({ allRequest }) {
                             </TableCell>
                         </TableRow>
 
-                    )) :  (<TableRow><TableCell colSpan={5}>No request for publishing</TableCell></TableRow>)}
+                    ))}
                 </TableBody>
             </DynamicTable>
             { showCertification && <DeanViewCertificationsModal onDismiss={() => setShowCertifications(false)} submissionIdCertificate={submissionIdCertificate}/>}
