@@ -11,6 +11,17 @@ export async function addNewIssue(data){
 
     return response
 }
+export async function closeIssue(data){
+    const response = await fetchData('api/issue/close', {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response
+}
 export async function getAllIssue(data){
     const response = await fetchData('api/issue/getAllBySubmission', {
         method: "POST",

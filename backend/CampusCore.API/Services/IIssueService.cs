@@ -11,7 +11,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> ViewIssueListOpenAsync();
         Task<ResponseManager> IssueGetByIdAsync(IntIdViewModel model);
         Task<ResponseManager> DeleteIssueAsync(IntIdViewModel model);
-        Task<ResponseManager> UpdateIssueAsync(IssueUpdateViewModel model);
+        Task<ResponseManager> CloseIssueAsync(CloseIssueViewModel model);
         Task<ResponseManager> SearchIssueAsync(StringSearchViewModel model);
         //Task<ResponseManager> GetAllByUserAsync(IssueGetAllModel model); //get issue that concerns a user (can be student or faculty, the one who needs to resolve the issue) not the one who opened the issue
         Task<ResponseManager> GetAllBySubmissionAsync(IssueGetAllModel model);
@@ -35,9 +35,8 @@ namespace CampusCore.API.Services
             var issue = new Issue
             {
                 Name = model.Name,
-                Status = model.Status,
-                DateOpened = model.DateOpened,
-                DateClosed = model.DateClosed,
+                Status = "open",
+                DateOpened = DateTime.Now,
                 UserId = model.UserId,
 
             };
@@ -167,7 +166,7 @@ namespace CampusCore.API.Services
                 }
             }
 
-            if (model.Filter == "close")
+            if (model.Filter == "closed")
             {
                 try
                 {
@@ -536,11 +535,11 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> UpdateIssueAsync(IssueUpdateViewModel model)
+        public async Task<ResponseManager> CloseIssueAsync(CloseIssueViewModel model)
         {
             try
             {
-                var issue = await _context.Issues.FindAsync(model.Id);
+                var issue = await _context.Issues.FindAsync(model.IssueId);
 
                 if (issue == null)
                 {
@@ -553,11 +552,8 @@ namespace CampusCore.API.Services
                 }
 
                 // Update the Issue properties from the model
-                issue.Name = model.Name;
-                issue.Status = model.Status;
-                issue.DateOpened = model.DateOpened;
-                issue.DateClosed = model.DateClosed;
-                issue.UserId = model.UserId;
+                issue.Status = "closed";
+                issue.DateClosed = DateTime.Now;
 
                 // Save changes to the database
                 var result = await _context.SaveChangesAsync();
@@ -567,7 +563,7 @@ namespace CampusCore.API.Services
                     return new ResponseManager
                     {
                         IsSuccess = true,
-                        Message = "Issue updated successfully"
+                        Message = "Issue closed successfully"
                     };
                 }
                 else
@@ -576,7 +572,7 @@ namespace CampusCore.API.Services
                     {
                         IsSuccess = false,
                         Message = "Issue update failed",
-                        Errors = new List<string> { "Error occurred while updating the issue" }
+                        Errors = new List<string> { "Error occurred while closing the issue" }
                     };
                 }
             }

@@ -2,7 +2,6 @@ import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui
 import { Link } from 'react-router-dom'
 
 export default function CardCourses({ data }) {
-
   return (
 
     data.map((item, index) => (
@@ -20,7 +19,7 @@ export default function CardCourses({ data }) {
             </CardContent>
           </CardActionArea>
           <CardActions sx={{justifyContent: 'flex-end'}}>
-            <Link to={`submission`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
+            <Link to={`${item.course.name}/${item.course.id}`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
               Open
             </Link>
           </CardActions>

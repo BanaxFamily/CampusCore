@@ -28,11 +28,20 @@ export default function FacultyShowDeliverables({ data }) {
                                 </TableHead>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell  className="!text-[12px] 2xl:text-[14px] border">{info.deliverableTitle}</TableCell>
-                                        <TableCell  className="!text-[12px] 2xl:text-[14px] border">{info.deliverableDescription}</TableCell>
-                                        <TableCell  className="!text-[12px] 2xl:text-[14px] border">{info.deliverableInstruction}</TableCell>
-                                        <TableCell  className="!text-[12px] 2xl:text-[14px] border">{info.deliverableDeadline}</TableCell>
-                                        <TableCell  className="!text-[12px] 2xl:text-[14px] border !text-center">
+                                        <TableCell className="!text-[12px] 2xl:text-[14px] border">{info.deliverableTitle}</TableCell>
+                                        <TableCell className="!text-[12px] 2xl:text-[14px] border">{info.deliverableDescription}</TableCell>
+                                        <TableCell className="!text-[12px] 2xl:text-[14px] border">{info.deliverableInstruction}</TableCell>
+                                        <TableCell className="!text-[12px] 2xl:text-[14px] border">{
+                                            new Date(info.deliverableDeadline).toLocaleString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                hour12: true,
+                                            } )}
+                                        </TableCell>
+                                        <TableCell className="!text-[12px] 2xl:text-[14px] border !text-center">
                                             <IconButton
                                                 type="submit"
                                                 size="small"

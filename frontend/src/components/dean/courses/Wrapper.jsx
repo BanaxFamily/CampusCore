@@ -28,9 +28,6 @@ export default function Wrapper() {
     getOfferedCourses()
   }, [])
 
-  // const refresh = () => {
-  //   navigate(0);
-  // }
   return (
 
     <>

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231208055521_SubmissionApproval")]
+    [Migration("20231208083504_SubmissionApproval")]
     partial class SubmissionApproval
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -607,8 +607,11 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.SubmissionApproval", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApprovalId")
                         .HasColumnType("int");

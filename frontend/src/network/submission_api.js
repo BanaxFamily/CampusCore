@@ -11,8 +11,28 @@ export async function submissionOfDeliverable(data){
     })
     return response
 }
+export async function addApproval(data){
+    const response = await fetchData('api/submission/approve', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:  JSON.stringify(data)
+    })
+    return response
+}
 export async function firstSubmissionDeliverable(data){
     const response = await fetchData('api/submission/firstSubmission', {
+        method: "POST",
+        headers: {
+            // "Content-Type": "multipart/form-data",
+        },
+        body:  data
+    })
+    return response
+}
+export async function addNewSubmissionDeliverableVersion(data){
+    const response = await fetchData('api/submission/addNewVersion', {
         method: "POST",
         headers: {
             // "Content-Type": "multipart/form-data",
@@ -32,9 +52,39 @@ export async function getAllSubmissionVersions(data){
     })
     return response
 }
+export async function getAllSubmissionFaculty(data){
+    const response = await fetchData('api/submission/getAllSubmissionsForFaculty', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:  JSON.stringify(data)
+    })
+    return response
+}
+export async function getAllSubmissionDean(data){
+    const response = await fetchData('api/submission/getAllSubmissionsForDean', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:  JSON.stringify(data)
+    })
+    return response
+}
 
 export async function getSubmissionList(data){
     const response = await fetchData('api/submission/getAllByStudent', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    return response
+}
+export async function getLatestVerionOfFile(data){
+    const response = await fetchData('api/submission/getLatestVersion', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -6,5 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 9999,
+  },
+  optimizeDeps: {
+    exclude: ['js-big-decimal']
   }
 })

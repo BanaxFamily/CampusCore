@@ -16,9 +16,7 @@ import EnrolledStudents from "./components/administrator/courseloads/EnrolledStu
 import GenerateReport from "./components/administrator/report/GenerateReport";
 import ManageUsers from "./components/administrator/user-wrapper/ManageUsers";
 import CourseLayout from "./components/dean/courses/CourseLayout";
-import DeanCourses from "./components/dean/courses/DeanCourses";
 import Submission from "./components/dean/courses/submission/Submissions";
-import View from "./components/dean/courses/submission/View";
 import DeanDeliverables from "./components/dean/deliverables/DeanDeliverables";
 import Deliverables from "./components/dean/deliverables/Deliverables";
 import FinalDeliverables from "./components/faculty/FinalDeliverables";
@@ -30,6 +28,7 @@ import FacultyStudentGroups from "./components/faculty/assignedcourse/studentgro
 import FacultyUpdateAndAddGroupWrapper from "./components/faculty/assignedcourse/studentgroups/FacultyUpdateAndAddGroupsWrapper";
 import FacultyShowAllDeliverables from "./components/faculty/assignedcourse/submissions/FacultyShowAllDeliverables";
 import FacultyViewSpecificDeliverables from "./components/faculty/assignedcourse/submissions/FacultyViewSpecificDeliverables";
+import FacultyViewSubmission from "./components/faculty/assignedcourse/submissions/FacultyViewSubmission";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
@@ -92,10 +91,10 @@ export default function App() {
             <>
               <Route path={`manage/course`} loader={async () => { return CourseApi.viewCourse(); }} element={<ManageCourse />} />
               <Route path={`manage/user`} loader={async () => { return UserApi.viewUser(); }} element={<ManageUsers />} />
-              <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
+              {/* <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
                 <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
                 <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
-              </Route>
+              </Route> */}
               <Route path={`manage/repository/*`} element={<ManageRepo />} />
               <Route path={`reports`} element={<GenerateReport />}></Route>
             </>
@@ -112,10 +111,13 @@ export default function App() {
                 <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
                 <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
               </Route>
-              <Route path={`/courses/*`} element={<CourseLayout />}>
-                <Route index element={<DeanCourses />} />
-                <Route path={`submission`} element={<Submission />} />
-                <Route path={`submission/view/file/:id`} element={<View />} />
+              <Route path={`/submissions/*`} element={<CourseLayout />}>
+                <Route index element={<Submission />} />
+                <Route path=":submissionId" element={<FacultyViewSubmission />} />
+                {/* <Route path={`:courseName/:courseId/*`} element={<Layout />} >
+                  <Route index element={<Submission />} />
+                </Route>
+                <Route path={`submission/view/file/:id`} element={<View />} /> */}
               </Route>
             </>
           )}
@@ -136,7 +138,7 @@ export default function App() {
                     <Route index element={<FacultyShowAllDeliverables />} />
                     <Route path="deliverable/:deliverableName/:deliverableId/:offeredCourseDeliverableId/*" element={<Layout />}>
                       <Route index element={<FacultyViewSpecificDeliverables />} />
-                      <Route path=":submissionId" element={<PdfViewer />} />
+                      <Route path=":submissionId" element={<FacultyViewSubmission />} />
                     </Route>
                   </Route>
                 </Route>
