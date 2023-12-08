@@ -34,6 +34,7 @@ namespace CampusCore.API.Models
         public DbSet<PublicResearchRepository> ResearchRepository { get; set; }
         public DbSet<UserPublishedResearch> UserPublishedResearch { get; set; }
         public DbSet<ResearchViewLog> ResearchViewLogs { get; set; }
+        public DbSet<Encryption> EncryptionKeys { get; set; }
 
 
 

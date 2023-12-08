@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace CampusCore.API.Models
 {
@@ -22,8 +23,7 @@ namespace CampusCore.API.Models
         public int? StudentGroupId { get; set; } // Foreign key to StudentGroup
         public StudentGroup StudentGroup { get; set; } // Navigation property to StudentGroup
 
-        
-        //to add digital signature later. Will research first if it's part of Identity already
+        public byte[] EncryptedPrivateKey { get; set; }
     }
 
 

@@ -1,13 +1,13 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.API.Services;
 using CampusCore.Shared;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace CampusCore.API.Services
@@ -26,6 +26,73 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model);
         Task<ResponseManager> LogoutAsync(string userId);
 
+    }
+}
+
+public class KeyGeneratorStorage
+{
+    public static byte[] GeneratePrivateKey(string password, byte[] salt, int iterations, int keyLength)
+    {
+        using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations))
+        {
+            return pbkdf2.GetBytes(keyLength);
+        }
+    }
+    public static byte[] GenerateRandomSalt()
+    {
+        byte[] salt = new byte[16]; // 16 bytes is a common size for salt
+        using (var rng = new RNGCryptoServiceProvider())
+        {
+            rng.GetBytes(salt);
+        }
+        return salt;
+    }
+
+    public static byte[] EncryptPrivateKey(byte[] privateKey, byte[] key, byte[] iv)
+    {
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
+
+            // Create an encryptor to perform the stream transform.
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+            // Create the streams used for encryption.
+            using (MemoryStream msEncrypt = new MemoryStream())
+            {
+                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    csEncrypt.Write(privateKey, 0, privateKey.Length);
+                    csEncrypt.FlushFinalBlock();
+                    return msEncrypt.ToArray();
+                }
+            }
+        }
+    }
+    public static byte[] DecryptPrivateKey(byte[] encryptedPrivateKey, byte[] key, byte[] iv)
+    {
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
+
+            // Create a decryptor to perform the stream transform.
+            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+            // Create the streams used for decryption.
+            using (MemoryStream msDecrypt = new MemoryStream(encryptedPrivateKey))
+            {
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                {
+                    using (MemoryStream msResult = new MemoryStream())
+                    {
+                        csDecrypt.CopyTo(msResult);
+                        return msResult.ToArray();
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -146,6 +213,7 @@ public class UserService : IUserService
             IsSuccess = true
         };
     }
+
     public async Task<ResponseManager> UserAddAsync(UserAddViewModel model)
     {
         if (model == null)
@@ -158,6 +226,9 @@ public class UserService : IUserService
                 IsSuccess = false
             };
 
+        var encryption = _context.EncryptionKeys.FirstOrDefault();
+
+        var privateKey = KeyGeneratorStorage.GeneratePrivateKey(model.Password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
         var user = new User
         {
             Idno = model.Idno,
@@ -166,6 +237,7 @@ public class UserService : IUserService
             FirstName = model.FirstName,
             LastName = model.LastName,
             Status = model.Status,
+            EncryptedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(privateKey, encryption.Key, encryption.Iv)
 
         };
 
@@ -421,9 +493,9 @@ public class UserService : IUserService
                 };
             }
 
-           // Update the user properties from the model
+            // Update the user properties from the model
 
-           user.Email = model.Email;
+            user.Email = model.Email;
             user.UserName = model.Username;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
@@ -437,8 +509,8 @@ public class UserService : IUserService
             }
 
 
-           // Save changes to the database
-           await _userManager.UpdateAsync(user);
+            // Save changes to the database
+            await _userManager.UpdateAsync(user);
 
             return new ResponseManager
             {
@@ -476,13 +548,13 @@ public class UserService : IUserService
 
             //Update the user properties from the model
 
-           user.Email = model.Email;
+            user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
 
 
 
             //Save changes to the database
-           await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
 
             return new ResponseManager
             {
@@ -512,7 +584,7 @@ public class UserService : IUserService
                 {
                     IsSuccess = false,
                     Message = "An error occurred while updating the user",
-                    Errors = new List<string> { "User not found"}
+                    Errors = new List<string> { "User not found" }
                 }; ;
             }
 
@@ -520,7 +592,7 @@ public class UserService : IUserService
 
             if (result.Succeeded)
             {
-                return new ResponseManager 
+                return new ResponseManager
                 { IsSuccess = true, Message = "Password changed successfully" };
             }
             else

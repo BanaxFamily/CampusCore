@@ -15,7 +15,14 @@ namespace CampusCore.Shared
         public IFormFile File { get; set; }
         public string FileType { get; set; }
     }
+    public class DigitalSignatureViewModel
+    {
+        public string Password { get; set; }
+        public string UserId { get; set; }
+        public int SubmissionId { get; set; }
+        public string Role { get; set; }
 
+    }
     public class AddNewVersionViewModel
     {
         public int SubmissionId { get; set; }
@@ -30,11 +37,7 @@ namespace CampusCore.Shared
         public int Id { get; set; }
         public string Title { get; set; }
     }
-    public class SubmissionApproveViewModel
-    {
-        public int SubmissionId { get; set; }
-        public string Role { get; set; }
-    }
+    
     public class SubmissionAdviserApproveViewModel
     {
         public int SubmissionId { get; set; }
