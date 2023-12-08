@@ -242,5 +242,20 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid for update"); // Status code: 400
         }
+
+        
+        [HttpPost("getAllAdvisoree")]
+        public async Task<IActionResult> GetAllAdvisoree(StringIdViewModel model) { 
+            if (ModelState.IsValid)
+            {
+                var result = await _groupService.GetAllAdvisoree(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
     }
 }
