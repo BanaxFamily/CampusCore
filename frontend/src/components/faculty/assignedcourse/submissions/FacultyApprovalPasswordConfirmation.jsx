@@ -6,15 +6,17 @@ import Modal from "../../../administrator/Modal";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import { useAuth } from "../../../../utils/AuthContext";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
   const { userRole, userId } = useAuth()
+  let {submissionId} = useParams()
   const navigate = useNavigate()
   const [message, setMessage] = useState([])
   const { register, handleSubmit, formState: { isSubmitting } } = useForm()
 
   async function attachApproval(data) {
+    console.log(data)
     try {
       const response = await SubmissionApi.addApproval(data)
       if (response.isSuccess) {
@@ -43,6 +45,7 @@ export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
         {message && <Alert severity="error">{message}</Alert>}
         <input type="text" value={userId} name='userId' hidden {...register('userId', { required: true })} />
         <input type="text" value={userRole} name='role' hidden {...register('role', { required: true })} />
+        <input type="text" value={submissionId} name='submissionId' hidden {...register('submissionId', { required: true })} />
         <Stack className="gap-2">
           <TextField
             label="Password"

@@ -62,6 +62,16 @@ export async function getAllSubmissionFaculty(data){
     })
     return response
 }
+export async function getAllSubmissionDean(data){
+    const response = await fetchData('api/submission/getAllSubmissionsForDean', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:  JSON.stringify(data)
+    })
+    return response
+}
 
 export async function getSubmissionList(data){
     const response = await fetchData('api/submission/getAllByStudent', {

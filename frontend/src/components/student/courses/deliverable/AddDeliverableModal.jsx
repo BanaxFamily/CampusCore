@@ -32,8 +32,9 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
     async function submitDeliverable(data) {
 
         try {
-            console.log("Submission ID", submissionId.length)
-            if (submissionId !== undefined && submissionId.length > 0) {
+            // console.log("Submission ID", submissionId.length)
+            // if (submissionId !== undefined && submissionId.length > 0) {
+            if (submissionId !== null) {
                 const formData = new FormData()
                 formData.append("submissionId", submissionId)
                 formData.append("file", data.file[0])
@@ -45,7 +46,7 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                 }
                 const response = await Submission.addNewSubmissionDeliverableVersion(formData)
                 if (response.isSuccess) {
-                    // navigate(0)
+                    navigate(0)
                     return
                 }
                 if (!response.ok) {
@@ -74,7 +75,7 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                 }
                 const firstSubmission = await Submission.firstSubmissionDeliverable(formData)
                 if (firstSubmission.isSuccess) {
-                    // navigate(0)
+                    navigate(0)
                     return
                 }
                 if (!firstSubmission.ok) {

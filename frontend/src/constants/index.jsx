@@ -110,8 +110,8 @@ export const deanLink = [
   },
   {
     id: "course",
-    link: "/courses",
-    title: "Courses",
+    link: "/submissions",
+    title: "Submissions",
     icon: <Book />,
   },
   {

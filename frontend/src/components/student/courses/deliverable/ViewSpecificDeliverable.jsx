@@ -23,7 +23,7 @@ export default function ViewSpecificDeliverable() {
     // eslint-disable-next-line no-unused-vars
     const [submittedFiles, setSubmittedFiles] = useState([])
     // eslint-disable-next-line no-unused-vars
-    const [submissionId, setSubmissionId] = useState([])
+    const [submissionId, setSubmissionId] = useState(null)
     const [allIssues, setAllIssues] = useState([])
     const [loading, setLoading] = useState(true)
     const [fileBase64, setFileBase64] = useState(null)

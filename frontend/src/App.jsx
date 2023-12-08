@@ -113,9 +113,12 @@ export default function App() {
                 <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
                 <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
               </Route>
-              <Route path={`/courses/*`} element={<CourseLayout />}>
+              <Route path={`/submissions/*`} element={<CourseLayout />}>
                 <Route index element={<DeanCourses />} />
-                <Route path={`submission`} element={<Submission />} />
+                <Route path={`:courseName/:courseId/*`} element={<Layout />} >
+                  <Route index element={<Submission />} />
+                  <Route path=":submissionId" element={<FacultyViewSubmission />} />
+                </Route>
                 <Route path={`submission/view/file/:id`} element={<View />} />
               </Route>
             </>

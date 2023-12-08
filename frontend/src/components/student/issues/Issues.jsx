@@ -38,7 +38,7 @@ export default function Issues({ submissionId, issues }) {
   return (
     <>
       <Stack className="my-4">
-        {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setToAddNewSubmissoion(true)} className="  !flex self-end">Add submission</Button>}
+        {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setToAddNewSubmissoion(true)} className="  !flex self-end">{submissionId ? 'Add new version':'Add submission'}</Button>}
         <Stack className="!flex-row justify-between">
           {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenAddIssue(true)} className="  !flex self-end">Add Issue</Button>}
           {/* {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenApproval(true)} className="  !flex self-end">Aprrove submission</Button>} */}
