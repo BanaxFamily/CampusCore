@@ -23,7 +23,7 @@ export default function DeanConfirmDialogPublishRequest({ requestId }) {
     async function publishStudy() {
         try {
             const response = await RepoApi.approvedResearchFinal({ "requestId": requestId, "approvedBy": userId })
-        console.log({"requestId": requestId, "approvedBy": userId})
+            console.log({ "requestId": requestId, "approvedBy": userId })
             if (response.isSuccess) {
                 navigate(0)
             }

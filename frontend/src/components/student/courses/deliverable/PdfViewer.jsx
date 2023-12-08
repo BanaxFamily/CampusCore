@@ -8,11 +8,15 @@ import * as RepoApi from "../../../../network/publicresearchrepo_api"
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
+import DeanViewCertificationsModal from "../../../dean/publishrequest/DeanViewCertificationsModal";
 
 const PdfViewer = ({ fileBase64, fileType, showAllSubmissions, allSubmittedVersions }) => {
     let { researchId } = useParams()
     const [files, setFiles] = useState([])
     const [filesBase64MB, setFileBase64] = useState([])
+    const [showCertification, setShowCertifications] = useState(false)
+    const [submissionIdCertificate, setSubmissionIdCertificate] = useState(null)
+
     const breadCrumbUrl = [
         { url: '../', name: 'Repository', },
         { name: 'View Published Repo', }
@@ -25,6 +29,11 @@ const PdfViewer = ({ fileBase64, fileType, showAllSubmissions, allSubmittedVersi
         }
         getOnePublished()
     }, [])
+
+    function viewCertifications() {
+        setSubmissionIdCertificate(files.submissionId)
+        setShowCertifications(true)
+    }
     return (
         <>
             <Stack className="w-full h-[500px] overflow-y-auto gap-2">
@@ -63,7 +72,7 @@ const PdfViewer = ({ fileBase64, fileType, showAllSubmissions, allSubmittedVersi
                                 </Stack>
                                 <Stack className="!flex-row justify-between w-[85%]">
                                     <Typography><span className="font-bold">Author(s) :</span>&nbsp;<span className="underline underline-offset-4">{files.authors}</span></Typography>
-                                    <Button>Approval Certifcates<AiFillSafetyCertificate /> </Button>
+                                    <Button onClick={() =>viewCertifications()}>Approval Certifcates<AiFillSafetyCertificate /> </Button>
                                 </Stack>
                             </Stack>
                             <Divider />
@@ -72,6 +81,7 @@ const PdfViewer = ({ fileBase64, fileType, showAllSubmissions, allSubmittedVersi
                                 <Viewer fileUrl={`data:application/pdf;base64,${filesBase64MB}`} />
                             </Worker>
                         </Stack>
+                        {showCertification && <DeanViewCertificationsModal onDismiss={() => setShowCertifications(false)} submissionIdCertificate={submissionIdCertificate} />}
 
                     </>
                 }

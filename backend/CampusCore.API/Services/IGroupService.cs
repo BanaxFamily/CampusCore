@@ -20,7 +20,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> GetStudentsForUpdate(GetStudentsForUpdateViewModel model);
         Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model);
         Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
-        Task<ResponseManager> GetAllAdvisoree(StringIdViewModel model);//group name
+        Task<ResponseManager> GetAllAdvisoreeSubmissions(StringIdViewModel model);//group name
     }
 
     public class GroupService : IGroupService
@@ -643,18 +643,26 @@ namespace CampusCore.API.Services
             }
         }
 
-        public async Task<ResponseManager> GetAllAdvisoree(StringIdViewModel model)
+        public async Task<ResponseManager> GetAllAdvisoreeSubmissions(StringIdViewModel model)
         {
             try
             {
-                var result = await _context.StudentGroups
-                                            .Where(g => g.Group.AdviserId == model.Id)
-                                            .Select(sg => new {
-                                                GroupId = sg.GroupId,
-                                                GroupName = sg.Group.Name,
-                                                ForCourse = sg.Group.OfferedCourse.Course.Name
-                                            })
-                                            .ToListAsync();
+                var result = await _context.CourseDeliverableSubmissions
+                                            .Where(g => g.OfferedCourseDeliverable.Deliverable.ForAdviser == true 
+                                                    && g.Submission.Group.AdviserId == model.Id
+                                            )
+                                           .Select(x => new
+                                           {
+                                               CourseDeliverableSubmissionId = x.Id,
+                                               SubmissionId = x.Submission.Id,
+                                               Submitter = x.Submission.Submitter.FullName,
+                                               SubmitterId = x.Submission.SubmitterId,
+                                               ForCourse = x.OfferedCourseDeliverable.OfferedCourse.Course.Name,
+                                               GroupName = x.Submission.Group.Name,
+                                               Title = x.Submission.Title,
+                                               Status = x.Submission.Status
+                                           })
+                                                .ToListAsync();
 
                 return new DataResponseManager
                 {
