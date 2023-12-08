@@ -200,8 +200,8 @@ export const prcLink = [
   },
   {
     id: "deliverable",
-    link: "/deliverable-approval",
-    title: "Approve deliverables",
+    link: "/approval/submission",
+    title: "Approve submissions",
     icon: <DeveloperBoard />,
   },
 
