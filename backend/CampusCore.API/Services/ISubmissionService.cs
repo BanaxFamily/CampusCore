@@ -601,7 +601,7 @@ namespace CampusCore.API.Services
                                 SubmissionId = model.SubmissionId,
                                 ApprovalId = prcApproval.Id
                             });
-                            submission.Status = "Dean Level Approved";
+                            submission.Status = "PRC Level Approved";
                         }
                         break;
                     default:

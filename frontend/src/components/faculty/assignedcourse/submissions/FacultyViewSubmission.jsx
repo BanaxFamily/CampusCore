@@ -88,7 +88,7 @@ export default function FacultyViewSubmission() {
     return (
         <Stack className="h-full">
             <BackNav>
-                <BreadCrumb data={userRole === "Dean" ? breadCrumbUrlDean:breadCrumbUrl} />
+                <BreadCrumb data={userRole === "Dean" ? breadCrumbUrlDean : breadCrumbUrl} />
             </BackNav>
             <Stack className="my-4">
                 <Divider className="!bg-black" />

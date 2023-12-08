@@ -40,7 +40,7 @@ export default function Issues({ submissionId, issues }) {
       <Stack className="my-4">
         {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setToAddNewSubmissoion(true)} className="  !flex self-end">{submissionId ? 'Add new version':'Add submission'}</Button>}
         <Stack className="!flex-row justify-between">
-          <Button variant="outlined" size="small" onClick={() => setOpenAddIssue(true)} className=" !text-red-500 !border-red-500 !flex self-end">Add Issue</Button>
+          {userRole !== "Student" && <Button variant="outlined" size="small" onClick={() => setOpenAddIssue(true)} className=" !text-red-500 !border-red-500 !flex self-end">Add Issue</Button>}
           {/* {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenApproval(true)} className="  !flex self-end">Aprrove submission</Button>} */}
           <FacultyApprovalDialog issues={issues}/>
         </Stack>

@@ -8,12 +8,12 @@ import { useForm } from "react-hook-form";
 import * as AnnounceComment from "../../network/announcementComment_api";
 import * as AnnouncementApi from "../../network/announcement_api";
 import { useAuth } from "../../utils/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 
 const CommentWithLimit = ({ comment }) => {
     const wordLimit = 20; // Set your desired word limit
     const [isExpanded, setIsExpanded] = useState(false);
-
     const toggleContent = () => {
         setIsExpanded(!isExpanded);
     };
@@ -58,10 +58,11 @@ const CommentWithLimit = ({ comment }) => {
 export default function AllAnnouncement() {
 
     const { userId } = useAuth()
+    const navigate = useNavigate()
     const { register, handleSubmit, formState: { isSubmitting } } = useForm()
     const [specificAnnouncement, setSpecificAnnouncement] = useState([]);
     const [specificComment, setSpecificComment] = useState([]);
-    const [error, setError] = useState(false);
+    // const [error, setError] = useState(false);
 
     useEffect(() => {
         async function showAnnouncementByUser() {
@@ -77,7 +78,6 @@ export default function AllAnnouncement() {
                 }
             } catch (error) {
                 console.error(error);
-                setError(true);
             }
         }
         showAnnouncementByUser();
@@ -86,8 +86,17 @@ export default function AllAnnouncement() {
 
     async function createComment(data) {
         try {
-            const response = await AnnounceComment.addAnnouncementComment(data)
-            console.log(response)
+            try {
+                const response = await AnnounceComment.addAnnouncementComment(data)
+                console.log(response)
+                if (response.isSuccess) {
+                    navigate(0)
+                    return
+                }
+
+            } catch (error) {
+                console.error(error)
+            }
         } catch (error) {
             console.error(error)
         }
@@ -100,10 +109,10 @@ export default function AllAnnouncement() {
 
     return (
         <Stack className="2xl:w-3/4 2xl:mx-auto">
-            {error && <Alert>Something went wrong, try again later</Alert>}
+            {/* {error && <Alert severity="info">Something went wrong, try again later</Alert>} */}
 
             {/* Populating the data from specific course */}
-            {specificAnnouncement &&
+            {specificAnnouncement.length > 0 ?
                 specificAnnouncement.map((announcement) => (
                     <Stack key={`${announcement.announcmentId}uniq`} paddingX={2} paddingY={2} className="w-full shadow-md border md:w-[70%] lg:w-[60%] mx-auto mt-4 rounded-xl">
                         <Stack direction={"row"} paddingBottom={4} spacing={2}>
@@ -145,7 +154,7 @@ export default function AllAnnouncement() {
                             </Stack>
                         </form>
                     </Stack>
-                ))}
+                )): <Alert severity="info">No Announcements yet</Alert>}
         </Stack>
     );
 }
