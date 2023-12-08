@@ -43,17 +43,18 @@ export default function SettingWrapper() {
                     <div className=" h-12" />
                     <div className="bg-mainBlueColor h-12" />
                     <div className="absolute top-4 right-3">
+                        {!loading && !error &&
+                            <Stack direction={"row"}>
+                                <Typography className=" !font-bold text-black tracking-wide pr-2">{credentials.user.fullName}</Typography>
+                                <Stack direction={"column"}>
+                                    <Avatar alt="john mark" style={{ height: '60px', width: '60px' }} />
 
-                        <Stack direction={"row"}>
-                            <Typography className=" !font-bold text-black tracking-wide pr-2">John Mark Abad</Typography>
-                            <Stack direction={"column"}>
-                                <Avatar alt="john mark" style={{ height: '60px', width: '60px' }} />
-
-                                <span className="text-white text-xs flex justify-center  ">
-                                    Student
-                                </span>
+                                    <span className="text-white text-xs flex justify-center  ">
+                                        Student
+                                    </span>
+                                </Stack>
                             </Stack>
-                        </Stack>
+                        }
                     </div>
                 </div>
 

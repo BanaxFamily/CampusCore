@@ -3,7 +3,7 @@ import Wrapper from "./Wrapper";
 
 export default function DeanDeliverables() {
   return (
-    <div className="2xl:w-3/4 2xl:mx-auto ">
+    <div >
       <DashBoardHeading title="Manage deliverables templates" desc="" />
       <Wrapper />
     </div>

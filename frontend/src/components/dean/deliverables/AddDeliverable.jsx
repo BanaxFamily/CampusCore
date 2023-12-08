@@ -137,7 +137,7 @@ export default function AddDeliverable(props) {
                             </Stack>
                         </Stack>
                         <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
-                            <Typography className="w-1/6 ">Title</Typography>
+                            <Typography className="w-1/6 ">Approval</Typography>
                             <TextField
                                 select
                                 label="Highes approval needed"
