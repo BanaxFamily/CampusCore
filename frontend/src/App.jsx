@@ -46,6 +46,7 @@ import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
 import PrcApprovedSubmissions from "./components/prc/PrcApprovedSubmissions";
+import SharedRepository from "./components/shared-route/SharedRepository";
 
 
 export default function App() {
@@ -155,7 +156,7 @@ export default function App() {
               </Route>
             </>
           )}
-
+          <Route path="/repository" element={<SharedRepository/>}/>
           <Route path="/settings" element={<SettingWrapper />} />
           <Route path="/logout" element={<Navigate to="/login" />} />
         </Route>

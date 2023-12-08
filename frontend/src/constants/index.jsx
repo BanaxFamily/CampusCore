@@ -11,7 +11,7 @@ export const studentLinks = [
 
   {
     id: "research",
-    link: "/research",
+    link: "/repository",
     title: "Research repository",
     icon: <Storage />,
   },
@@ -60,7 +60,7 @@ export const adminLinks = [
 
   {
     id: "repository",
-    link: "manage/repository",
+    link: "/repository",
     title: "Repository",
     icon: <Storage />,
   },
@@ -194,7 +194,7 @@ export const prcLink = [
   },
   {
     id: "repository",
-    link: "manage/repository",
+    link: "/repository",
     title: "Repository",
     icon: <Storage />,
   },
