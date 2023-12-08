@@ -21,6 +21,16 @@ export async function addApproval(data){
     })
     return response
 }
+export async function getBySubmissionId(data){
+    const response = await fetchData('api/submission/getById', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:  JSON.stringify(data)
+    })
+    return response
+}
 export async function firstSubmissionDeliverable(data){
     const response = await fetchData('api/submission/firstSubmission', {
         method: "POST",

@@ -112,7 +112,7 @@ export default function AllAnnouncement() {
             {/* {error && <Alert severity="info">Something went wrong, try again later</Alert>} */}
 
             {/* Populating the data from specific course */}
-            {specificAnnouncement.length > 0 ?
+            {specificAnnouncement ?
                 specificAnnouncement.map((announcement) => (
                     <Stack key={`${announcement.announcmentId}uniq`} paddingX={2} paddingY={2} className="w-full shadow-md border md:w-[70%] lg:w-[60%] mx-auto mt-4 rounded-xl">
                         <Stack direction={"row"} paddingBottom={4} spacing={2}>

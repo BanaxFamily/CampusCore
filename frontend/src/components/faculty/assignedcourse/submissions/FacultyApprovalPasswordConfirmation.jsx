@@ -2,6 +2,7 @@
 import { Alert, Button, Stack, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as SubmissionApi from "../../../../network/submission_api";
+import * as RepoAPi from "../../../../network/publicresearchrepo_api";
 import Modal from "../../../administrator/Modal";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import { useAuth } from "../../../../utils/AuthContext";
@@ -10,21 +11,26 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
   const { userRole, userId } = useAuth()
-  let {submissionId} = useParams()
+  let { submissionId } = useParams()
   const navigate = useNavigate()
   const [message, setMessage] = useState([])
   const { register, handleSubmit, formState: { isSubmitting } } = useForm()
 
   async function attachApproval(data) {
-    console.log(data)
     try {
-      const response = await SubmissionApi.addApproval(data)
-      if (response.isSuccess) {
+      const files = await SubmissionApi.getBySubmissionId({"id": submissionId})
+      const approval = await SubmissionApi.addApproval(data)
+      const requestUpload = await RepoAPi.addRequestUpload({
+        "title": files.data.title,
+        "submissionId": submissionId,
+        "filePath": files.data.filePath
+      })
+      if (approval.isSuccess && requestUpload.isSuccess) {
         navigate(0)
         return
       }
-      if (!response.isSuccess) {
-        const data = await response.json();
+      if (!approval.isSuccess && !requestUpload.isSuccess) {
+        const data = await approval.json();
         setMessage(data.message)
         return
       }

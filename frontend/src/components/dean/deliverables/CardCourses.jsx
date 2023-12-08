@@ -1,9 +1,11 @@
 import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../../utils/AuthContext'
+import { useEffect } from 'react'
 
 export default function CardCourses({ data }) {
   const {setCourseName} = useAuth()
+  useEffect(() => {console.log(data)},[])
   return (
 
     data.map((item, index) => (
