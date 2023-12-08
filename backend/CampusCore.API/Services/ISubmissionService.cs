@@ -251,13 +251,13 @@ namespace CampusCore.API.Services
 
         public async Task<ResponseManager> GetAllSubmissionsForDean(GetSubmissionsForDeanViewModel model)
         {
-            var courseId = model.CourseId;
+            
             var isApproved = model.IsApproved;
             try
             {
 
                 var submissions = await _context.CourseDeliverableSubmissions
-                                                .Where(cds => cds.OfferedCourseDeliverable.OfferedCourse.CourseId == courseId
+                                                .Where(cds => cds.OfferedCourseDeliverable.Deliverable.HighestApprovalNeeded=="Dean Level" || cds.OfferedCourseDeliverable.Deliverable.HighestApprovalNeeded == "PRC Level"
                                                                && cds.Submission.Status == (isApproved ? "Dean Level Approved" : "Faculty Level Approved"))
                                                 .Select(x => new
                                                 {

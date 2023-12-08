@@ -56,7 +56,7 @@ export default function ViewIssue({ toViewIssue }) {
             <DashBoardHeading title="Details" classname="!py-2" desc="" />
             {/* <input type="text" value={toViewIssue.issueId} name="issueId" hidden {...register('issueId', {required: true})} /> */}
             <Stack className="!absolute right-0 top-[-4px] uppercase !text-sm hover:!text-red-400 !text-red-600 font-bold ">
-                {userRole === "Faculty" && <ConfirmDialogIssue issueId={toViewIssue.issueId} />}
+                {userRole !== "Student" && <ConfirmDialogIssue issueId={toViewIssue.issueId} />}
             </Stack>
             {/* <IconButton type="submit" className="!absolute right-0 top-[-4px] uppercase !text-sm hover:!text-red-400 !text-red-600 font-bold " size="small">Close&nbsp; issue</IconButton> */}
             <Stack className="border shadow-sm h-64 overflow-y-auto rounded-md gap-2">

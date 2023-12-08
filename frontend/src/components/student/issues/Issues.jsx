@@ -40,14 +40,14 @@ export default function Issues({ submissionId, issues }) {
       <Stack className="my-4">
         {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setToAddNewSubmissoion(true)} className="  !flex self-end">{submissionId ? 'Add new version':'Add submission'}</Button>}
         <Stack className="!flex-row justify-between">
-          {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenAddIssue(true)} className="  !flex self-end">Add Issue</Button>}
+          <Button variant="outlined" size="small" onClick={() => setOpenAddIssue(true)} className=" !text-red-500 !border-red-500 !flex self-end">Add Issue</Button>
           {/* {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenApproval(true)} className="  !flex self-end">Aprrove submission</Button>} */}
-          {userRole === "Faculty" && <FacultyApprovalDialog/>}
+          <FacultyApprovalDialog issues={issues}/>
         </Stack>
       </Stack>
       <Stack className="!flex-row justify-between items-center">
         <Typography className="!text-lg">Issues</Typography>
-        <Button onClick={viewAllClosedIssues} className="!text-sm"> {allClosedIssuefetch ? 'Open':'Closed'}</Button>
+        <Button onClick={viewAllClosedIssues} className="!text-sm !text-slate-500"> {allClosedIssuefetch ? 'Show Open':'Show Closed'}</Button>
       </Stack>
       <Stack className="border shadow-sm max-h-64 overflow-y-auto rounded-md">
         {!allClosedIssuefetch && issues.length > 0 && issues.map((issue, index) => (

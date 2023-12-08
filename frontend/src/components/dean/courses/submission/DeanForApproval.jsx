@@ -1,12 +1,10 @@
 /* eslint-disable react/prop-types */
 import { RemoveRedEyeTwoTone } from '@mui/icons-material'
 import { TableBody, TableCell, TableHead, TableRow } from '@mui/material'
-import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import DynamicTable from '../../../reusable/DynamicTable'
 
 export default function DeanForApproval({ unApprovedFiles }) {
-    useEffect(() => { console.log(unApprovedFiles) }, [])
     return (
         <DynamicTable>
             <TableHead>
@@ -31,8 +29,7 @@ export default function DeanForApproval({ unApprovedFiles }) {
                             </NavLink>
                         </TableCell>
                     </TableRow>
-                )) : (<TableRow colSpan="4">No files have been submitted</TableRow>)
-
+                )) : (<TableRow><TableCell colSpan={4}>No files needed for approval</TableCell></TableRow>)
                 }
             </TableBody>
         </DynamicTable>

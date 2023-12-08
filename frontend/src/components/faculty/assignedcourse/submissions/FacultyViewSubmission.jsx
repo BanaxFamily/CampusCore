@@ -17,7 +17,7 @@ import Issues from "../../../student/issues/Issues";
 
 export default function FacultyViewSubmission() {
     let { deliverableName, offeredCourseDeliverableId, submissionId, courseName } = useParams()
-    const { userId,userRole } = useAuth()
+    const { userId, userRole } = useAuth()
     // eslint-disable-next-line no-unused-vars
     const [submittedFiles, setSubmittedFiles] = useState([])
     // eslint-disable-next-line no-unused-vars
@@ -42,6 +42,14 @@ export default function FacultyViewSubmission() {
         }, {
             url: '../',
             name: deliverableName
+        }, {
+            name: 'View'
+        }
+    ]
+    const breadCrumbUrlDean = [
+        {
+            url: '../',
+            name: 'Submission List'
         }, {
             name: 'View'
         }
@@ -79,10 +87,9 @@ export default function FacultyViewSubmission() {
     }, [])
     return (
         <Stack className="h-full">
-            {userRole !== "Dean" && <BackNav>
-                <BreadCrumb data={breadCrumbUrl} />
+            <BackNav>
+                <BreadCrumb data={userRole === "Dean" ? breadCrumbUrlDean:breadCrumbUrl} />
             </BackNav>
-            }
             <Stack className="my-4">
                 <Divider className="!bg-black" />
             </Stack>

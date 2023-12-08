@@ -5,7 +5,7 @@ import { useState } from "react";
 import FacultyApprovalPasswordConfirmation from "./FacultyApprovalPasswordConfirmation";
 
 
-export default function FacultyApprovalDialog() {
+export default function FacultyApprovalDialog({issues}) {
     // const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [openModal, setOpenModal] = useState(false);
@@ -17,26 +17,26 @@ export default function FacultyApprovalDialog() {
 
     return (
         <>
-            <Button type="submit" size="small" onClick={handleClickOpen}>
+            <Button type="submit" size="small" variant="contained" onClick={handleClickOpen}>
                 {/* <Delete fontSize="inherit" className="group-hover:!text-black text-red-400" /> */}
-                <Typography className="!text-md underline hover:!text-blue-300">Approval</Typography>
+                <Typography className="!text-md hover:!text-blue-300">Approved</Typography>
             </Button>
             <Dialog
                 open={open}
             // onClose={handleClose}
             >
                 <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-                    Are you sure you want to delete this deliverable?
+                    <Typography className="!text-lg">{issues.length > 0 ? "Resolved issues before approving!":"Do you want to proceed ?"}</Typography>
                 </DialogTitle>
                 <DialogActions>
-                    <Button autoFocus >
-                        Cancel
+                    <Button size="small" autoFocus onClick={() => setOpen(false)} >
+                    {issues.length > 0 ? "Okay":"Cancel"}
                     </Button>
                     {/* onClick={removeCourseDeliverable} */}
-                    <Button variant='contained' onClick={() => {
+                    {issues.length < 1 && <Button size="small" variant='contained' onClick={() => {
                         setOpenModal(true)
                         setOpen(false)
-                    }}>Yes</Button>
+                    }}>Yes</Button>}
                 </DialogActions>
             </Dialog>
 

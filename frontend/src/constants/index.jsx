@@ -1,4 +1,4 @@
-import { BarChart, Book, Dashboard, DeveloperBoard, Groups, Home, LocalPostOffice, People, Settings, Storage } from "@mui/icons-material";
+import { BarChart, Book, Dashboard, DeveloperBoard, Home, LocalPostOffice, People, Settings, Storage } from "@mui/icons-material";
 import { BiRightArrowAlt } from "react-icons/bi";
 
 export const studentLinks = [
@@ -127,12 +127,12 @@ export const deanLink = [
     title: "Offered courses",
     icon: <LocalPostOffice />,
   },
-  {
-    id: "groups",
-    link: "/student-groups",
-    title: "Manage student groups",
-    icon: <Groups />,
-  },
+  // {
+  //   id: "groups",
+  //   link: "/student-groups",
+  //   title: "Manage student groups",
+  //   icon: <Groups />,
+  // },
   {
     id: "setting",
     link: "/settings",
