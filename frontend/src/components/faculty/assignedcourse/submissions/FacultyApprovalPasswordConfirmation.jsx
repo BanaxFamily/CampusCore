@@ -48,7 +48,7 @@ export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
       width="md:w-[25rem]"
     >
       <form action="" onSubmit={handleSubmit(attachApproval)}>
-        {message && <Alert severity="error">{message}</Alert>}
+        <Alert severity="error" className="mb-2"> Attach digital signature!!!</Alert>
         <input type="text" value={userId} name='userId' hidden {...register('userId', { required: true })} />
         <input type="text" value={userRole} name='role' hidden {...register('role', { required: true })} />
         <input type="text" value={submissionId} name='submissionId' hidden {...register('submissionId', { required: true })} />
