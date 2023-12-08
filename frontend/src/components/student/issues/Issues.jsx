@@ -1,19 +1,19 @@
 /* eslint-disable react/prop-types */
+import { MoreHoriz } from "@mui/icons-material";
 import { Alert, Button, Divider, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import ViewIssue from "./ViewIssue";
+import * as IssueApi from "../../../network/issue_api";
 import { useAuth } from "../../../utils/AuthContext";
-import FacultyApprovalModal from "../../faculty/assignedcourse/submissions/FacultyApprovalModal";
-import AddDeliverableModal from "../courses/deliverable/AddDeliverableModal";
-import { MoreHoriz } from "@mui/icons-material";
-import * as IssueApi from "../../../network/issue_api"
 import AddIssueModal from "../../dean/courses/AddIssueModal";
+import FacultyApprovalDialog from "../../faculty/assignedcourse/submissions/FacultyApprovalDialog";
+import AddDeliverableModal from "../courses/deliverable/AddDeliverableModal";
+import ViewIssue from "./ViewIssue";
 
 export default function Issues({ submissionId, issues }) {
 
   const { userRole } = useAuth()
   const [openSubmission, setOpenSubmission] = useState(false);
-  const [openApproval, setOpenApproval] = useState(false);
+  // const [openApproval, setOpenApproval] = useState(false);
   const [addNewSubmission, setToAddNewSubmissoion] = useState(false);
   const [toViewIssue, setToViewIssue] = useState([]);
   const [allClosedIssues, setAllClosedIssues] = useState([]);
@@ -41,7 +41,8 @@ export default function Issues({ submissionId, issues }) {
         {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setToAddNewSubmissoion(true)} className="  !flex self-end">Add submission</Button>}
         <Stack className="!flex-row justify-between">
           {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenAddIssue(true)} className="  !flex self-end">Add Issue</Button>}
-          {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenApproval(true)} className="  !flex self-end">Aprrove submission</Button>}
+          {/* {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenApproval(true)} className="  !flex self-end">Aprrove submission</Button>} */}
+          {userRole === "Faculty" && <FacultyApprovalDialog/>}
         </Stack>
       </Stack>
       <Stack className="!flex-row justify-between items-center">
@@ -90,7 +91,7 @@ export default function Issues({ submissionId, issues }) {
       {openAddIssue && <AddIssueModal onDismiss={() => setOpenAddIssue(false)} submissionId={submissionId} />}
       {openSubmission && <ViewIssue toViewIssue={toViewIssue} />}
       {addNewSubmission && <AddDeliverableModal onDismiss={() => setToAddNewSubmissoion(false)} submissionId={submissionId} issues={issues} />}
-      {openApproval && userRole === "Faculty" && <FacultyApprovalModal onDismiss={() => setOpenApproval(false)} />}
+      {/* {openApproval && userRole === "Faculty" && <FacultyApprovalModal onDismiss={() => setOpenApproval(false)} />} */}
     </>
   )
 }

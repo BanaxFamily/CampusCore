@@ -70,9 +70,9 @@ export default function ViewSpecificDeliverable() {
             try {
                 const response = await Submission.getSubmissionList(data)
                 if (response.isSuccess) {
-                    setSubmittedFiles(response.data)
-                    setSubmissionId(response.data[0].submissionId)
                     if (response.data.length > 0) {
+                        setSubmittedFiles(response.data)
+                        setSubmissionId(response.data[0].submissionId)
                         // Get the base64 file or image
                         const file = await SubmissionApi.getLatestVerionOfFile({ "id": response.data[0].submissionId })
                         setFileBase64(file.data.fileB64)
@@ -83,8 +83,8 @@ export default function ViewSpecificDeliverable() {
                             "filter": "open"
                         })
                         setAllIssues(issues.data)
+                        return
                     }
-                    return
                 }
             } catch (error) {
                 console.error(error)
@@ -97,9 +97,9 @@ export default function ViewSpecificDeliverable() {
         getSpecificDeliverable()
     }, [])
 
-    async function getAllSubmittedVersions(){
+    async function getAllSubmittedVersions() {
         try {
-            const response = await SubmissionApi.getAllSubmissionVersions({'id': submissionId})
+            const response = await SubmissionApi.getAllSubmissionVersions({ 'id': submissionId })
             setAllSubmittedVersions(response.data)
         } catch (error) {
             console.error(error)
@@ -134,7 +134,7 @@ export default function ViewSpecificDeliverable() {
                             <Button size="small" onClick={getAllSubmittedVersions} className="!text-sm"> submission history</Button>
                         </Stack>
                         {!showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} fileBase64={fileBase64} fileType={fileType} />}
-                        {showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} allSubmittedVersions={allSubmittedVersions}/>}
+                        {showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} allSubmittedVersions={allSubmittedVersions} />}
                     </Stack>
                 </Stack>
                 <Stack className="px-4 pt-2 flex-grow">

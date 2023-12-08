@@ -93,10 +93,10 @@ export default function App() {
             <>
               <Route path={`manage/course`} loader={async () => { return CourseApi.viewCourse(); }} element={<ManageCourse />} />
               <Route path={`manage/user`} loader={async () => { return UserApi.viewUser(); }} element={<ManageUsers />} />
-              <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
+              {/* <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
                 <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
                 <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
-              </Route>
+              </Route> */}
               <Route path={`manage/repository/*`} element={<ManageRepo />} />
               <Route path={`reports`} element={<GenerateReport />}></Route>
             </>

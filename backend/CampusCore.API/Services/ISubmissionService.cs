@@ -529,17 +529,17 @@ namespace CampusCore.API.Services
                     Errors = new List<string>() { "Invalid password inputted" }
                 };
             }
-            var generatedPrivateKey = KeyGeneratorStorage.GeneratePrivateKey(model.Password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
+            /*var generatedPrivateKey = KeyGeneratorStorage.GeneratePrivateKey(model.Password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
 
             var encryptGeneratedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(generatedPrivateKey, encryption.Key, encryption.Iv);
-            var storedEncryptedPrivateKey = user.EncryptedPrivateKey;
+            
 
+*/
+            /* if (encryptGeneratedPrivateKey == storedEncryptedPrivateKey)
+             {*/
+            var digitalSignature = user.EncryptedPrivateKey;
 
-            if (encryptGeneratedPrivateKey == storedEncryptedPrivateKey)
-            {
-
-                
-                switch (model.Role)
+            switch (model.Role)
                 {
                     case "Faculty":
                         var facultyApproval = new Approval
@@ -548,7 +548,7 @@ namespace CampusCore.API.Services
                             ApproverRole = model.Role,
                             Level = "Faculty Level",
                             ApprovalDate = DateTime.Now,
-                            digitalSignature = encryptGeneratedPrivateKey
+                            digitalSignature = digitalSignature
                         };
                         _context.Approvals.Add(facultyApproval);
                         var fresult = await _context.SaveChangesAsync();
@@ -569,7 +569,7 @@ namespace CampusCore.API.Services
                             ApproverRole = model.Role,
                             Level = "Dean Level",
                             ApprovalDate = DateTime.Now,
-                            digitalSignature = encryptGeneratedPrivateKey
+                            digitalSignature = digitalSignature
                         };
                         _context.Add(deanApproval);
                         var dresult = await _context.SaveChangesAsync();
@@ -590,7 +590,7 @@ namespace CampusCore.API.Services
                             ApproverRole = model.Role,
                             Level = "PRC Level",
                             ApprovalDate = DateTime.Now,
-                            digitalSignature = encryptGeneratedPrivateKey
+                            digitalSignature = digitalSignature
                         };
                         _context.Add(prcApproval); 
                         var presult = await _context.SaveChangesAsync();
@@ -627,18 +627,18 @@ namespace CampusCore.API.Services
                     IsSuccess = false,
                     Errors = new List<string>() { "Error updating submission in DB" }
                 };
-            }
-            else
-            {
-                return new ErrorResponseManager
-                {
-                    Message = "Error attaching digital signature",
-                    IsSuccess = false,
-                    Errors = new List<string>() { "Digital signature invalid" }
-                };
-            }
+            /* }
+             else
+             {
+                 return new ErrorResponseManager
+                 {
+                     Message = "Error attaching digital signature",
+                     IsSuccess = false,
+                     Errors = new List<string>() { "Digital signature invalid" }
+                 };
+             }*/
         }
-        
+
 
         public async Task<ResponseManager> FirstSubmission(FirstSubmissionViewModel model)
         {
@@ -945,21 +945,21 @@ namespace CampusCore.API.Services
                     Errors = new List<string>() { "Invalid password inputted" }
                 };
             }
-            var generatedPrivateKey = KeyGeneratorStorage.GeneratePrivateKey(model.Password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
+            /*var generatedPrivateKey = KeyGeneratorStorage.GeneratePrivateKey(model.Password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
 
-            var encryptGeneratedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(generatedPrivateKey, encryption.Key, encryption.Iv);
+            var encryptGeneratedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(generatedPrivateKey, encryption.Key, encryption.Iv);*/
             var storedEncryptedPrivateKey = user.EncryptedPrivateKey;
 
 
-            if (encryptGeneratedPrivateKey == storedEncryptedPrivateKey)
-            {
+            /*if (encryptGeneratedPrivateKey == storedEncryptedPrivateKey)
+            {*/
                 var adviserApproval = new Approval
                 {
                     ApproverId = model.UserId,
                     ApproverRole = "Adviser",
                     Level = "Adviser Level",
                     ApprovalDate = DateTime.Now,
-                    digitalSignature = encryptGeneratedPrivateKey
+                    digitalSignature = storedEncryptedPrivateKey
                 };
                 _context.Add(adviserApproval);
                 var dresult = await _context.SaveChangesAsync();
@@ -992,7 +992,7 @@ namespace CampusCore.API.Services
                     IsSuccess = false,
                     Errors = new List<string>() { "Error updating submission in DB" }
                 };
-            }
+            /*}
             else
             {
                 return new ErrorResponseManager
@@ -1001,7 +1001,7 @@ namespace CampusCore.API.Services
                     IsSuccess = false,
                     Errors = new List<string>() { "Digital signature invalid" }
                 };
-            }
+            }*/
         }
     }
 }

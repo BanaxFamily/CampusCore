@@ -1,8 +1,11 @@
-﻿namespace CampusCore.API.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CampusCore.API.Models
 {
     public class SubmissionApproval
     {
-        public string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public int SubmissionId { get; set; }
         public Submission Submission {  get; set; }
         public int ApprovalId { get; set; }

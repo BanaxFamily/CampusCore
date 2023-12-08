@@ -14,8 +14,8 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
     const navigate = useNavigate()
     const { userId } = useAuth()
     const { register, handleSubmit } = useForm()
-    const [errorMessage, setErrorMessage] = useState("")
-    const [error, setError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(null)
+    const [error, setError] = useState([])
     const [selectedIssues, setSelectedIssues] = useState([]);
     // const [leader, setLeader] = useState("")
 
@@ -32,7 +32,8 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
     async function submitDeliverable(data) {
 
         try {
-            if (submissionId) {
+            console.log("Submission ID", submissionId.length)
+            if (submissionId !== undefined && submissionId.length > 0) {
                 const formData = new FormData()
                 formData.append("submissionId", submissionId)
                 formData.append("file", data.file[0])
@@ -44,9 +45,22 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                 }
                 const response = await Submission.addNewSubmissionDeliverableVersion(formData)
                 if (response.isSuccess) {
-                    navigate(0)
+                    // navigate(0)
                     return
                 }
+                if (!response.ok) {
+                    const data = await response.json();
+                    // Check if there are multiple errors
+                    // Extract values from errors
+                    const errorValues = Object.values(data.errors)
+                        .reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+                    // Set the error state with values
+                    setErrorMessage(errorValues.join(', '));
+                    // console.error('Error : ', [...data.errors]);
+                    // setError(data.errors[0]);
+                    return;
+                }
+
             } else {
                 const formData = new FormData()
                 formData.append("title", data.title)
@@ -60,8 +74,20 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                 }
                 const firstSubmission = await Submission.firstSubmissionDeliverable(formData)
                 if (firstSubmission.isSuccess) {
-                    navigate(0)
+                    // navigate(0)
                     return
+                }
+                if (!firstSubmission.ok) {
+                    const data = await firstSubmission.json();
+                    // Check if there are multiple errors
+                    // Extract values from errors
+                    // const errorValues = Object.values(data.message)
+                    //     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+                    // Set the error state with values
+                    setErrorMessage(data.message);
+                    // console.error('Error : ', [...data.errors]);
+                    // setError(data.errors[0]);
+                    return;
                 }
 
             }
@@ -78,13 +104,14 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
             heading={<DashBoardHeading title="Upload your files here" desc="" />}
             width="md:w-[35rem]"
         >
-            {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
-            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            {/* {error && <Alert severity="error">Something went wrong try again later</Alert>} */}
+            {error && errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <form action="" onSubmit={handleSubmit(submitDeliverable)}>
 
                 <Stack className="w-full items-center mt-2 rounded-md" paddingBottom={4}>
                     <input type="text" value={userId} name="submitterId" hidden  {...register('submitterId')} />
                     <input type="text" value={offeredCourseDeliverableId} name="offeredCourseDeliverableId" hidden  {...register('offeredCourseDeliverableId')} />
+                    {issues.length < 1 &&
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                         <Typography className="w-1/6 ">Title</Typography>
                         <TextField
@@ -96,7 +123,7 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                             name="title"
                             {...register('title')}
                         />
-                    </Stack>
+                    </Stack>}
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
 
                         <Typography className="w-1/6 ">Targeted Issues</Typography>

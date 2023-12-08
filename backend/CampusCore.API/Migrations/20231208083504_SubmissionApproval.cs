@@ -68,7 +68,8 @@ namespace CampusCore.API.Migrations
                 name: "SubmissionApprovals",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     SubmissionId = table.Column<int>(type: "int", nullable: false),
                     ApprovalId = table.Column<int>(type: "int", nullable: false)
                 },

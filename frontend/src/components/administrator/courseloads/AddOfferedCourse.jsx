@@ -22,7 +22,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
     register,
     handleSubmit,
     setValue,
-    reset,
+    // reset,
     formState: { isSubmitting },
   } = useForm();
 
@@ -34,12 +34,9 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
 
   async function onSubmit(credentials) {
     const response = await OfferCourse.addOfferCourse(credentials);
-    if (response.status) {
-      alert(`Error: ${response.status}`);
-    } else {
-      alert("User added successfully!");
-      reset();
+    if (response.isSuccess) {
       navigate(0);
+      return
     }
   }
 

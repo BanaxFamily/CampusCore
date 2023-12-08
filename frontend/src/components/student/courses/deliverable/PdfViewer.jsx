@@ -13,6 +13,7 @@ const PdfViewer = ({ fileBase64, fileType, showAllSubmissions, allSubmittedVersi
                 <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
                     <Viewer fileUrl={`data:application/pdf;base64,${fileBase64}`} />
                 </Worker>)
+                //  : (<img src={`data:application/jpeg;base64,${fileBase64}`} alt="Image" />)
             }
             {showAllSubmissions && allSubmittedVersions.map((version, index) => (
                 <Stack key={index} className="hover:bg-slate-400 px-2 py-1 hover:!text-white cursor-pointer rounded-md">

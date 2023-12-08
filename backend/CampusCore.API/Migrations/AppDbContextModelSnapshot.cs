@@ -605,8 +605,11 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.SubmissionApproval", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApprovalId")
                         .HasColumnType("int");
