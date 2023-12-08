@@ -199,7 +199,7 @@ namespace CampusCore.API.Services
 
                     byte[] fileBytes = File.ReadAllBytes(item.Version.FilePath);
                     var fileB64 = Convert.ToBase64String(fileBytes);
-                    var version = new VersionViewModel
+                    var version = new VersionViewModel  
                     {
                         VersionId = item.VersionId,
                         VersionNumber = item.Version.VersionNumber,

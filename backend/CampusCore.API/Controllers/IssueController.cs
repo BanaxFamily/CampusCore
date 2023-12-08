@@ -135,12 +135,12 @@ namespace CampusCore.API.Controllers
         }
 
         // /api/issue/update
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateAsync([FromBody] IssueUpdateViewModel model)
+        [HttpPut("close")]
+        public async Task<IActionResult> CloseIssueAsync([FromBody]CloseIssueViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _issueService.UpdateIssueAsync(model);
+                var result = await _issueService.CloseIssueAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result); // Status code: 200

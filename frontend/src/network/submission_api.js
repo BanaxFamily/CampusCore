@@ -21,6 +21,16 @@ export async function firstSubmissionDeliverable(data){
     })
     return response
 }
+export async function addNewSubmissionDeliverableVersion(data){
+    const response = await fetchData('api/submission/addNewVersion', {
+        method: "POST",
+        headers: {
+            // "Content-Type": "multipart/form-data",
+        },
+        body:  data
+    })
+    return response
+}
 
 export async function getAllSubmissionVersions(data){
     const response = await fetchData('api/submission/getAllSubmissionVersions', {

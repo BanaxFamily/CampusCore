@@ -16,7 +16,7 @@ import Issues from "../../../student/issues/Issues";
 
 
 export default function FacultyViewSubmission() {
-    let { deliverableName, offeredCourseDeliverableId, submissionId } = useParams()
+    let { deliverableName, offeredCourseDeliverableId, submissionId, courseName } = useParams()
     const { userId } = useAuth()
     // eslint-disable-next-line no-unused-vars
     const [submittedFiles, setSubmittedFiles] = useState([])
@@ -29,15 +29,21 @@ export default function FacultyViewSubmission() {
     const [error, setError] = useState(false)
     const breadCrumbUrl = [
         {
+            url: '../../../../',
+            name: 'Assigned courses',
+        },
+        {
+            url: '../../../',
+            name: courseName
+        },
+        {
             url: '../../',
-            name: 'Enrolled courses',
-        },
-        {
+            name: `Deliverables`
+        }, {
             url: '../',
-            name: `Information`
-        },
-        {
-            name: `View`
+            name: deliverableName
+        }, {
+            name: 'View'
         }
     ]
 

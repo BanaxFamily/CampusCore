@@ -4,12 +4,15 @@ import { useState } from "react";
 import ViewIssue from "./ViewIssue";
 import { useAuth } from "../../../utils/AuthContext";
 import FacultyApprovalModal from "../../faculty/assignedcourse/submissions/FacultyApprovalModal";
+import AddDeliverableModal from "../courses/deliverable/AddDeliverableModal";
+import { MoreHoriz } from "@mui/icons-material";
 
-export default function Issues({ issues }) {
+export default function Issues({ submissionId,issues }) {
   const {userRole} = useAuth()
   const [openSubmission, setOpenSubmission] = useState(false);
+  const [openApproval, setOpenApproval] = useState(false);
+  const [addNewSubmission, setToAddNewSubmissoion] = useState(false);
   const [toViewIssue, setToViewIssue] = useState([]);
-  const [openApproval, setOpenApproval] = useState([]);
 
   function viewSpecificIssue(data){
     setToViewIssue(data)
@@ -19,7 +22,7 @@ export default function Issues({ issues }) {
   return (
     <>
       <Stack className="my-4">
-        {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setOpenSubmission(true)} className="  !flex self-end">Add submission</Button>}
+        {userRole === "Student" && <Button variant="outlined" size="small" onClick={() => setToAddNewSubmissoion(true)} className="  !flex self-end">Add submission</Button>}
         {userRole === "Faculty" && <Button variant="outlined" size="small" onClick={() => setOpenApproval(true)} className="  !flex self-end">Aprrove submission</Button>}
       </Stack>
       <Stack className="!flex-row justify-between items-center">
@@ -37,7 +40,7 @@ export default function Issues({ issues }) {
                   </Stack>
                   <Stack className="!flex-row items-center">
                     {/* <Typography variant="subtitle2">view</Typography> */}
-                    {/* <MoreHoriz /> */}
+                    <MoreHoriz />
                   </Stack>
                 </Stack>
               </Button>
@@ -48,7 +51,8 @@ export default function Issues({ issues }) {
       </Stack>
 
       {openSubmission && <ViewIssue toViewIssue={toViewIssue} />}
-      {userRole === "Faculty" && openApproval && <FacultyApprovalModal  onDismiss={() => setOpenApproval(false)}/>}
+      {addNewSubmission && <AddDeliverableModal submissionId={submissionId} issues={issues}/>}
+      {openApproval && userRole === "Faculty" &&  <FacultyApprovalModal  onDismiss={() => setOpenApproval(false)}/>}
     </>
   )
 }

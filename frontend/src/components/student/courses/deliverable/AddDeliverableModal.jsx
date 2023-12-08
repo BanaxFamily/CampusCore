@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { FileUpload } from "@mui/icons-material";
-import { Alert, Button, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,39 +9,67 @@ import { useAuth } from "../../../../utils/AuthContext";
 import Modal from "../../../administrator/Modal";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
 
-export default function AddDeliverableModal({ onDismiss }) {
+export default function AddDeliverableModal({ issues, submissionId, onDismiss }) {
     let { offeredCourseDeliverableId, groupId } = useParams()
     const navigate = useNavigate()
     const { userId } = useAuth()
     const { register, handleSubmit } = useForm()
     const [errorMessage, setErrorMessage] = useState("")
     const [error, setError] = useState(false)
+    const [selectedIssues, setSelectedIssues] = useState([]);
+    // const [leader, setLeader] = useState("")
+
+
+    function handleCheckboxChange(member) {
+        if (selectedIssues.includes(member)) {
+            setSelectedIssues(selectedIssues.filter((m) => m !== member));
+        } else {
+            setSelectedIssues([...selectedIssues, member]);
+        }
+    }
+
 
     async function submitDeliverable(data) {
-        const formData = new FormData()
-        formData.append("title", data.title)
-        formData.append("submitterId", data.submitterId)
-        formData.append("offeredCourseDeliverableId", data.offeredCourseDeliverableId)
-        formData.append("file", data.file[0])
-        formData.append("fileType", data.FileType)
-        // formData.append("targetedIssues", [1])
-        if (groupId !== "null") {
-            formData.append("groupId", groupId);
-        }
 
         try {
-            const response = await Submission.firstSubmissionDeliverable(formData)
-            console.log(response)
-            if (response.isSuccess) {
-                navigate(0)
+            if (submissionId) {
+                const formData = new FormData()
+                formData.append("submissionId", submissionId)
+                formData.append("file", data.file[0])
+                formData.append("fileType", data.FileType)
+                formData.append("targetedIssues", selectedIssues)
+                console.log('FormData content:');
+                for (let pair of formData.entries()) {
+                    console.log(pair[0] + ', ' + pair[1]);
+                }
+                const response = await Submission.addNewSubmissionDeliverableVersion(formData)
+                console.log(response)
                 return
-            }
+            } else {
+                const formData = new FormData()
+                formData.append("title", data.title)
+                formData.append("submitterId", data.submitterId)
+                formData.append("offeredCourseDeliverableId", data.offeredCourseDeliverableId)
+                formData.append("file", data.file[0])
+                formData.append("fileType", data.FileType)
+                // formData.append("targetedIssues", [1])
+                if (groupId !== "null") {
+                    formData.append("groupId", groupId);
+                }
+                const firstSubmission = await Submission.firstSubmissionDeliverable(formData)
+                console.log(firstSubmission)
 
-            if (!response.ok) {
-                const errorValues = Object.values(data.errors).reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
-                // Set the error state with values
-                setErrorMessage(errorValues.join(', '));
             }
+            // if (response.isSuccess) {
+            //     navigate(0)
+            //     return
+            // }
+
+            // if (!response.ok) {
+            //     const errorValues = Object.values(data.errors).reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
+            //     // Set the error state with values
+            //     setErrorMessage(errorValues.join(', '));
+            // }
         } catch (error) {
             console.error(error)
             setError(true)
@@ -75,7 +103,25 @@ export default function AddDeliverableModal({ onDismiss }) {
                         />
                     </Stack>
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
-                        <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>FileType {" "} </Typography>
+
+                        <Typography className="w-1/6 ">Title</Typography>
+                        <Stack className='border max-h-32 px-2 flex-grow overflow-y-scroll'>
+                            {
+                                issues.map((issue, index) => (
+                                    <Stack key={index}>
+                                        <FormControlLabel
+                                            control={<Checkbox />}
+                                            label={<Typography className="md:!text-md">{issue.issueTitle}</Typography>}
+                                            onChange={() => handleCheckboxChange(issue.issueId)}
+                                        />
+                                    </Stack>
+                                ))
+                            }
+                        </Stack>
+
+                    </Stack>
+                    <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                        <Typography className='w-[20%] 2xl:!text-lg' >FileType {" "} </Typography>
                         <Stack className='w-full'>
                             <TextField
                                 select
