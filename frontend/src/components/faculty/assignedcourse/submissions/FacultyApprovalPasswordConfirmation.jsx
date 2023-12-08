@@ -7,19 +7,21 @@ import Modal from "../../../administrator/Modal";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import { useAuth } from "../../../../utils/AuthContext";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
   const { userRole, userId } = useAuth()
   let { submissionId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const [message, setMessage] = useState([])
   const { register, handleSubmit, formState: { isSubmitting } } = useForm()
 
   async function attachApproval(data) {
     try {
-      const files = await SubmissionApi.getBySubmissionId({"id": submissionId})
-      const approval = await SubmissionApi.addApproval(data)
+      // if(location.pathname.startsWith('/advisory'))
+      const files = await SubmissionApi.getBySubmissionId({ "id": submissionId })
+      const approval =  location.pathname.startsWith('/advisory') ? await SubmissionApi.advisoryApproval( data ) : await SubmissionApi.addApproval(data)
       const requestUpload = await RepoAPi.addRequestUpload({
         "title": files.data.title,
         "submissionId": submissionId,
@@ -39,6 +41,7 @@ export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
     }
 
   }
+
 
 
   return (
