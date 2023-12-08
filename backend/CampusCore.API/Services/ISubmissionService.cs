@@ -338,22 +338,24 @@ namespace CampusCore.API.Services
 
         public async Task<ResponseManager> GetByIdAsync(IntIdViewModel model)
         {
-            var courseDeliverableSubmissionId = model.Id;
+            var submissionId = model.Id;
             try
             {
 
-                var submissions = await _context.CourseDeliverableSubmissions
-                                                .Where(cds => cds.Id == courseDeliverableSubmissionId)
+                var submissions = await _context.SubmissionVersions
+                                                .Where(sv => sv.SubmissionId == submissionId)
+                                                .OrderByDescending(sv=>sv.Version.VersionNumber)
                                                 .Select(x => new
                                                 {
                                                     CourseDeliverableSubmissionId = x.Id,
                                                     SubmissionId = x.Submission.Id,
                                                     Submitter = x.Submission.Submitter.FullName,
+                                                    FilePath = x.Version.FilePath,
                                                     GroupName = x.Submission.Group.Name,
                                                     Title = x.Submission.Title,
                                                     Status = x.Submission.Status
                                                 })
-                                                .ToListAsync();
+                                                .FirstOrDefaultAsync();
 
 
                 return new DataResponseManager
