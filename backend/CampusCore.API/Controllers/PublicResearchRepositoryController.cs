@@ -1,6 +1,7 @@
-﻿/*using CampusCore.API.Services;
+﻿using CampusCore.API.Services;
 using CampusCore.Shared;
 using Microsoft.AspNetCore.Mvc;
+using static CampusCore.Shared.GetSubmissionsForFacultyViewModel;
 
 namespace CampusCore.API.Controllers
 {
@@ -146,9 +147,24 @@ namespace CampusCore.API.Controllers
         }
 
         
+        [HttpPost("viewApprovalCertificate")]
+        public async Task<IActionResult> ViewApprovalCertificate(ApprovalCertificate model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _publicResearchRepositoryService.ViewApprovalCertificate(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); //Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid"); //status code: 400
+        }
+
+
 
 
 
     }
 }
-*/

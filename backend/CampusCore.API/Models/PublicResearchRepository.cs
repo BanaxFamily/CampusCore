@@ -6,7 +6,6 @@ namespace CampusCore.API.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
         public string Authors { get; set; }
         public int? SubmissionId { get; set; } 
         public Submission? Submission { get; set; }

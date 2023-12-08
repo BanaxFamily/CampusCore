@@ -72,6 +72,9 @@ namespace CampusCore.Shared
             public string AdviserId { get; set; }
             public bool IsApproved { get; set; }
         }
-
+        public class ApprovalCertificate
+        {
+            public int SubmissionId { get; set; }
+        }
     }
 }
