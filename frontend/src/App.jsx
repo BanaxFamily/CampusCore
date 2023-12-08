@@ -48,6 +48,7 @@ import { useAuth } from "./utils/AuthContext";
 import PrcApprovedSubmissions from "./components/prc/PrcApprovedSubmissions";
 import SharedRepository from "./components/shared-route/SharedRepository";
 import DeanPublishRequest from "./components/dean/publishrequest/DeanPublishRequest";
+import FacultyAdvisory from "./components/faculty/advisory/FacultyAdvisory";
 
 
 export default function App() {
@@ -148,6 +149,11 @@ export default function App() {
                   </Route>
                 </Route>
               </Route>
+              <Route path="/advisory/*" element={<Layout />} >
+                <Route index element={<FacultyAdvisory />} />
+                <Route path=":submissionId" element={<FacultyViewSubmission />} />
+              </Route>
+
               <Route path="faculty/course-loads/subjects" element={<FinalDeliverables />} />
             </>
           )}

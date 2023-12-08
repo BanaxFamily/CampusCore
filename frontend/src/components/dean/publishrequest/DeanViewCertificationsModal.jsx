@@ -60,7 +60,7 @@ export default function DeanViewCertificationsModal({ onDismiss, submissionIdCer
                                         day: 'numeric',
                                         hour: 'numeric',
                                         minute: 'numeric',
-                                        hour12: true,
+                                        hour12: false,
                                     })}
                                 </Stack>
                             </CardContent>

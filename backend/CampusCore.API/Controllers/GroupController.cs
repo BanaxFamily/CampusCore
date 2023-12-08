@@ -248,7 +248,7 @@ namespace CampusCore.API.Controllers
         public async Task<IActionResult> GetAllAdvisoree(StringIdViewModel model) { 
             if (ModelState.IsValid)
             {
-                var result = await _groupService.GetAllAdvisoree(model);
+                var result = await _groupService.GetAllAdvisoreeSubmissions(model);
 
                 if (result.IsSuccess)
                     return Ok(result); // Status code: 200

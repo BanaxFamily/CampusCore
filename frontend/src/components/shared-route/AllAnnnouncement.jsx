@@ -70,6 +70,7 @@ export default function AllAnnouncement() {
                 const responseAnnouncement = await AnnouncementApi.getAnnouncementByStudent({ id: userId });
                 if (responseAnnouncement.isSuccess) {
                     setSpecificAnnouncement(responseAnnouncement.data);
+
                     const responseComments = await AnnounceComment.viewAnnouncementComments({ id: responseAnnouncement.data[0].announcmentId });
                     if (responseComments.isSuccess) {
                         setSpecificComment(responseComments.data);
@@ -154,7 +155,7 @@ export default function AllAnnouncement() {
                             </Stack>
                         </form>
                     </Stack>
-                )): <Alert severity="info">No Announcements yet</Alert>}
+                )) : <Alert severity="info">No Announcements yet</Alert>}
         </Stack>
     );
 }

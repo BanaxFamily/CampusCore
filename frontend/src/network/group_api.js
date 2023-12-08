@@ -91,3 +91,14 @@ export async function updateDetails(data){
 
     return response;
 }
+export async function getAdvisory(data){
+    const response = await fetchData("api/group/getAllAdvisoree", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}

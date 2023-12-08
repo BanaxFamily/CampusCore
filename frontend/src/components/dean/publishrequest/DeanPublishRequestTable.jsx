@@ -37,7 +37,7 @@ export default function DeanPublishRequestTable({ allRequest }) {
                                     day: 'numeric',
                                     hour: 'numeric',
                                     minute: 'numeric',
-                                    hour12: true,
+                                    hour12: false,
                                 })}
                             </TableCell>
                             <TableCell className=" !text-[13px] 2xl:text-md !text-black border ">
