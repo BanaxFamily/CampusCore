@@ -96,7 +96,7 @@ export default function FacultyViewSubmission() {
                 </Stack>
                 <Stack className="px-4 pt-2 flex-grow">
                     {/* Show all issues */}
-                    <Issues issues={allIssues} />
+                    <Issues submissionId={submissionId} issues={allIssues} />
                 </Stack>
 
             </Stack>

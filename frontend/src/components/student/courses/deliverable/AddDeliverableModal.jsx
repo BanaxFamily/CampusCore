@@ -43,8 +43,10 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                     console.log(pair[0] + ', ' + pair[1]);
                 }
                 const response = await Submission.addNewSubmissionDeliverableVersion(formData)
-                console.log(response)
-                return
+                if (response.isSuccess) {
+                    navigate(0)
+                    return
+                }
             } else {
                 const formData = new FormData()
                 formData.append("title", data.title)
@@ -57,19 +59,12 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                     formData.append("groupId", groupId);
                 }
                 const firstSubmission = await Submission.firstSubmissionDeliverable(formData)
-                console.log(firstSubmission)
+                if (firstSubmission.isSuccess) {
+                    navigate(0)
+                    return
+                }
 
             }
-            // if (response.isSuccess) {
-            //     navigate(0)
-            //     return
-            // }
-
-            // if (!response.ok) {
-            //     const errorValues = Object.values(data.errors).reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
-            //     // Set the error state with values
-            //     setErrorMessage(errorValues.join(', '));
-            // }
         } catch (error) {
             console.error(error)
             setError(true)
@@ -104,7 +99,7 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                     </Stack>
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
 
-                        <Typography className="w-1/6 ">Title</Typography>
+                        <Typography className="w-1/6 ">Targeted Issues</Typography>
                         <Stack className='border max-h-32 px-2 flex-grow overflow-y-scroll'>
                             {
                                 issues.map((issue, index) => (
@@ -121,7 +116,7 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
 
                     </Stack>
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
-                        <Typography className='w-[20%] 2xl:!text-lg' >FileType {" "} </Typography>
+                        <Typography className='w-[20%]' >File type {" "} </Typography>
                         <Stack className='w-full'>
                             <TextField
                                 select
@@ -142,7 +137,7 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                         </Stack>
                     </Stack>
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
-                        <Typography className="w-1/6 ">Resources</Typography>
+                        <Typography className="w-1/6 ">File</Typography>
                         <Button component="label" variant="contained" className="flex flex-grow" startIcon={<FileUpload />}  >
                             <input type="file" {...register('file')} />
                         </Button>

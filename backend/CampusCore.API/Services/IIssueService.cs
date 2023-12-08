@@ -35,9 +35,8 @@ namespace CampusCore.API.Services
             var issue = new Issue
             {
                 Name = model.Name,
-                Status = model.Status,
-                DateOpened = model.DateOpened,
-                DateClosed = model.DateClosed,
+                Status = "open",
+                DateOpened = DateTime.Now,
                 UserId = model.UserId,
 
             };
@@ -167,7 +166,7 @@ namespace CampusCore.API.Services
                 }
             }
 
-            if (model.Filter == "close")
+            if (model.Filter == "closed")
             {
                 try
                 {

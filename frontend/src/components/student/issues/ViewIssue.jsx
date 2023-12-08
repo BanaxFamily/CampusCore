@@ -56,13 +56,13 @@ export default function ViewIssue({ toViewIssue }) {
             <DashBoardHeading title="Details" classname="!py-2" desc="" />
             {/* <input type="text" value={toViewIssue.issueId} name="issueId" hidden {...register('issueId', {required: true})} /> */}
             <Stack className="!absolute right-0 top-[-4px] uppercase !text-sm hover:!text-red-400 !text-red-600 font-bold ">
-                <ConfirmDialogIssue issueId={toViewIssue.issueId} />
+                {userRole === "Faculty" && <ConfirmDialogIssue issueId={toViewIssue.issueId} />}
             </Stack>
             {/* <IconButton type="submit" className="!absolute right-0 top-[-4px] uppercase !text-sm hover:!text-red-400 !text-red-600 font-bold " size="small">Close&nbsp; issue</IconButton> */}
             <Stack className="border shadow-sm h-64 overflow-y-auto rounded-md gap-2">
                 <Stack className="border shadow-sm overflow-y-auto rounded-md gap-2">
-                    {!loading && comments.length <= 0 && userRole === "Student" && <Alert severity="info">There is no comment for issue</Alert>}
-                    {!loading && comments.length <= 0 && userRole === "Faculty" && <Alert severity="info">There is no comment for issue</Alert>}
+                    {!loading && comments.length <= 0 && userRole === "Student" && <Alert severity="info">There is no comment for this issue</Alert>}
+                    {!loading && comments.length <= 0 && userRole === "Faculty" && <Alert severity="info">There is no comment for this issue</Alert>}
                     {!loading && comments.length > 0 &&
                         comments.map((comment, index) => (
                             <Stack className=" h-full " key={index}>

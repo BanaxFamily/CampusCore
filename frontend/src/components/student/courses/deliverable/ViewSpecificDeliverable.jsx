@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Divider, LinearProgress, Stack, Typography } from "@mui/material";
+import { Alert, Button, Divider, LinearProgress, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as OfferedCourseDeliverable from "../../../../network/offeredCourseDeliverable_api";
@@ -29,6 +29,8 @@ export default function ViewSpecificDeliverable() {
     const [fileBase64, setFileBase64] = useState(null)
     const [fileType, setFileType] = useState(null)
     const [error, setError] = useState(false)
+    const [showAllSubmissions, setShowAllSubmission] = useState(false)
+    const [allSubmittedVersions, setAllSubmittedVersions] = useState(false)
     const breadCrumbUrl = [
         {
             url: '../../',
@@ -94,6 +96,16 @@ export default function ViewSpecificDeliverable() {
         getSubmittedFiles()
         getSpecificDeliverable()
     }, [])
+
+    async function getAllSubmittedVersions(){
+        try {
+            const response = await SubmissionApi.getAllSubmissionVersions({'id': submissionId})
+            setAllSubmittedVersions(response.data)
+        } catch (error) {
+            console.error(error)
+        }
+        setShowAllSubmission(!showAllSubmissions)
+    }
     return (
         <Stack className="h-full">
             <BackNav>
@@ -117,13 +129,17 @@ export default function ViewSpecificDeliverable() {
                         </>
                     }
                     <Stack className="w-full h-[500px] gap-2">
-                        <Typography className="!text-lg">Latest submitted file</Typography>
-                        <PdfViewer fileBase64={fileBase64} fileType={fileType} />
+                        <Stack className="!flex-row w-full justify-between ">
+                            <Typography className="!text-lg">Latest submitted file</Typography>
+                            <Button size="small" onClick={getAllSubmittedVersions} className="!text-sm"> submission history</Button>
+                        </Stack>
+                        {!showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} fileBase64={fileBase64} fileType={fileType} />}
+                        {showAllSubmissions && <PdfViewer showAllSubmissions={showAllSubmissions} allSubmittedVersions={allSubmittedVersions}/>}
                     </Stack>
                 </Stack>
                 <Stack className="px-4 pt-2 flex-grow">
                     {/* Show all issues */}
-                    <Issues submissionId={submissionId} issues={allIssues}/>
+                    <Issues submissionId={submissionId} issues={allIssues} />
                 </Stack>
 
             </Stack>
