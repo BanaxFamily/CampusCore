@@ -1,6 +1,7 @@
 ﻿using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
+using static CampusCore.Shared.GetSubmissionsForFacultyViewModel;
 
 namespace CampusCore.API.Services
 {
@@ -17,7 +18,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> AddViewLogAsync(ResearchViewLogAddViewModel model); //add a view log when user opens public research repository
         Task<ResponseManager> GetViewLogsByResearchAsync(IntIdViewModel model); //get view logs of specific research
         Task<ResponseManager> GetViewLogsByUserAsync(StringIdViewModel model); //get list of published research view by the user
-
+        Task<ResponseManager> ViewApprovalCertificate(ApprovalCertificate model);
     }
 
     public class PublicResearchRepositoryService : IPublicResearchRepositoryService
@@ -130,7 +131,6 @@ namespace CampusCore.API.Services
             var publicResearchRepository = new PublicResearchRepository
             {
                 Title = model.Title,
-                Description = model.Description,
                 Authors = authors,
                 SubmissionId = model.SubmissionId,
                 FilePath = filePath,
@@ -174,7 +174,6 @@ namespace CampusCore.API.Services
                     .Select(item => new
                     {
                         Title = item.Title,
-                        Description = item.Description,
                         Authors = item.Authors,
                         FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
                         DateUploaded = item.DateUploaded,
@@ -215,7 +214,6 @@ namespace CampusCore.API.Services
                                             .Select(item => new
                                             {
                                                 Title = item.Title,
-                                                Description = item.Description,
                                                 Authors = item.Authors,
                                                 FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
                                                 DateUploaded = item.DateUploaded,
@@ -258,7 +256,6 @@ namespace CampusCore.API.Services
                                             .Select(item => new
                                             {
                                                 Title = item.Title,
-                                                Description = item.Description,
                                                 Authors = item.Authors,
                                                 FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
                                                 DateUploaded = item.DateUploaded,
@@ -352,7 +349,6 @@ namespace CampusCore.API.Services
                                             .Select(item => new
                                             {
                                                 Title = item.Title,
-                                                Description = item.Description,
                                                 Authors = item.Authors,
                                                 FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
                                                 DateUploaded = item.DateUploaded,
@@ -392,7 +388,6 @@ namespace CampusCore.API.Services
                                             .Select(item => new
                                             {
                                                 Title = item.Title,
-                                                Description = item.Description,
                                                 Authors = item.Authors,
                                                 FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
                                                 DateUploaded = item.DateUploaded,
@@ -602,6 +597,43 @@ namespace CampusCore.API.Services
                     IsSuccess = true,
                     Message = "Research repository retrieved successfully",
                     Data = logsByUser
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching the research repository",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> ViewApprovalCertificate(ApprovalCertificate model)
+        {
+            try
+            {
+                var result = await _context.SubmissionApprovals
+                                            .Where(sa=> sa.SubmissionId == model.SubmissionId)
+                                            .Select( x=> new
+                                            {
+                                                ApproverId = x.Approval.ApproverId,
+                                                ApproverName = x.Approval.Approver.FullName,
+                                                ApproverRole = x.Approval.ApproverRole,
+                                                Level = x.Approval.Level,
+                                                ApprovalDate = x.Approval.ApprovalDate
+
+                                            })
+                                            .ToListAsync();
+
+                
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "Research repository retrieved successfully",
+                    Data = result
                 };
             }
             catch (Exception ex)
