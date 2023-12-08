@@ -1,8 +1,6 @@
-﻿/*using CampusCore.API.Models;
+﻿using CampusCore.API.Models;
 using CampusCore.Shared;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Metrics;
-using System.Net.NetworkInformation;
 
 namespace CampusCore.API.Services
 {
@@ -25,19 +23,49 @@ namespace CampusCore.API.Services
     public class PublicResearchRepositoryService : IPublicResearchRepositoryService
     {
         private AppDbContext _context;
+        private string _uploadPath;
+
         public PublicResearchRepositoryService(AppDbContext context)
         {
             _context = context;
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var goUp = Directory.GetParent(currentDirectory);
+            var goUp2 = Directory.GetParent(goUp.ToString());
+            var basePath = goUp2.ToString();
+
+            // Combine it with the 'Uploads' directory
+            _uploadPath = Path.Combine(basePath.ToString(), "FinalPapers");
+
+            // Check if the directory exists; create it if not
+            if (!Directory.Exists(_uploadPath))
+            {
+                Directory.CreateDirectory(_uploadPath);
+            }
         }
         public async Task<ResponseManager> RequestUploadAsync(PublicResearchRepositoryAddViewModel model)
         {
             if (model == null)
                 throw new NullReferenceException("Register Model is null");
 
-            var submission = await _context.Submissions.FindAsync(model.SubmissionId);
+            var submissionVersion = await _context.SubmissionVersions
+                                           .Include(sv => sv.Submission)
+                                           .Include(sv => sv.Submission.Submitter)
+                                           .Include(sv => sv.Version)
+                                           .Where(sv => sv.SubmissionId == model.SubmissionId)
+                                           .OrderByDescending(sv => sv.Version.VersionNumber)
+                                           .FirstOrDefaultAsync();
+            if (submissionVersion == null)
+            {
+                return new ErrorResponseManager
+                {
+                    Message = "Submission not found",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "Submission version not found in DB" }
+                };
+            }
             //to get authors
             var members = await _context.StudentGroups
-                                        .Where(sg => sg.Id == submission.GroupId)
+                                        .Where(sg => sg.Id == submissionVersion.Submission.GroupId)
                                         .ToListAsync();
             string authors;
             if (members.Any())
@@ -50,18 +78,54 @@ namespace CampusCore.API.Services
                         ResearchId = model.SubmissionId,
                         AuthorId = member.StudentId,
                     });
-                   
+
                 }
             }
             else
             {
-                authors = submission.Submitter.FullName;
+                authors = submissionVersion.Submission.Submitter.FullName;
                 _context.UserPublishedResearch.Add(new UserPublishedResearch
                 {
                     ResearchId = model.SubmissionId,
-                    AuthorId = submission.SubmitterId,
+                    AuthorId = submissionVersion.Submission.SubmitterId,
                 });
             }
+
+            var file = submissionVersion.Version.FilePath;
+            FormFile formFile;
+
+            if (!File.Exists(file))
+            {
+                return new ErrorResponseManager
+                {
+                    Message = "File does not exist",
+                    IsSuccess = false,
+                    Errors = new List<string>() { "The version does not contain a valid file in DB" }
+                };
+            }
+
+            // Read the file into a byte array
+            byte[] fileBytes = File.ReadAllBytes(file);
+
+            // Create a MemoryStream from the byte array
+            using (var stream = new MemoryStream(fileBytes))
+            {
+                // Create an IFormFile instance using the MemoryStream and other necessary parameters
+                formFile = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(file))
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = "application/octet-stream", // Set the appropriate content type
+                };
+            }
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+            var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await formFile.CopyToAsync(fileStream);
+            }
+
 
             var publicResearchRepository = new PublicResearchRepository
             {
@@ -69,8 +133,9 @@ namespace CampusCore.API.Services
                 Description = model.Description,
                 Authors = authors,
                 SubmissionId = model.SubmissionId,
-                FilePath = submissFilePath,
+                FilePath = filePath,
                 DateUploaded = DateTime.Now,
+                Status = "Pending",
             };
 
 
@@ -106,34 +171,28 @@ namespace CampusCore.API.Services
 
                 var searchResults = await _context.ResearchRepository
                     .Where(oc => EF.Functions.Like(oc.Title, $"%{model.SearchKey}%"))
-                    .Include(rr => rr.Submission)
-                    .ToListAsync();
-
-
-                var data = new List<PublicResearchRepositoryListViewModel>();
-                foreach (var item in searchResults)
-                {
-                    var views = _context.ResearchViewLogs
-                                        .Where(r => r.ResearchId == item.Id)
-                                        .Count();
-
-                    data.Add(new PublicResearchRepositoryListViewModel
+                    .Select(item => new
                     {
                         Title = item.Title,
                         Description = item.Description,
                         Authors = item.Authors,
-                        FilePath = item.FilePath,
+                        FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
                         DateUploaded = item.DateUploaded,
-                        DateApproved = item.Submission.DAPRC,
+                        DateApproved = item.DateApproved,
                         Status = item.Status,
-                        ViewCount = views
-                    });
-                }
+                        ViewCount = _context.ResearchViewLogs
+                                    .Where(r => r.ResearchId == item.Id)
+                                    .Count()
+                    })
+                    .ToListAsync();
+
+
+
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = "Searched research repository retrieved successfully",
-                    Data = data
+                    Data = searchResults
                 };
             }
             catch (Exception ex)
@@ -153,28 +212,21 @@ namespace CampusCore.API.Services
             try
             {
                 var result = await _context.ResearchRepository
-                                            .Include(rr => rr.Submission)
-                                            .Include(rr=> rr.Submission.Group)
+                                            .Select(item => new
+                                            {
+                                                Title = item.Title,
+                                                Description = item.Description,
+                                                Authors = item.Authors,
+                                                FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
+                                                DateUploaded = item.DateUploaded,
+                                                DateApproved = item.DateApproved,
+                                                Status = item.Status,
+                                                ViewCount = _context.ResearchViewLogs
+                                    .Where(r => r.ResearchId == item.Id)
+                                    .Count()
+                                            })
                                             .ToListAsync();
-                var data = new List<PublicResearchRepositoryListViewModel>();
-                foreach (var item in result)
-                {
-                    var views = _context.ResearchViewLogs
-                                        .Where(r => r.ResearchId == item.Id)
-                                        .Count();
 
-                    data.Add(new PublicResearchRepositoryListViewModel
-                    {
-                        Title = item.Title,
-                        Description = item.Description,
-                        Authors = item.Authors,
-                        FilePath = item.FilePath,
-                        DateUploaded = item.DateUploaded,
-                        DateApproved = item.Submission.DAPRC,
-                        Status = item.Status,
-                        ViewCount = views
-                    });
-                }
                 return new DataResponseManager
                 {
                     IsSuccess = true,
@@ -202,31 +254,30 @@ namespace CampusCore.API.Services
             try
             {
                 var item = await _context.ResearchRepository
-                                            .Include (rr => rr.Submission)
-                                            .Include(rr => rr.Submission.Group)
                                             .Where(rr => rr.Id == model.Id)
+                                            .Select(item => new
+                                            {
+                                                Title = item.Title,
+                                                Description = item.Description,
+                                                Authors = item.Authors,
+                                                FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
+                                                DateUploaded = item.DateUploaded,
+                                                DateApproved = item.DateApproved,
+                                                Status = item.Status,
+                                                ViewCount = _context.ResearchViewLogs
+                                    .Where(r => r.ResearchId == item.Id)
+                                    .Count()
+                                            })
                                             .FirstOrDefaultAsync();
-                var views = _context.ResearchViewLogs
-                                        .Where(r => r.ResearchId == item.Id)
-                                        .Count();
 
-                var data = new PublicResearchRepositoryListViewModel
-                    {
-                        Title = item.Title,
-                        Description = item.Description,
-                        Authors = item.Authors,
-                        FilePath = item.FilePath,
-                        DateUploaded = item.DateUploaded,
-                        DateApproved = item.Submission.DAPRC,
-                        Status = item.Status,
-                        ViewCount = views
-                    };
-                
+
+
+
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = "Research repository retrieved successfully",
-                    Data = data
+                    Data = item
                 };
             }
             catch (Exception ex)
@@ -291,41 +342,34 @@ namespace CampusCore.API.Services
                 };
             }
         }
-       
+
         public async Task<ResponseManager> ListPublishedAsync()
         {
             try
             {
                 var result = await _context.ResearchRepository
-                                            .Include(rr => rr.Submission)
-                                            .Include(rr => rr.Submission.Group)
                                             .Where(rr => rr.Status == "Published")
+                                            .Select(item => new
+                                            {
+                                                Title = item.Title,
+                                                Description = item.Description,
+                                                Authors = item.Authors,
+                                                FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
+                                                DateUploaded = item.DateUploaded,
+                                                DateApproved = item.DateApproved,
+                                                Status = item.Status,
+                                                ViewCount = _context.ResearchViewLogs
+                                    .Where(r => r.ResearchId == item.Id)
+                                    .Count()
+                                            })
                                             .ToListAsync();
 
-                var data = new List<PublicResearchRepositoryListViewModel>();
-                foreach (var item in result)
-                {
-                    var views = _context.ResearchViewLogs
-                                        .Where(r => r.ResearchId == item.Id)
-                                        .Count();
 
-                    data.Add( new PublicResearchRepositoryListViewModel
-                    {
-                        Title = item.Title,
-                        Description = item.Description,
-                        Authors = item.Authors,
-                        FilePath = item.FilePath,
-                        DateUploaded = item.DateUploaded,
-                        DateApproved = item.Submission.DAPRC,
-                        Status = item.Status,
-                        ViewCount = views
-                    });
-                }
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = "Published research papers retrieved successfully",
-                    Data = data
+                    Data = result
                 };
             }
             catch (Exception ex)
@@ -344,34 +388,28 @@ namespace CampusCore.API.Services
             try
             {
                 var result = await _context.ResearchRepository
-                                            .Include(rr => rr.Submission)
-                                            .Include(rr => rr.Submission.Group)
                                             .Where(rr => rr.Status != "Published")
+                                            .Select(item => new
+                                            {
+                                                Title = item.Title,
+                                                Description = item.Description,
+                                                Authors = item.Authors,
+                                                FileB64 = Convert.ToBase64String(File.ReadAllBytes(item.FilePath)),
+                                                DateUploaded = item.DateUploaded,
+                                                DateApproved = item.DateApproved,
+                                                Status = item.Status,
+                                                ViewCount = _context.ResearchViewLogs
+                                    .Where(r => r.ResearchId == item.Id)
+                                    .Count()
+                                            })
                                             .ToListAsync();
-                var data = new List<PublicResearchRepositoryListViewModel>();
-                foreach (var item in result)
-                {
-                    var views = _context.ResearchViewLogs
-                                        .Where(r => r.ResearchId == item.Id)
-                                        .Count();
 
-                    data.Add(new PublicResearchRepositoryListViewModel
-                    {
-                        Title = item.Title,
-                        Description = item.Description,
-                        Authors = item.Authors,
-                        FilePath = item.FilePath,
-                        DateUploaded = item.DateUploaded,
-                        DateApproved = item.Submission.DAPRC,
-                        Status = item.Status,
-                        ViewCount = views
-                    });
-                }
+
                 return new DataResponseManager
                 {
                     IsSuccess = true,
                     Message = "Research upload request retrieved successfully",
-                    Data = data
+                    Data = result
                 };
             }
             catch (Exception ex)
@@ -390,13 +428,13 @@ namespace CampusCore.API.Services
             try
             {
                 var request = await _context.ResearchRepository.FindAsync(model.RequestId);
-                if(request == null)
+                if (request == null)
                 {
                     return new ErrorResponseManager
                     {
                         IsSuccess = false,
                         Message = "Research upload request not found",
-                        Errors = new List<string> { "Cannot find research upload request in public research repository table"}
+                        Errors = new List<string> { "Cannot find research upload request in public research repository table" }
                     };
                 }
 
@@ -459,7 +497,7 @@ namespace CampusCore.API.Services
                 _context.Add(new ResearchViewLog
                 {
                     ResearchId = model.ResearchId,
-                    UserId  = model.UserId,
+                    UserId = model.UserId,
                     Log = DateTime.Now
                 });
 
@@ -467,7 +505,7 @@ namespace CampusCore.API.Services
                 if (result > 0)
                 {
                     var research = _context.ResearchRepository.FindAsync(model.ResearchId);
-                    
+
                     return new ResponseManager
                     {
                         Message = "View log added",
@@ -479,7 +517,7 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = false,
                     Message = "View log not added",
-                    Errors = new List<string> {"View log is not added in ResearchViewLog table in DB"}
+                    Errors = new List<string> { "View log is not added in ResearchViewLog table in DB" }
                 };
 
 
@@ -543,10 +581,10 @@ namespace CampusCore.API.Services
                 var result = await _context.ResearchViewLogs
                                             .Include(vl => vl.Research)
                                             .Include(vl => vl.User)
-                                            .Where(vl=> vl.UserId == model.Id)
+                                            .Where(vl => vl.UserId == model.Id)
                                             .ToListAsync();
 
-                var logsByUser = new List<ResearchViewLogViewModel> ();
+                var logsByUser = new List<ResearchViewLogViewModel>();
 
                 foreach (var item in result)
                 {
@@ -577,7 +615,6 @@ namespace CampusCore.API.Services
             }
         }
 
-        
+
     }
 }
-*/
