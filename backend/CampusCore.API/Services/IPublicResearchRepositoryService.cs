@@ -66,6 +66,7 @@ namespace CampusCore.API.Services
             }
             //to get authors
             var members = await _context.StudentGroups
+                                        .Include(sg=> sg.Student)
                                         .Where(sg => sg.Id == submissionVersion.Submission.GroupId)
                                         .ToListAsync();
             string authors;
@@ -109,15 +110,14 @@ namespace CampusCore.API.Services
             byte[] fileBytes = File.ReadAllBytes(file);
 
             // Create a MemoryStream from the byte array
-            using (var stream = new MemoryStream(fileBytes))
-            {
-                // Create an IFormFile instance using the MemoryStream and other necessary parameters
-                formFile = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(file))
+            var stream = new MemoryStream(fileBytes);
+            // Create an IFormFile instance using the MemoryStream and other necessary parameters
+            formFile = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(file))
                 {
                     Headers = new HeaderDictionary(),
                     ContentType = "application/octet-stream", // Set the appropriate content type
                 };
-            }
+            
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
             var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path

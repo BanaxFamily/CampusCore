@@ -15,7 +15,7 @@ namespace CampusCore.API.Models
         public string Status { get; set; }
 
         [ForeignKey("UserId")]
-        public string ApproverId { get; set; }
-        public string Approver {  get; set; }
+        public string? ApproverId { get; set; }
+        public User Approver {  get; set; }
     }
 }
