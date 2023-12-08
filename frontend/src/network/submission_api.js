@@ -113,6 +113,16 @@ export async function getLatestVerionOfFile(data){
     })
     return response
 }
+export async function advisoryApproval(data){
+    const response = await fetchData('api/submission/adviserApprove', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    return response
+}
 
 
 export async function getFacultyAllDeliverableByOfferedDeliverable(data){
