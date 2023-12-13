@@ -78,7 +78,7 @@ export default function FacultyModalDeadline({ onDismiss, data }) {
                                 ]}>
 
                                     <DemoItem label="Responsive variant">
-                                        <DateTimePicker name="deadline" label="Set deadline" value={dayjs(data.deliverableDeadline)} onChange={(date) => {setValue('deadline', date, { shouldValidate: true });}} />
+                                        <DateTimePicker name="deadline" label="Set deadline" value={dayjs(data.deliverableDeadline)} onChange={(date) => {setValue('deadline', date, { shouldValidate: true });}} disablePast/>
                                     </DemoItem>
                                 </DemoContainer>
 

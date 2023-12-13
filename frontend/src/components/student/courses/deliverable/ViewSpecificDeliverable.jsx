@@ -116,8 +116,8 @@ export default function ViewSpecificDeliverable() {
             </Stack>
             <DashBoardHeading title={` ${deliverableName} `} />
 
-            <Stack className="w-full border-x-2  " direction={'row'}>
-                <Stack className="w-4/6 px-10 border-r-2">
+            <Stack className="w-full border-x-2  !flex-col-reverse md:!flex-row" >
+                <Stack className="md:w-4/6 px-10 border-r-2">
 
                     {loading && <LinearProgress />}
                     {error && <Alert severity="error">Something went wrong. Try again later</Alert>}

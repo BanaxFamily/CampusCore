@@ -6,6 +6,7 @@ import { useParams } from "react-router"
 import DashBoardHeading from "../../../reusable/DashBoardHeading"
 import SpecificCourseLinks from "../SpecificCourseLinks"
 import FacultyGetDeliverables from "./FacultyGetDeliverables"
+import SpecificCourseLinksMobile from "../SpecificCourseLinksMobile"
 
 export default function FacultyDeliverable() {
     let { courseName } = useParams()
@@ -25,6 +26,9 @@ export default function FacultyDeliverable() {
             <Stack direction={'row'}>
                 <Stack className="w-full">
                     <DashBoardHeading title={`Deliverables`} />
+                    <Stack className="md:!hidden border-l ">
+                        <SpecificCourseLinksMobile />
+                    </Stack>
                     <Stack direction={'row'}>
                         <Stack className="w-full " >
                             <FacultyGetDeliverables />

@@ -1,8 +1,8 @@
-import { Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon } from "@mui/material";
+import { NotificationAddSharp, NotificationsSharp } from "@mui/icons-material";
+import { Badge, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, Stack } from "@mui/material";
 import { useState } from "react";
-import logoImg from "../../assets/CAMPUSCORE.png";
-import { LogoutSharp } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import avatar from "../../assets/avatar.jpg";
 
 
 const Logout = () => {
@@ -27,12 +27,17 @@ const Logout = () => {
       >
         <span className="absolute -inset-1.5"></span>
         <span className="sr-only">Open user menu</span>
-        <img
-          className="h-8 w-8 rounded-full"
-          src={logoImg}
-        />
+        <span className="relative">
+          <img
+            className="h-8 w-8 rounded-full"
+            src={avatar}
+          />
+          <Badge color="error" badgeContent={2} className="!absolute top-5">
+            <NotificationsSharp />
+          </Badge>
+        </span>
       </IconButton>
-      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+      {/* <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
         <div
           role="presentation"
           onClick={toggleDrawer(false)}
@@ -42,14 +47,17 @@ const Logout = () => {
             <ListItem>
               <ListItemButton>
                 <ListItemIcon>
-                  <LogoutSharp/>
+                  <NotificationAddSharp/>
                 </ListItemIcon>
-                <Link to="logout">Logout</Link>
+                <Link >Notifications</Link>
               </ListItemButton>
             </ListItem>
           </List>
         </div>
-      </Drawer>
+      </Drawer> */}
+      <Stack>
+
+      </Stack>
     </section>
   );
 };
