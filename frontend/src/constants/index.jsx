@@ -1,4 +1,4 @@
-import { BarChart, Book, CollectionsBookmark, Dashboard, DeveloperBoard, Groups, Home, LocalPostOffice, People, Settings, Storage } from "@mui/icons-material";
+import { BarChart, Book, Dashboard, DeveloperBoard, Group, Home, LocalPostOffice, People, Settings, Storage } from "@mui/icons-material";
 import { BiRightArrowAlt } from "react-icons/bi";
 
 export const studentLinks = [
@@ -10,9 +10,9 @@ export const studentLinks = [
   },
 
   {
-    id: "research",
-    link: "/research",
-    title: "Research repository",
+    id: "repository",
+    link: "/repository",
+    title: "Repository",
     icon: <Storage />,
   },
   {
@@ -51,16 +51,16 @@ export const adminLinks = [
     title: "Course management",
     icon: <Book />,
   },
-  {
-    id: "offeredCourse",
-    link: "/faculty/course-loads/subjects",
-    title: "Offered courses",
-    icon: <CollectionsBookmark />,
-  },
+  // {
+  //   id: "offeredCourse",
+  //   link: "/faculty/course-loads/subjects",
+  //   title: "Offered courses",
+  //   icon: <CollectionsBookmark />,
+  // },
 
   {
     id: "repository",
-    link: "manage/repository",
+    link: "/repository",
     title: "Repository",
     icon: <Storage />,
   },
@@ -110,8 +110,8 @@ export const deanLink = [
   },
   {
     id: "course",
-    link: "/courses",
-    title: "Courses",
+    link: "/submissions",
+    title: "Submissions",
     icon: <Book />,
   },
   {
@@ -120,7 +120,12 @@ export const deanLink = [
     title: "Deliverable management",
     icon: <DeveloperBoard />,
   },
-
+  {
+    id: "profile",
+    link: "/publish-request",
+    title: "Publish request",
+    icon: <DeveloperBoard />,
+  },
   {
     id: "repository",
     link: "/faculty/course-loads/subjects",
@@ -128,11 +133,18 @@ export const deanLink = [
     icon: <LocalPostOffice />,
   },
   {
-    id: "groups",
-    link: "/student-groups",
-    title: "Manage student groups",
-    icon: <Groups />,
+    id: "repository",
+    link: "/repository",
+    title: "Repository",
+    icon: <Storage />,
   },
+
+  // {
+  //   id: "groups",
+  //   link: "/student-groups",
+  //   title: "Manage student groups",
+  //   icon: <Groups />,
+  // },
   {
     id: "setting",
     link: "/settings",
@@ -154,6 +166,18 @@ export const facultyLinks = [
     link: "course/assigned",
     title: "Course assigned",
     icon: <Book />,
+  },
+  {
+    id: "courloads",
+    link: "/advisory",
+    title: "Advisory",
+    icon: <Group />,
+  },
+  {
+    id: "repository",
+    link: "/repository",
+    title: "Repository",
+    icon: <Storage />,
   },
   {
     id: "setting",
@@ -185,3 +209,30 @@ export const facultyAsideLinks = [
 ]
 
 
+export const prcLink = [
+  {
+    id: "home",
+    link: "/",
+    title: "Home",
+    icon: <Home />,
+  },
+  {
+    id: "repository",
+    link: "/repository",
+    title: "Repository",
+    icon: <Storage />,
+  },
+  {
+    id: "deliverable",
+    link: "/approval/submission",
+    title: "Approve submissions",
+    icon: <DeveloperBoard />,
+  },
+
+  {
+    id: "setting",
+    link: "/settings",
+    title: "Settings",
+    icon: <Settings />,
+  },
+]

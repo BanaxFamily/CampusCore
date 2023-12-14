@@ -46,7 +46,7 @@ export default function FacultyAnnouncement() {
                         <input type="text" name="offeredCourseId" value={offeredCourseId} {...register('offeredCourseId', { required: "Id is required" })} hidden />
                         <Stack className="gap-2">
                             <Stack className="!flex-row">
-                                <Typography variant="subtitle1" className="!text-[13px] !tracking-wide">Title :</Typography>
+                                <Typography variant="subtitle1" className=" !tracking-wide">Title :</Typography>
                                 <TextField variant="standard" size="small" name="title" className="!px-2" {...register('title', { required: "Title is reqired" })} />
                             </Stack>
                             <Stack>

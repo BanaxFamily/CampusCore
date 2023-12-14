@@ -4,11 +4,11 @@ import { FileUpload } from '@mui/icons-material'
 import { Alert, Button, Stack, TextField, TextareaAutosize, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
+import * as CourseDeliverable from '../../../network/courseDeliverable_api'
+import * as Deliverable from '../../../network/deliverable'
 import Modal from '../../administrator/Modal'
 import DashBoardHeading from '../../reusable/DashBoardHeading'
-import { useNavigate, useParams } from 'react-router-dom'
-import * as Deliverable from '../../../network/deliverable'
-import * as CourseDeliverable from '../../../network/courseDeliverable_api'
 
 export default function AddDeliverable(props) {
     let { courseName, courseId } = useParams()
@@ -37,16 +37,13 @@ export default function AddDeliverable(props) {
     }
     async function addDeliverableToCourse(data) {
         const formData = {
-            'CourseId': courseId,
-            'deliverableId': data,
-            'deliverableDeadline': null
+            'courseId': parseInt(courseId),
+            'deliverableId': data
         }
         try {
 
             const response = await CourseDeliverable.createCourseDeliverable(formData)
-            console.log(response)
-
-            if(response.isSuccess){
+            if (response.isSuccess) {
                 setSuccessMessage(response.message)
                 reset()
                 return
@@ -62,7 +59,17 @@ export default function AddDeliverable(props) {
     }
 
     async function addDeliverable(credentials) {
-        const response = await Deliverable.addDeliverable(credentials);
+        const adjustCredentials = {
+            "name": credentials.name,
+            "instruction": credentials.instruction,
+            "description": credentials.description,
+            "forAdviser": Boolean(credentials.forAdviser),
+            "groupSubmission": Boolean(credentials.groupSubmission),
+            "highestApprovalNeeded": credentials.highestApprovalNeeded
+        }
+        // console.log(adjustCredentials)
+        const response = await Deliverable.addDeliverable(adjustCredentials);
+        console.log(response)
         if (response.isSuccess) {
             const deliverableId = response.data
             addDeliverableToCourse(deliverableId);
@@ -88,7 +95,67 @@ export default function AddDeliverable(props) {
                 </Stack>
                 <form action="" onSubmit={handleSubmit(addDeliverable)}>
 
-                    <Stack className="w-full items-center mt-2 rounded-md" paddingBottom={4}>
+                    <Stack className="w-full items-center mt-2 rounded-md" >
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                            <Stack className='w-1/2 !flex-row'>
+                                <Stack className='w-full'>
+                                    <TextField
+                                        select
+                                        label="For adviser"
+                                        SelectProps={{
+                                            native: true,
+                                        }}
+                                        variant="outlined"
+                                        size='small'
+                                        InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                        name="forAdviser"
+                                        {...register("forAdviser", { required: "select one option" })}
+                                    >
+                                        <option value={true}>Yes</option>
+                                        <option value={false}>No</option>
+                                    </TextField>
+                                </Stack>
+                            </Stack>
+                            <Stack className='w-1/2 !flex-row'>
+                                <Stack className='w-full'>
+                                    <TextField
+                                        select
+                                        label="For group submission "
+                                        SelectProps={{
+                                            native: true,
+                                        }}
+                                        variant="outlined"
+                                        size='small'
+                                        InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                        name="groupSubmission"
+                                        {...register("groupSubmission", { required: "select one option" })}
+                                    >
+                                        <option value={true}>Yes</option>
+                                        <option value={false}>No</option>
+                                    </TextField>
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                            <Typography className="w-1/6 ">Approval</Typography>
+                            <TextField
+                                select
+                                label="Highes approval needed"
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                className="flex flex-grow"
+                                variant="outlined"
+                                size='small'
+                                InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                name="highestApprovalNeeded"
+                                {...register("highestApprovalNeeded", { required: "select one option" })}
+                            >
+                                <option value={'PRC Level'}>PRC Level</option>
+                                <option value={'Dean Level'}>Dean Level</option>
+                                <option value={'Faculty Level'}>Faculty Level</option>
+                            </TextField>
+                        </Stack>
                         <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Title</Typography>
                             <TextField

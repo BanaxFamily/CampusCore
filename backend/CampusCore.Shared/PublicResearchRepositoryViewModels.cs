@@ -11,7 +11,6 @@ namespace CampusCore.Shared
         public string Title { get; set; }
         public int SubmissionId { get; set; } // lacking foreign key from SubmissionTable
         public string FilePath { get; set; }
-        public DateTime DateUploaded { get; set; }
 
     }
 

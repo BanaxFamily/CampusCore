@@ -67,28 +67,91 @@ export default function UpdateDeliverable({ deliverable, onDismiss }) {
                 </Stack>
                 <form action="" onSubmit={handleSubmit(saveUpdateDeliverable)}>
                     <input type="text" hidden name='id' value={deliverable.id} {...register('id')} />
-                    <Stack className="w-full items-center mt-2 rounded-md" paddingBottom={2}>
+                    <Stack className="w-full items-center mt-2 rounded-md" >
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                            <Stack className='w-1/2 !flex-row'>
+                                <Stack className='w-full'>
+                                    <TextField
+                                        select
+                                        label="For adviser"
+                                        SelectProps={{
+                                            native: true,
+                                        }}
+                                        variant="outlined"
+                                        size='small'
+                                        InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                        name="forAdviser"
+                                        value={deliverable.forAdviser}
+                                        {...register("forAdviser", { required: "select one option" })}
+                                    >
+                                        <option value={true}>Yes</option>
+                                        <option value={false}>No</option>
+                                    </TextField>
+                                </Stack>
+                            </Stack>
+                            <Stack className='w-1/2 !flex-row'>
+                                <Stack className='w-full'>
+                                    <TextField
+                                        select
+                                        label="For group submission "
+                                        SelectProps={{
+                                            native: true,
+                                        }}
+                                        variant="outlined"
+                                        size='small'
+                                        InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                        name="groupSubmission"
+                                        value={deliverable.groupSubmission}
+                                        {...register("groupSubmission", { required: "select one option" })}
+                                    >
+                                        <option value={true}>Yes</option>
+                                        <option value={false}>No</option>
+                                    </TextField>
+                                </Stack>
+                            </Stack>
+                        </Stack>
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                            <Typography className="w-1/6 ">Approval</Typography>
+                            <TextField
+                                select
+                                label="Highes approval needed"
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                className="flex flex-grow"
+                                variant="outlined"
+                                size='small'
+                                InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                name="highestApprovalNeeded"
+                                defaultValue={deliverable.highestApprovalNeeded}
+                                {...register("highestApprovalNeeded", { required: "select one option" })}
+                            >
+                                <option value={'PRC Level'}>PRC Level</option>
+                                <option value={'Dean Level'}>Dean Level</option>
+                                <option value={'Faculty Level'}>Faculty Level</option>
+                            </TextField>
+                        </Stack>
                         <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Title</Typography>
                             <TextField
-                                variant="standard"
+                                variant="outlined"
+                                label="Title"
                                 size="small"
                                 className="flex flex-grow"
                                 name="name"
                                 defaultValue={deliverable.name}
-                                {...register('name')}
-                            />
+                                {...register('name')} />
                         </Stack>
                         <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 " >Description</Typography>
                             <TextField
-                                variant="standard"
+                                variant="outlined"
+                                label="Description"
                                 size="small"
                                 className="flex flex-grow"
                                 name="description"
                                 defaultValue={deliverable.description}
-                                {...register('description')}
-                            />
+                                {...register('description')} />
                         </Stack>
                         <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
                             <Typography className="w-1/6 ">Instructions</Typography>
@@ -96,14 +159,14 @@ export default function UpdateDeliverable({ deliverable, onDismiss }) {
                                 aria-label="minimum height"
                                 minRows={3}
                                 placeholder="Instructions"
-                                className="!pl-4 flex flex-grow border-[1.5px] !text-black border-gray-300 rounded-md"
+                                className="!pl-4 flex flex-grow border-[1.5px] border-gray-300 rounded-md"
                                 name="instruction"
                                 defaultValue={deliverable.instruction}
-                                {...register('instruction')}
-                            />
+                                {...register('instruction')} />
                         </Stack>
-                        <Stack className="w-full">
-                            <Button disabled={isSubmitting} type="submit" onClick={() => setOpen(true)} variant="outlined" className="flex self-end w-32">Update</Button>
+
+                        <Stack className="w-full px-2">
+                            <Button type="submit" disabled={isSubmitting} variant="outlined" className="flex self-end w-32">Add</Button>
                         </Stack>
                     </Stack>
 

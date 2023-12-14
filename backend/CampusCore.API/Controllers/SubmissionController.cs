@@ -93,7 +93,7 @@ namespace CampusCore.API.Controllers
         //POST
         //GetByIdAsync(IntIdViewModel model);
         //api/submission/getById
-        [HttpPut("getById")]
+        [HttpPost("getById")]
         //Authorize(Roles = "Dean")]
         public async Task<IActionResult> GetByIdAsync([FromBody] IntIdViewModel model)
         {

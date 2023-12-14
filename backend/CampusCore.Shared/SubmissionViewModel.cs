@@ -58,7 +58,7 @@ namespace CampusCore.Shared
 
         public class GetSubmissionsForDeanViewModel
         {
-            public int CourseId { get; set; }
+           
             public bool IsApproved { get; set; }
         }
 

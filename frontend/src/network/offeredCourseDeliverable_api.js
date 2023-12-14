@@ -11,6 +11,7 @@ export async function getFacultyOfferedCourseDeliverables(data){
 
     return response
 }
+
 export async function getSingleOfferedCourseDeliverable(data){
     const response = await fetchData('api/offeredCourseDeliverable/getById', {
         method: "POST",

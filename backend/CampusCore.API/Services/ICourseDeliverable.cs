@@ -76,6 +76,11 @@ namespace CampusCore.API.Services
                         IsSuccess = true
                     };
                 }
+                return new ResponseManager
+                {
+                    Message = "Course deliverable added successfully and updated existing offered courses!",
+                    IsSuccess = true
+                };
 
             }
 

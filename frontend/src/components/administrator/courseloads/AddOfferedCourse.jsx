@@ -22,7 +22,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
     register,
     handleSubmit,
     setValue,
-    reset,
+    // reset,
     formState: { isSubmitting },
   } = useForm();
 
@@ -34,12 +34,9 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
 
   async function onSubmit(credentials) {
     const response = await OfferCourse.addOfferCourse(credentials);
-    if (response.status) {
-      alert(`Error: ${response.status}`);
-    } else {
-      alert("User added successfully!");
-      reset();
+    if (response.isSuccess) {
       navigate(0);
+      return
     }
   }
 
@@ -60,11 +57,11 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
       <div className="w-full">
         <div className="p-2">
           <div className="flex flex-col sm:flex-row sm:gap-1 overflow-hidden ">
-            <div className="w-full h-32 flex-col sm:h-[400px] overflow-y-auto sm:flex sm:w-1/2 justify-center md:border-r-2 md:gap-[3px]">
+            <div className="w-full h-32 flex-col sm:h-[400px] overflow-y-auto sm:flex sm:w-1/2 md:border-r-2 md:gap-[3px]">
               <p className="text-lg font-semibold">Opened Subjects</p>
-              <List className="text-md">
+              <List >
                 {offeredCourse.map((data, index) => (
-                  <ListItem onClick={() => handleToggle(data)} key={index}>
+                  <ListItem className="!text-[14px] !p-0" onClick={() => handleToggle(data)} key={index}>
                     <Checkbox
                       color="primary"
                       checked={data.id === selectedItem?.id}
@@ -84,8 +81,9 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   id="outline-courseId"
                   name="courseId"
                   label="courseId ID"
-                  variant="filled"
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   value={selectedItem.id || ''}
+                  size="small"
                   style={{ display: "none" }}
                   {...register("courseId", { required: "this si required" })}
                 />
@@ -94,7 +92,8 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   required
                   id="outlined-required"
                   label="Course"
-                  variant="filled"
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                  size="small"
                   value={selectedItem.name || ''}
 
                 />
@@ -108,8 +107,10 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                     native: true,
                   }}
                   required
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   variant="outlined"
                   name="sem"
+                  size="small"
                   {...register("sem", { required: "select one option" })}
                 >
                   <option value=""></option>
@@ -122,8 +123,9 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   required
                   id="outline-year"
                   name="acadYear"
+                  size="small"
                   label="Year"
-                  variant="filled"
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("acadYear", { required: "this is required" })}
 
                 // value={selectedItem.name || ''}
@@ -134,7 +136,8 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   id="outline-schedule"
                   name="schedule"
                   label="Schedule"
-                  variant="filled"
+                  size="small"
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   {...register("schedule", { required: "this si required" })}
 
                 />
@@ -146,7 +149,8 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
                   SelectProps={{
                     native: true,
                   }}
-                  variant="filled"
+                  size="small"
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
                   helperText="Please select a proffesor to handle this subject"
                   name="facultyId"
                   {...register("facultyId", { required: "select one option" })}

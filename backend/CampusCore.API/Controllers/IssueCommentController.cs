@@ -33,7 +33,7 @@ namespace CampusCore.API.Controllers
 
         // /api/issueComment/viewList
         //insert method here
-        [HttpGet("getCommentsForIssue")]
+        [HttpPost("getCommentsForIssue")]
         public async Task<IActionResult> GetIssueCommentsForIssue(GetIssueCommentViewModel model)
         {
             if (ModelState.IsValid)

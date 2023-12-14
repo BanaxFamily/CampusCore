@@ -169,14 +169,13 @@ namespace CampusCore.API.Services
 
                 if (role != null)
                 {
-                    var announcements = new List<Announcement>();
+                    var announcements = new List<object>();
 
                     if (role == "Faculty")
                     {
                         var courseLoads = await _context.OfferedCourses
-                                              .Include(oc => oc.Course)
-                                              .Include(oc => oc.FacultyAssigned)
                                               .Where(oc => oc.FacultyId == userId)
+                                             
                                               .ToListAsync();
 
                         if (courseLoads.Count > 0)
@@ -185,6 +184,16 @@ namespace CampusCore.API.Services
                             {
                                 var result = await _context.Announcements
                                             .Where(a => a.OfferedCourseId == item.Id)
+                                             .Select(x => new
+                                             {
+                                                 AnnouncmentId =  x.Id,
+                                                 ForOfferedCourse = x.OfferedCourse.Course.Name,
+                                                 PosterId = x.UserId,
+                                                 PosterName= x.User.FullName,
+                                                 AnnouncementTitle = x.Title,
+                                                 AnnouncementContent = x.Content
+
+                                             })
                                             .ToListAsync();
 
                                 announcements.AddRange(result);
@@ -213,7 +222,17 @@ namespace CampusCore.API.Services
                             foreach (var item in courseLoads)
                             {
                                 var result = await _context.Announcements
-                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .Where(a => a.OfferedCourseId == item.OfferedCourseId)
+                                             .Select(x => new
+                                             {
+                                                 AnnouncmentId = x.Id,
+                                                 ForOfferedCourse = x.OfferedCourse.Course.Name,
+                                                 PosterId = x.UserId,
+                                                 PosterName = x.User.FullName,
+                                                 AnnouncementTitle = x.Title,
+                                                 AnnouncementContent = x.Content
+
+                                             })
                                             .ToListAsync();
 
                                 announcements.AddRange(result);
@@ -242,7 +261,17 @@ namespace CampusCore.API.Services
                             foreach (var item in enrolledCourses)
                             {
                                 var result = await _context.Announcements
-                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .Where(a => a.OfferedCourseId == item.OfferedCourseId)
+                                             .Select(x => new
+                                             {
+                                                 AnnouncmentId = x.Id,
+                                                 ForOfferedCourse = x.OfferedCourse.Course.Name,
+                                                 PosterId = x.UserId,
+                                                 PosterName = x.User.FullName,
+                                                 AnnouncementTitle = x.Title,
+                                                 AnnouncementContent = x.Content
+
+                                             })
                                             .ToListAsync();
 
                                 announcements.AddRange(result);
@@ -271,9 +300,17 @@ namespace CampusCore.API.Services
                             foreach (var item in courseLoads)
                             {
                                 var result = await _context.Announcements
-                                            .Include(a => a.User)
-                                            .Include(a => a.OfferedCourse)
-                                            .Where(a => a.OfferedCourseId == item.Id)
+                                            .Where(a => a.OfferedCourseId == item.OfferedCourseId)
+                                             .Select(x => new
+                                             {
+                                                 AnnouncmentId = x.Id,
+                                                 ForOfferedCourse = x.OfferedCourse.Course.Name,
+                                                 PosterId = x.UserId,
+                                                 PosterName = x.User.FullName,
+                                                 AnnouncementTitle = x.Title,
+                                                 AnnouncementContent = x.Content
+
+                                             })
                                             .ToListAsync();
 
                                 announcements.AddRange(result);

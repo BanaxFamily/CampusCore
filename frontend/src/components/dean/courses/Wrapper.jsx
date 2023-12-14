@@ -16,6 +16,8 @@ export default function Wrapper() {
         const response = await OfferedCourse.viewAllOfferedCourse()
         if (response.isSuccess) {
           setCourses(response.data)
+          console.log(response.data)
+          return
         }
       } catch (error) {
         console.error(error)
@@ -28,9 +30,6 @@ export default function Wrapper() {
     getOfferedCourses()
   }, [])
 
-  // const refresh = () => {
-  //   navigate(0);
-  // }
   return (
 
     <>

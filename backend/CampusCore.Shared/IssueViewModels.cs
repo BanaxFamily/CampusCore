@@ -10,9 +10,6 @@ namespace CampusCore.Shared
     public class IssueAddViewModel
     {
         public string Name { get; set; }
-        public string Status { get; set; }
-        public DateTime DateOpened { get; set; }
-        public DateTime? DateClosed { get; set; }
         public string UserId { get; set; } // Foriegn Key from UserTable
         public int SubmissionId { get; set; }
 
@@ -42,14 +39,9 @@ namespace CampusCore.Shared
     }
 
 
-    public class IssueUpdateViewModel
+    public class CloseIssueViewModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Status { get; set; }
-        public DateTime DateOpened { get; set; }
-        public DateTime? DateClosed { get; set; }
-        public string UserId { get; set; } // Foriegn Key from UserTable
+        public int IssueId { get; set; }
 
     }
 }

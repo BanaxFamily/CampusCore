@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CampusCore.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231208055521_SubmissionApproval")]
-    partial class SubmissionApproval
+    [Migration("20231208164130_updateApproverId")]
+    partial class updateApproverId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -478,13 +478,8 @@ namespace CampusCore.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Approver")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ApproverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Authors")
                         .IsRequired()
@@ -495,10 +490,6 @@ namespace CampusCore.API.Migrations
 
                     b.Property<DateTime>("DateUploaded")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
@@ -516,6 +507,8 @@ namespace CampusCore.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApproverId");
 
                     b.HasIndex("SubmissionId");
 
@@ -607,8 +600,11 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.SubmissionApproval", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApprovalId")
                         .HasColumnType("int");
@@ -1193,9 +1189,15 @@ namespace CampusCore.API.Migrations
 
             modelBuilder.Entity("CampusCore.API.Models.PublicResearchRepository", b =>
                 {
+                    b.HasOne("CampusCore.API.Models.User", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApproverId");
+
                     b.HasOne("CampusCore.API.Models.Submission", "Submission")
                         .WithMany()
                         .HasForeignKey("SubmissionId");
+
+                    b.Navigation("Approver");
 
                     b.Navigation("Submission");
                 });
