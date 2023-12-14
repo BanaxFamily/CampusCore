@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
-import sampleExcel from "../../../assets/tooltip.png"
-import { FileUpload } from "@mui/icons-material";
+import sampleExcel from "../../../assets/tooltip.png";
+import AddUserThroughExcelImport from "./AddUserThroughExcelImport";
 
 export default function AddUserThroughExcelConfirmation() {
     const [showAddUserThroughExcel, setShowAddUserThroughExcel] = useState(false);
+    const [showModalImport, setShowModalImport] = useState(false);
 
     function handleClickOpen() {
         setShowAddUserThroughExcel(!showAddUserThroughExcel)
@@ -56,8 +57,10 @@ export default function AddUserThroughExcelConfirmation() {
                     </Stack>
                 </DialogContent>
                 <DialogActions className="gap-4">
-                    <Button component="label" size="small" className="!text-sm !pr-0" startIcon={<FileUpload />} >
-                        <input type="file" hidden />
+                    <Button component="label" size="small" onClick={() => {
+                        setShowAddUserThroughExcel(false)
+                        setShowModalImport(true)
+                    }} className="!text-sm !pr-0" >
                         Upload file
                     </Button>
                     <Button onClick={handleClickOpen} variant="contained" size="small" className="!text-sm" autoFocus >
@@ -65,6 +68,8 @@ export default function AddUserThroughExcelConfirmation() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {showModalImport && <AddUserThroughExcelImport onDismiss={() => setShowModalImport(false)} />}
         </>
     )
 }

@@ -33,19 +33,19 @@ export default function TableBodyUser(props) {
       <TableCell className={props.className}>{props.user.role}</TableCell>
       <TableCell className="!text-[12px] 2xl:text-[14px] border">
         <IconButton size="small" onClick={props.showModalUpdate}>
-          <Edit size="small" className="text-green-500"  />
+          <Edit size="small" className="text-green-500" />
         </IconButton>
       </TableCell>
       <TableCell className="!text-[12px] 2xl:text-[14px] border">
         <div className=" flex items-center justify-center">
-          <IconButton size="small">
+          <IconButton size="small" onClick={(e) => {
+            props.onDeleteUserCliked(props.user);
+            e.stopPropagation();
+          }}>
             <Delete
               className="text-red-500"
               size="small"
-              onClick={(e) => {
-                props.onDeleteUserCliked(props.user);
-                e.stopPropagation();
-              }}
+
             />
           </IconButton>
         </div>
