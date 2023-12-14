@@ -327,7 +327,7 @@ public class UserService : IUserService
                             var idno = worksheet.Cells[row, 3].Value.ToString();
                             var email = worksheet.Cells[row, 4].Value.ToString();
                             var username = "ccs-" + idno;
-                            var password = lastName + idno.Substring(idno.Length - 4);
+                            var password = lastName + idno.Substring(idno.Length - 4)+"!";
                             var role = worksheet.Cells[row, 5].Value.ToString();
 
                             //digital signature
