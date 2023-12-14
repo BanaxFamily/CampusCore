@@ -7,7 +7,7 @@ import { Header } from "../components/reusable/Header";
 import Route from "../components/reusable/Route";
 import { Status } from "../components/reusable/Status";
 import { useAuth } from "../utils/AuthContext";
-import { Button } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 const ProtectedContainer = (props) => {
   const { userRole, logOutUser } = useAuth()
   const location = useLocation()
@@ -25,7 +25,8 @@ const ProtectedContainer = (props) => {
             <div className="flex sm:flex-col-reverse sm:justify-center md:flex-row">
               <div className="hidden md:block w-full sm:w-[25rem] md:w-[14rem]  mr-2 ">
                 <div className={`hidden fixed 2xl:absolute left-0 w-full bg-mainBlueColor  sm:w-1/2  md:w-[14rem] lg:pr-6 md:block h-screen `}>
-                  <div className=" flex flex-col w-full mt-10 lg:mx-2  ">
+                  <Stack className=" !flex-col w-full mt-6 lg:mx-2  ">
+                    {/* <Typography className="!text-sm !text-center text-white">You are logged in as <span className="text-md font-bold underline underline-offset-4">{userRole}</span> </Typography> */}
                     <Route onDismiss={() => setOpenSideNavigation(!openSideNavigation)} />
                     <div className={`  flex items-center shadow-gray-400 mb-2 p-2 rounded-full  ease-in duration-300 group`}>
                       <NavLink to={'/logout'} onClick={logOutUser} className={'flex flex-row gap-6 w-full md:gap-6 text-[14px] group-hover:text-paleRed text-white'}>
@@ -33,7 +34,7 @@ const ProtectedContainer = (props) => {
                         Logout
                       </NavLink>
                     </div>
-                  </div>
+                  </Stack>
                 </div>
               </div>
               {/* <div className={`w-full ${location.pathname.startsWith('/courses/submission/view/') ? 'md:w-[75%]' : 'md:flex-grow'} px-2 md:px-4 m-0 `} role="main"> */}

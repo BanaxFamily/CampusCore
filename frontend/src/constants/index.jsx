@@ -123,7 +123,7 @@ export const deanLink = [
   {
     id: "profile",
     link: "/publish-request",
-    title: "Publish request",
+    title: "Request for Publication",
     icon: <DeveloperBoard />,
   },
   {
@@ -138,13 +138,6 @@ export const deanLink = [
     title: "Repository",
     icon: <Storage />,
   },
-
-  // {
-  //   id: "groups",
-  //   link: "/student-groups",
-  //   title: "Manage student groups",
-  //   icon: <Groups />,
-  // },
   {
     id: "setting",
     link: "/settings",
