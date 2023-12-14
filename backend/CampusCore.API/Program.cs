@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -151,7 +152,8 @@ using (var scope = app.Services.CreateScope())
 #endregion
 
 
-
+// Set the license context to indicate how you intend to use EPPlus
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 
 
