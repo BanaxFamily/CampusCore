@@ -3,7 +3,7 @@ export async function fetchData(path, header) {
   if (response.status === 200) {
     return response.json();
   }
-  return response
+  return response;
 }
 
 export async function signIn(data) {
@@ -106,6 +106,15 @@ export async function getUserById(key) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(key),
+  });
+
+  return response;
+}
+
+export async function importUserThroughExcel(file) {
+  const response = await fetchData("api/auth/import", {
+    method: "POST",
+    body: file,
   });
 
   return response;

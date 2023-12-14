@@ -11,22 +11,22 @@ export default function FacultyShowDeliverables({ data }) {
 
     return (
         <>
-            {
+            <Stack className="rounded-t-md group">
+                <DynamicTable>
+                    <TableHead>
+                        <TableRow className="bg-slate-300">
+                            <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Deliverable name </TableCell>
+                            <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Description </TableCell>
+                            <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Instruction </TableCell>
+                            <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Date </TableCell>
+                            <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold" align="center"> Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    {
 
-                data.map((info, index) => {
-                    return (
-                        <Stack key={index} className="rounded-t-md group">
-                            <DynamicTable>
-                                <TableHead>
-                                    <TableRow className="bg-slate-300">
-                                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Deliverable name </TableCell>
-                                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Description </TableCell>
-                                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Instruction </TableCell>
-                                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold"> Date </TableCell>
-                                        <TableCell className=" !text-[13px] 2xl:text-md !text-black !font-bold" align="center"> Action</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
+                        data.map((info, index) => {
+                            return (
+                                <TableBody key={index}>
                                     <TableRow>
                                         <TableCell className="!text-[12px] 2xl:text-[14px] border">{info.deliverableTitle}</TableCell>
                                         <TableCell className="!text-[12px] 2xl:text-[14px] border">{info.deliverableDescription}</TableCell>
@@ -39,7 +39,7 @@ export default function FacultyShowDeliverables({ data }) {
                                                 hour: 'numeric',
                                                 minute: 'numeric',
                                                 hour12: true,
-                                            } )}
+                                            })}
                                         </TableCell>
                                         <TableCell className="!text-[12px] 2xl:text-[14px] border !text-center">
                                             <IconButton
@@ -56,11 +56,11 @@ export default function FacultyShowDeliverables({ data }) {
                                     </TableRow>
                                 </TableBody>
 
-                            </DynamicTable>
-                        </Stack>
-                    )
-                })
-            }
+                            )
+                        })
+                    }
+                </DynamicTable>
+            </Stack>
             {showModalDeadline && <FacultyModalDeadline onDismiss={() => setShowModalDeadline(false)} data={deliverableToEdit} />}
         </>
     )

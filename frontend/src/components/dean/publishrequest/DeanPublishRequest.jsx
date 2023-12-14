@@ -23,7 +23,7 @@ export default function DeanPublishRequest() {
     }, [])
     return (
         <Stack>
-            <DashBoardHeading title="Publish request" />
+            <DashBoardHeading title="Request for Publication" />
 
             <Stack className="my-2">
                 {allRequest.length < 1? <Alert severity="info" className="uppercase">No request yet</Alert> : <DeanPublishRequestTable allRequest={allRequest}/>}

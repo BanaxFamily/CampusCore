@@ -3,7 +3,7 @@
 
 import { Button, Stack, TableBody, TableCell, TableHead, TableRow } from "@mui/material"
 import { useEffect, useState } from "react"
-import { NavLink, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import * as GroupApi from "../../../../network/group_api"
 import DynamicTable from "../../../reusable/DynamicTable"
 import FacultyViewGroupMembers from "./FacultyViewGroupMembers"
@@ -20,7 +20,7 @@ export default function FacultyStudentGroupTable() {
         async function showAllGroups() {
             try {
                 const response = await GroupApi.getAllGroupsByCourse({ "id": offeredCourseId })
-                if(response.isSuccess){
+                if (response.isSuccess) {
                     setGroups(response.data)
                     return
                 }
@@ -31,7 +31,7 @@ export default function FacultyStudentGroupTable() {
         showAllGroups()
     }, [])
 
-    function viewMembers(id, name,adviserId){
+    function viewMembers(id, name, adviserId) {
         setViewMembersModal(true)
         setGroupIdToView(id)
         setGroupNameToView(name)
@@ -40,7 +40,6 @@ export default function FacultyStudentGroupTable() {
 
     return (
         <Stack className="mx-auto rounded-t-md group px-2">
-            <NavLink to={'add'} className="border text-[12px] py-1 px-3 hover:bg-blue-400 my-2 tracking-wider rounded-md bg-blue-500 text-white uppercase  flex self-end !mr-4 !mt-2 " size="small">Add group</NavLink>
             <DynamicTable>
                 <TableHead>
                     <TableRow className="bg-slate-300">
@@ -50,19 +49,19 @@ export default function FacultyStudentGroupTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                        {
-                            groups.map((group,index) => (
-                                <TableRow key={index}>
-                                    <TableCell className="!text-[12px] 2xl:text-[14px] border">{group.groupName}</TableCell>
-                                    <TableCell className="!text-[12px] 2xl:text-[14px] border">{group.adviser}</TableCell>
-                                    <TableCell className="!text-[12px] 2xl:text-[14px] border" align="center"> <Button onClick={() => viewMembers(group.groupId,group.groupName, group.adviserId)} size="small" className="!text-sm">view </Button></TableCell>
-                                </TableRow>
-                            ))
-                        }
+                    {
+                        groups.map((group, index) => (
+                            <TableRow key={index}>
+                                <TableCell className="!text-[12px] 2xl:text-[14px] border">{group.groupName}</TableCell>
+                                <TableCell className="!text-[12px] 2xl:text-[14px] border">{group.adviser}</TableCell>
+                                <TableCell className="!text-[12px] 2xl:text-[14px] border" align="center"> <Button onClick={() => viewMembers(group.groupId, group.groupName, group.adviserId)} size="small" className="!text-sm">view </Button></TableCell>
+                            </TableRow>
+                        ))
+                    }
                 </TableBody>
             </DynamicTable>
 
-            {viewMembersModal && <FacultyViewGroupMembers onDismiss={() => setViewMembersModal(false)} groupId={groupIdToView} adviserId={groupAdiverId} groupName={groupNameToView}/>}
+            {viewMembersModal && <FacultyViewGroupMembers onDismiss={() => setViewMembersModal(false)} groupId={groupIdToView} adviserId={groupAdiverId} groupName={groupNameToView} />}
         </Stack>
     )
 }

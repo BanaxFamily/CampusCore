@@ -6,6 +6,7 @@ import BreadCrumb from '../../reusable/BreadCrumb'
 import DashBoardHeading from '../../reusable/DashBoardHeading'
 import SpecificCourseLinks from './SpecificCourseLinks'
 import FacultyAnnouncement from './deliverable/announcement/FacultyAnnouncement'
+import SpecificCourseLinksMobile from './SpecificCourseLinksMobile'
 
 export default function ViewSpecificCourse() {
     let { courseName } = useParams()
@@ -30,11 +31,14 @@ export default function ViewSpecificCourse() {
             <Stack direction={'row'}>
                 <Stack className="w-full">
                     <DashBoardHeading title={`${courseName}`} />
-                    <Stack direction={'row'}>
+                    <Stack className="md:!hidden border-l mb-2">
+                        <SpecificCourseLinksMobile />
+                    </Stack>
+                    <Stack className=" !flex-col-reverse md:!flex-row">
                         <Stack className="w-full " direction={'row'}>
-                            <FacultyAnnouncement/>
+                            <FacultyAnnouncement />
                         </Stack>
-                        <Stack className="border-l my-4 w-[35%]">
+                        <Stack className="!hidden md:!block border-l my-4 lg:w-[35%]">
                             <SpecificCourseLinks />
                         </Stack>
                     </Stack>

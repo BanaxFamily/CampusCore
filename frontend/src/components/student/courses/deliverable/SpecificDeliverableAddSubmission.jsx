@@ -10,14 +10,14 @@ export default function SpecificDeliverableAddSubmission({ deliverable }) {
                 deliverable.map((info, index) => {
                     return (
 
-                        <Stack className=" w-full py-4 mx-auto gap-3" key={index}>
-                            <Stack className="!flex-row items-center justify-between gap-2">
-                                <Stack className="!flex-row items-center gap-2">
-                                    <Typography className="!text-md">Description :</Typography>
+                        <Stack className=" w-full py-4 mx-auto gap-3 " key={index}>
+                            <Stack className="gap-2">
+                                <Stack className="!flex-row gap-2 ">
+                                    <Typography className="!text-md  ">Description:</Typography>
                                     <Typography className="underline underline-offset-4 !text-md !font-semibold !tracking-wide">{info.deliverableDescription}</Typography>
                                 </Stack>
-                                <Stack className="!flex-row items-center gap-2">
-                                    <Typography className="!text-md">Deadline :</Typography>
+                                <Stack className="!flex-row gap-2 ">
+                                    <Typography className="!text-md ">Deadline:</Typography>
                                     <Typography className="underline underline-offset-4 !text-md !font-semibold !tracking-wide">{new Date(info.deliverableDeadline).toLocaleString()}</Typography>
                                 </Stack>
                             </Stack>

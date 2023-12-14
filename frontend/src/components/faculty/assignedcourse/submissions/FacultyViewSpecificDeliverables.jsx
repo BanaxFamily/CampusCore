@@ -77,8 +77,8 @@ export default function FacultyViewSpecificDeliverables() {
             </Stack>
             <DashBoardHeading title={` ${deliverableName} `} />
 
-            <Stack className="w-full border-2 " direction={'row'}>
-                <Stack className="w-4/6 px-10 border-r-2">
+            <Stack className="w-full !flex-col-reverse md:!flex-row border-2 " direction={'row'}>
+                <Stack className=" px-2 md:w-4/6 overflow-hidden md:px-10 border-r-2">
 
                     {loading && <LinearProgress />}
                     {error && <Alert severity="error">Something went wrong. Try again later</Alert>}
@@ -126,14 +126,14 @@ export default function FacultyViewSpecificDeliverables() {
                 </Stack>
                 {/* Side Informations */}
                 <Stack>
-                    <div className="grid grid-cols-2 px-2 gap-1 pt-4">
-                        <div className="border h-28 px-6 flex justify-center items-center rounded-md shadow-md">
+                    <div className="grid grid-cols-1 md:grid-cols-2 px-2 gap-1 pt-4">
+                        <div className="border h-14 md:h-28 px-6 flex justify-center items-center rounded-md shadow-md">
                             <p className="text-center">Submitted 14</p>
                         </div>
-                        <div className="border h-28 px-6 flex justify-center items-center rounded-md shadow-md">
+                        <div className="border h-14 md:h-28 px-6 flex justify-center items-center rounded-md shadow-md">
                             <p className="text-center">Missing 14</p>
                         </div>
-                        <div className="border h-28 px-6 flex justify-center items-center rounded-md shadow-md">
+                        <div className="border h-14 md:h-28 px-6 flex justify-center items-center rounded-md shadow-md">
                             <p className="text-center">Approved 14</p>
                         </div>
                     </div>

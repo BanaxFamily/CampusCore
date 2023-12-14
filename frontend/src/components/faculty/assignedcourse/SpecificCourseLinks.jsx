@@ -7,8 +7,8 @@ export default function SpecificCourseLinks() {
     let { courseName, offeredCourseId} = useParams()
     const location = useLocation()
     return (
-        <Stack className="!hidden md:!block rounded-sm h-72">
-            <Stack className="gap-2 px-2 pt-4">
+        <Stack className=" rounded-sm md:h-72">
+            <Stack className="gap-2 px-2 md:pt-4">
                 {
                     facultyAsideLinks.map((nav, index) => (
                         <Stack key={index}>

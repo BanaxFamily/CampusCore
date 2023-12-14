@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { Button, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineUserAdd } from "react-icons/ai";
@@ -6,12 +7,12 @@ import { BsSearch } from "react-icons/bs";
 import { IoRefreshCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import * as UserApi from "../../../network/user_api";
-import AddModalUser from "./AddModalUser";
-import UpdateModal from "./UpdateModal";
-import WrapperLayout from "../../reusable/WrapperLayout";
 import DynamicTable from "../../reusable/DynamicTable";
-import { Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import WrapperLayout from "../../reusable/WrapperLayout";
+import AddModalUser from "./AddModalUser";
+import AddUserThroughExcelConfirmation from "./AddUserThroughExcelConfirmation";
 import TableBodyUser from "./TableBody";
+import UpdateModal from "./UpdateModal";
 
 export default function UserWrapper({ users }) {
   let count = 0;
@@ -19,7 +20,6 @@ export default function UserWrapper({ users }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [userToUpdate, setUserToUpdate] = useState(null);
-  // const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
   const userData = users.data;
   const [searchkey, setSearchKey] = useState("");
@@ -59,35 +59,33 @@ export default function UserWrapper({ users }) {
 
   return (
     <WrapperLayout>
-      <div className=" flex flex-col sm:flex-row sm:justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
-        <div className="flex ">
-          <div className=" py-2 rounded-md">
-            <Button
-              onClick={() => setShowAddModal(true)}
-              variant="outlined"
-              className="mr-2 text-[15px] font-semibold hover:text-black">
-              Add
-              <AiOutlineUserAdd
-                size={20}
-              />
-            </Button>
-          </div>
-        </div>
-        <span className="flex text-black ">
-          <label htmlFor="" className="hidden">
-            Search
-          </label>
-        </span>
-        <div className="flex  gap-4">
-          <form className="flex" onSubmit={handleSubmit(handleSearchSubmit)}>
-            <input
-              type="text"
-              placeholder="search by name...."
-              name="searchKey"
-              className=" text-white bg-mainBlueColor rounded-md px-16 w-full sm:w-min border-none py-1"
-              {...register("searchKey", { required: true })}
+      <div className=" flex flex-col sm:flex-row justify-between gap-2 ml-2 sm:px-4 w-ful tracking-wider">
+        <div className="flex py-2 rounded-md gap-2">
+          <Button
+            onClick={() => setShowAddModal(true)}
+            variant="outlined"
+            size="small"
+            className="mr-2 text-[15px] font-semibold hover:text-black">
+            Add
+            <AiOutlineUserAdd
+              size={20}
             />
-            <button disabled={isSubmitting} className="cursor-pointer">
+          </Button>
+          <AddUserThroughExcelConfirmation/>
+        </div>
+        <div className="flex  gap-4 w-[400px] justify-end items-center">
+          <form className="flex" onSubmit={handleSubmit(handleSearchSubmit)}>
+            <TextField
+              label="search by name.... "
+              name="searchKey"
+              size="small"
+              InputProps={{ style: { fontSize: 12 } }}
+              InputLabelProps={{ style: { fontSize: 12 } }}
+              className=" !text-white !w-[400px] px-2  rounded-md sm:w-min border-none"
+              {...register("searchKey", { required: true })}
+
+            />
+            <button disabled={isSubmitting} className="cursor-pointer hover:text-blue-400">
               <BsSearch className="ml-2" />
             </button>
           </form>
@@ -159,18 +157,14 @@ export default function UserWrapper({ users }) {
       {showAddModal && <AddModalUser onClose={() => {
         setShowAddModal(false)
         navigate(0)
-        }}
-      />}
-      {showUpdateModal && (
-        <UpdateModal
-          user={userToUpdate}
-          onClose={() => {
-            setUserToUpdate(null);
-            setShowUpdateModal(false);
-          }}
-        />
+      }} />}
+
+      {showUpdateModal && (<UpdateModal user={userToUpdate} onClose={() => {
+        setUserToUpdate(null);
+        setShowUpdateModal(false);
+      }} />
       )}
-      {/* // </div> */}
+
     </WrapperLayout>
   );
 }

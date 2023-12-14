@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Divider, LinearProgress, Stack } from "@mui/material";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as OfferedCourseDeliverable from '../../../../network/offeredCourseDeliverable_api';
 import BackNav from "../../../reusable/BackNav";
 import BreadCrumb from "../../../reusable/BreadCrumb";
 import DashBoardHeading from "../../../reusable/DashBoardHeading";
-import ListOfDeliverables from "./ListOfDeliverables";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import StudentAnnouncementCourse from "../announcement/StudentAnnouncementCourse";
+import ListOfDeliverables from "./ListOfDeliverables";
 // import { useAuth } from "../../../../utils/AuthContext";
 
 export default function DeliverableWrapper() {
@@ -93,7 +93,7 @@ export default function DeliverableWrapper() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateCalendar', 'DateCalendar']}>
               <DemoItem label="Deadlines">
-                <DateCalendar defaultValue={dayjs('2022-04-17')} />
+                <DateCalendar value={dayjs(['2023-12-13'])} disablePast/>
               </DemoItem>
             </DemoContainer>
           </LocalizationProvider>

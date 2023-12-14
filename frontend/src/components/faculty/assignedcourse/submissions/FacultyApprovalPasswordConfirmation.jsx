@@ -15,13 +15,15 @@ export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [message, setMessage] = useState([])
+  const [error, setError] = useState(false)
   const { register, handleSubmit, formState: { isSubmitting } } = useForm()
 
   async function attachApproval(data) {
     try {
-      // if(location.pathname.startsWith('/advisory'))
       const files = await SubmissionApi.getBySubmissionId({ "id": submissionId })
-      const approval =  location.pathname.startsWith('/advisory') ? await SubmissionApi.advisoryApproval( data ) : await SubmissionApi.addApproval(data)
+      const approval = location.pathname.startsWith('/advisory')
+        ? await SubmissionApi.advisoryApproval(data)
+        : await SubmissionApi.addApproval(data)
       const requestUpload = await RepoAPi.addRequestUpload({
         "title": files.data.title,
         "submissionId": submissionId,
@@ -34,10 +36,12 @@ export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
       if (!approval.isSuccess && !requestUpload.isSuccess) {
         const data = await approval.json();
         setMessage(data.message)
+        setError(true)
         return
       }
     } catch (error) {
       console.error(error)
+      setError(true)
     }
 
   }
@@ -51,7 +55,7 @@ export default function FacultyApprovalPasswordConfirmation({ onDismiss }) {
       width="md:w-[25rem]"
     >
       <form action="" onSubmit={handleSubmit(attachApproval)}>
-        <Alert severity="error" className="mb-2"> Attach digital signature!!!</Alert>
+        {error && <Alert severity="error" className="mb-2"> {message}</Alert>}
         <input type="text" value={userId} name='userId' hidden {...register('userId', { required: true })} />
         <input type="text" value={userRole} name='role' hidden {...register('role', { required: true })} />
         <input type="text" value={submissionId} name='submissionId' hidden {...register('submissionId', { required: true })} />

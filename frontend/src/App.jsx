@@ -118,10 +118,6 @@ export default function App() {
               <Route path={`/submissions/*`} element={<CourseLayout />}>
                 <Route index element={<Submission />} />
                 <Route path=":submissionId" element={<FacultyViewSubmission />} />
-                {/* <Route path={`:courseName/:courseId/*`} element={<Layout />} >
-                  <Route index element={<Submission />} />
-                </Route>
-                <Route path={`submission/view/file/:id`} element={<View />} /> */}
               </Route>
               <Route path="/publish-request" element={<DeanPublishRequest />} />
 

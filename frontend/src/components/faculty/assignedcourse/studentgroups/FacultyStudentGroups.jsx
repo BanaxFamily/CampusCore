@@ -1,5 +1,5 @@
 import { Divider, Stack } from "@mui/material"
-import { useParams } from "react-router-dom"
+import { NavLink, useParams } from "react-router-dom"
 import BackNav from "../../../reusable/BackNav"
 import BreadCrumb from "../../../reusable/BreadCrumb"
 import DashBoardHeading from "../../../reusable/DashBoardHeading"
@@ -25,12 +25,14 @@ export default function FacultyStudentGroups() {
             </Stack>
             <Stack direction={'row'}>
                 <Stack className="w-full">
+                    <DashBoardHeading title={`Student Groups`} />
+                    <NavLink to={'add'} className="md:hidden border text-[12px] py-1 px-3 hover:bg-blue-400 my-2 tracking-wider rounded-md bg-blue-500 text-white uppercase  flex self-end !mr-4 !mt-2 " size="small">Add group</NavLink>
                     <Stack className="md:!hidden border-l mb-2">
                         <SpecificCourseLinksMobile />
                     </Stack>
-                    <DashBoardHeading title={`Student Groups`} />
-                    <Stack direction={'row'} className="border-t-2 shadow-md rounded-md shadow-gray-500">
-                        <Stack className=" w-full " >
+                    <Stack className="!flex-row border-t-2 shadow-md rounded-md shadow-gray-500">
+                        <Stack className=" w-full overflow-x-auto" >
+                            <NavLink to={'add'} className="hidden lg:block border text-[12px] py-1 px-3 hover:bg-blue-400 my-2 tracking-wider rounded-md bg-blue-500 text-white uppercase  md:flex self-end !mr-4 !mt-2 " size="small">Add group</NavLink>
                             <FacultyGetStudentGroups />
                         </Stack>
                         <Stack className="!hidden md:!block border-l my-4 w-[35%]">

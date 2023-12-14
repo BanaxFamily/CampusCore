@@ -35,7 +35,7 @@ export default function FacultyAnnouncement() {
         }
     }
     return (
-        <Stack className="shadow-lg  rounded-md w-full px-10 mt-4 pt-4">
+        <Stack className="shadow-lg  rounded-md w-full px-10 md:mt-4 md:pt-4">
             {error && <Alert>Something went wrong try again later</Alert>}
             {errorMessage && <Alert>{errorMessage}</Alert>}
             <Stack className="py-4">
