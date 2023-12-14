@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ExpressiveAnnotations.Attributes;
 using static CampusCore.Shared.UserAddViewModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace CampusCore.Shared
 {
@@ -49,17 +51,15 @@ namespace CampusCore.Shared
         [MaxLength(60)]
         [MinLength(2)]
         public string LastName { get; set; }
-        public string Status { get; set; } = UserStatus.Inactive.ToString();
+        public string Status { get; set; } = UserStatus.Active.ToString();
 
         [Required]
         public string Role { get; set; }
 
-        [RequiredIf("Role != 'Admin'", ErrorMessage = "Enter Id number")]
+        [Required]
         [MaxLength(10)]
         [MinLength(8)]
         public string? Idno { get; set; }
-
-        //to add digital signature later. Will research first if it's part of Identity already
 
         public enum UserStatus
         {
@@ -177,6 +177,8 @@ namespace CampusCore.Shared
     }
 
 
-
-
+    public class ExcelImportViewModel
+    {
+        public IFormFile ImportFile { get; set; }
+    }
 }

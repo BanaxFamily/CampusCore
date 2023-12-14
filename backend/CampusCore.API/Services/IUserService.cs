@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -25,6 +26,8 @@ namespace CampusCore.API.Services
         Task<ResponseManager> UpdateDetailsAsync(UpdateDetailsViewModel model);
         Task<ResponseManager> UpdatePasswordAsync(UpdatePasswordViewModel model);
         Task<ResponseManager> LogoutAsync(string userId);
+        Task<ResponseManager> ImportUsers(ExcelImportViewModel model);
+
 
     }
 }
@@ -101,12 +104,28 @@ public class UserService : IUserService
     private UserManager<User> _userManager;
     private IConfiguration _configuration;
     private AppDbContext _context;
+    private string _uploadPath;
 
     public UserService(UserManager<User> userManager, IConfiguration configuration, AppDbContext context)
     {
         _userManager = userManager;
         _configuration = configuration;
         _context = context;
+
+        // Get the root directory of your application
+        var currentDirectory = Directory.GetCurrentDirectory();
+        var goUp = Directory.GetParent(currentDirectory);
+        var goUp2 = Directory.GetParent(goUp.ToString());
+        var basePath = goUp2.ToString();
+
+        // Combine it with the 'User_Imports' directory
+        _uploadPath = Path.Combine(basePath.ToString(), "User_Imports");
+
+        // Check if the directory exists; create it if not
+        if (!Directory.Exists(_uploadPath))
+        {
+            Directory.CreateDirectory(_uploadPath);
+        }
 
     }
 
@@ -259,6 +278,137 @@ public class UserService : IUserService
             IsSuccess = false,
             Errors = result.Errors.Select(e => e.Description)
         };
+
+
+    }
+
+    public async Task<ResponseManager> ImportUsers(ExcelImportViewModel model)
+    {
+        if (model == null)
+            throw new NullReferenceException("Register Model is null");
+
+        //process File and copy to path
+        if (model.ImportFile == null || model.ImportFile.Length <= 0)
+        {
+            return new ErrorResponseManager
+            {
+                Message = "Something wrong occured while adding the file",
+                IsSuccess = false,
+                Errors = new List<string>() { "Error extracting file content" }
+            };
+
+        }
+
+        try
+        {
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.ImportFile.FileName);
+            var filePath = Path.Combine(_uploadPath, fileName); // Specify your file upload path
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.ImportFile.CopyToAsync(fileStream);
+            }
+
+            List<User> users = new List<User>();
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var worksheet = package.Workbook.Worksheets[0]; // Assuming the data is in the first worksheet
+
+                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                {
+                    try
+                    {
+                        if (worksheet.Cells[row, 1, row, 4].All(cell => cell.Value != null && cell.Value.ToString().Trim() != ""))
+                        {
+
+                            //get data from row
+                            var firstName = worksheet.Cells[row, 1].Value.ToString();
+                            var lastName = worksheet.Cells[row, 2].Value.ToString();
+                            var idno = worksheet.Cells[row, 3].Value.ToString();
+                            var email = worksheet.Cells[row, 4].Value.ToString();
+                            var username = "ccs-" + idno;
+                            var password = lastName + idno.Substring(idno.Length - 4);
+                            var role = worksheet.Cells[row, 5].Value.ToString();
+
+                            //digital signature
+                            var encryption = _context.EncryptionKeys.FirstOrDefault();
+                            var privateKey = KeyGeneratorStorage.GeneratePrivateKey(password, KeyGeneratorStorage.GenerateRandomSalt(), 10000, 32);
+
+                            var user = new User
+                            {
+                                Idno = idno,
+                                Email = email,
+                                UserName = username,
+                                FirstName = firstName,
+                                LastName = lastName,
+                                
+                                EncryptedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(privateKey, encryption.Key, encryption.Iv)
+
+                            };
+
+                            var result = await _userManager.CreateAsync(user, password);
+
+                            if (result.Succeeded)
+                            {
+                                try
+                                {
+                                    await _userManager.AddToRoleAsync(user, role);
+                                }
+                                catch(Exception ex) 
+                                {
+                                    return new ErrorResponseManager
+                                    {
+                                        Message = $"Importing users is interrupted. Row {row} cannot be added to specified role.",
+                                        IsSuccess = false,
+                                        Errors = new List<string>() { "Error extracting file content" }
+                                    };
+                                }
+                                
+                                 
+                            }
+
+
+                        }
+                        else
+                        {
+                            return new ErrorResponseManager
+                            {
+                                Message = $"Importing users is interrupted. Row {row} does not have complete data.",
+                                IsSuccess = false,
+                                Errors = new List<string>() { "Error extracting file content" }
+                            };
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return new ErrorResponseManager
+                        {
+                            Message = "Something wrong occured while importing the users",
+                            IsSuccess = false,
+                            Errors = new List<string>() { ex.Message }
+                        };
+                    }
+
+                }
+                return new ResponseManager
+                {
+                    Message = "Users imported successfully!",
+                    IsSuccess = true
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new ErrorResponseManager
+            {
+                Message = "Something wrong occured while adding the file",
+                IsSuccess = false,
+                Errors = new List<string>() { ex.Message }
+            };
+        }
+
+
 
 
     }
