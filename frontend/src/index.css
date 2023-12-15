@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.active{
+  color: #EC3C3C;
+}
+
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -28,11 +32,8 @@ a:hover {
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  background-color: #f2f2f2;
+
 }
 
 h1 {
@@ -71,3 +72,37 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+.container {
+  overflow-x: auto;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 50px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.title {
+  margin-top: 20px;
+  text-align: center;
+}
+
+tr {
+  height: 40px !important;
+}
+
+th {
+  max-width: 125px;
+  min-width: 125px;
+  padding: 0 !important;
+  overflow-x: auto;
+  white-space: nowrap;
+  text-align: center !important;
+}
+
+td {
+  height: 40px !important;
+  padding: 5px !important;
+  text-align: center !important;
+}
+

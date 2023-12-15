@@ -2,9 +2,10 @@
 {
     public class CourseDeliverable
     {
-        public int deliverable_Id { get; set; }
-        public string offered_course_id { get; set; }
-        public string Status { get; set; }
-        public string Description { get; set; }
+        public int Id { get; set; }
+        public int CourseId { get; set; } // foreign key from OfferedCourse
+        public Course Course { get; set; } // navigation property
+        public int DeliverableId { get; set; } // Foreign key from Deliverable
+        public Deliverable Deliverable { get; set; } // navigation property
     }
 }

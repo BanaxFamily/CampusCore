@@ -3,7 +3,8 @@
     public class Notification
     {
         public int Id { get; set; }
-        //public int user_id { get; set; } // lacking foreign key from UserTable
+        public string UserId { get; set; } // foreign key from UserTable
+        public User User { get; set; } // navigation property
         public string Type { get; set; }
         public string Message { get; set; }
         public DateTime Date { get; set; }
