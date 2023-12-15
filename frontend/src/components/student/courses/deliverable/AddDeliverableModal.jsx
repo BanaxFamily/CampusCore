@@ -51,14 +51,10 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                 }
                 if (!response.ok) {
                     const data = await response.json();
-                    // Check if there are multiple errors
                     // Extract values from errors
                     const errorValues = Object.values(data.errors)
                         .reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
-                    // Set the error state with values
                     setErrorMessage(errorValues.join(', '));
-                    // console.error('Error : ', [...data.errors]);
-                    // setError(data.errors[0]);
                     return;
                 }
 
@@ -80,14 +76,7 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                 }
                 if (!firstSubmission.ok) {
                     const data = await firstSubmission.json();
-                    // Check if there are multiple errors
-                    // Extract values from errors
-                    // const errorValues = Object.values(data.message)
-                    //     .reduce((accumulator, currentValue) => accumulator.concat(currentValue), []);
-                    // Set the error state with values
                     setErrorMessage(data.message);
-                    // console.error('Error : ', [...data.errors]);
-                    // setError(data.errors[0]);
                     return;
                 }
 
@@ -113,18 +102,18 @@ export default function AddDeliverableModal({ issues, submissionId, onDismiss })
                     <input type="text" value={userId} name="submitterId" hidden  {...register('submitterId')} />
                     <input type="text" value={offeredCourseDeliverableId} name="offeredCourseDeliverableId" hidden  {...register('offeredCourseDeliverableId')} />
                     {issues.length < 1 &&
-                    <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
-                        <Typography className="w-1/6 ">Title</Typography>
-                        <TextField
-                            variant="outlined"
-                            label="Title"
-                            size="small"
-                            className="flex flex-grow"
-                            InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('name')}
-                            name="title"
-                            {...register('title')}
-                        />
-                    </Stack>}
+                        <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
+                            <Typography className="w-1/6 ">Title</Typography>
+                            <TextField
+                                variant="outlined"
+                                label="Title"
+                                size="small"
+                                className="flex flex-grow"
+                                InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('name')}
+                                name="title"
+                                {...register('title')}
+                            />
+                        </Stack>}
                     <Stack className=" p-2 w-full" alignItems={'center'} direction={'row'} spacing={2}>
 
                         <Typography className="w-1/6 ">Targeted Issues</Typography>

@@ -66,7 +66,7 @@ export default function FacultyAddGroup() {
 
         try {
             const response = await GroupApi.createGroup(studentGroupData)
-            if(response.isSuccess){
+            if (response.isSuccess) {
                 navigate(0)
                 return
             }
@@ -79,6 +79,28 @@ export default function FacultyAddGroup() {
             <Stack className="rounded-md">
                 <form action="" onSubmit={handleSubmit(addStudentGroup)}>
                     <Stack className='mt-4 px-10 gap-2'>
+                        <Stack className='!flex-row items-center'>
+                            <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>Group Type {" "} :</Typography>
+                            <Stack className='w-full'>
+                                <TextField
+                                    select
+                                    label="Select group type"
+                                    SelectProps={{
+                                        native: true,
+                                    }}
+                                    variant="outlined"
+                                    size='small'
+                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                    name="groupType"
+                                    {...register("groupType", { required: "select one option" })}
+                                >
+                                    <option value=""></option>
+                                    <option value="group">Research group</option>
+                                    <option value="specific">Course specific only</option>
+                                </TextField>
+                                {/* <TextField size='small' variant='outlined' label="optional" name='adviserId' InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('adviserId')} /> */}
+                            </Stack>
+                        </Stack>
                         <Stack className='!flex-row items-center'>
                             <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>Group name {" "} :</Typography>
                             <Stack className='w-full'>
