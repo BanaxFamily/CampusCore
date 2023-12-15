@@ -21,6 +21,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model);
         Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
         Task<ResponseManager> GetAllAdvisoreeSubmissions(StringIdViewModel model);//group name
+        Task<ResponseManager> GetAllResearchTeams();//used by dean side to list all research teams
     }
 
     public class GroupService : IGroupService
@@ -668,6 +669,38 @@ namespace CampusCore.API.Services
                 {
                     IsSuccess = true,
                     Message = $"groups of adviser {model.Id} retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching groups in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> GetAllResearchTeams()
+        {
+            try
+            {
+                var result = await _context.Groups
+                                            .Where(sg => sg.OfferedCourseId == null)
+                                            .Select(sg => new {
+                                                GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
+                                                Adviser = sg.Adviser.FullName,
+                                                GroupName = sg.Name,
+                                            })
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "research groups retrieved successfully",
                     Data = result
                 };
             }

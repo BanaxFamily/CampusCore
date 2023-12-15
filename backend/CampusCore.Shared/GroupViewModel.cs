@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpressiveAnnotations.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace CampusCore.Shared
    public class GroupAddViewModel
    {
         public string Name { get; set; }
-
         //offered course foreign key so they can have different groups for different course they take
-        public int OfferedCourseId { get; set; }
+        [RequiredIf("Retainable==true")]
+        public int? OfferedCourseId { get; set; }
         public string LeaderId {  get; set; }
         public string? AdviserId { get; set; } = null;
         public string[] Members { get; set; } //array of UserId from members
