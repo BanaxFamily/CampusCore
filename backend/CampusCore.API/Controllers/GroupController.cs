@@ -257,5 +257,33 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid for update"); // Status code: 400
         }
+        [HttpGet("getResearchTeams")]
+        public async Task<IActionResult> GetAllResearchTeams()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _groupService.GetAllResearchTeams();
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
+        [HttpPost("transferAdvisoreeAccess")]
+        public async Task<IActionResult> TransferAdviserAccess(TransferAdviserAccessViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _groupService.TransferAdviserAccess(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status code: 200
+
+                return BadRequest(result);
+            }
+            return BadRequest("Some properties are not valid for update"); // Status code: 400
+        }
     }
 }
