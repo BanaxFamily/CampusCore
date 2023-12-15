@@ -14,6 +14,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> GetMembersAsync(IntIdViewModel model);
         Task<ResponseManager> DeleteAsync(IntIdViewModel model);
         Task<ResponseManager> UpdateDetailsAsync(GroupUpdateDetailsViewModel model);
+        Task<ResponseManager> TransferAdviserAccess(TransferAdviserAccessViewModel model);
         Task<ResponseManager> UpdateMembersAsync(GroupUpdateMembersViewModel model);
         Task<ResponseManager> UpdateStatusAsync(GroupUpdateStatusViewModel model);
         Task<ResponseManager> GetStudentsWithNoGroup( IntIdViewModel model);
@@ -21,6 +22,7 @@ namespace CampusCore.API.Services
         Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model);
         Task<ResponseManager> SearchAsync(StringSearchViewModel model);//group name
         Task<ResponseManager> GetAllAdvisoreeSubmissions(StringIdViewModel model);//group name
+        Task<ResponseManager> GetAllResearchTeams();//used by dean side to list all research teams
     }
 
     public class GroupService : IGroupService
@@ -680,6 +682,70 @@ namespace CampusCore.API.Services
                     Errors = new List<string> { ex.Message }
                 };
             }
+        }
+
+        public async Task<ResponseManager> GetAllResearchTeams()
+        {
+            try
+            {
+                var result = await _context.Groups
+                                            .Where(sg => sg.IsRetainable == true && sg.Status == "active")
+                                            .Select(sg => new {
+                                                GroupId = sg.Id,
+                                                AdviserId = sg.AdviserId,
+                                                Adviser = sg.Adviser.FullName,
+                                                GroupName = sg.Name,
+                                            })
+                                            .ToListAsync();
+
+                return new DataResponseManager
+                {
+                    IsSuccess = true,
+                    Message = "research groups retrieved successfully",
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponseManager
+                {
+                    IsSuccess = false,
+                    Message = "An error occurred while fetching groups in DB",
+                    Errors = new List<string> { ex.Message }
+                };
+            }
+        }
+
+        public async Task<ResponseManager> TransferAdviserAccess(TransferAdviserAccessViewModel model)
+        {
+            if (model == null)
+                throw new NullReferenceException("Register Model is null");
+
+
+            var group = await _context.Groups.FindAsync(model.GroupId);
+
+            group.AdviserId = model.AdviserId;
+
+
+            _context.Groups.Update(group);
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return new ResponseManager
+                {
+                    Message = "Group updated successfully",
+                    IsSuccess = true
+                };
+
+            }
+
+            return new ErrorResponseManager
+            {
+                Message = "Group is not created",
+                IsSuccess = false,
+                Errors = new List<string>() { "Error creating group in DB" }
+            };
         }
     }
 }
