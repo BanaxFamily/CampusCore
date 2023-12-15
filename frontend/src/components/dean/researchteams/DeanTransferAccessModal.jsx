@@ -60,7 +60,7 @@ export default function DeanTransferAccessModal({ id, adviser, onDismiss }) {
                             <option value=""></option>
                             {
                                 userRoles.map((role, index) => (
-                                    <option value={role.id} key={index}>{role.fullName } {role.id}</option>
+                                    <option value={role.id} key={index}>{role.fullName } </option>
                                 ))
                             }
                         </TextField>
