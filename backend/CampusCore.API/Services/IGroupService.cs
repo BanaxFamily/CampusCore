@@ -45,7 +45,8 @@ namespace CampusCore.API.Services
                 AdviserId = model.AdviserId,
                 LeaderId = model.LeaderId,
                 Status = "active",
-                OfferedCourseId = model.OfferedCourseId
+                OfferedCourseId = model.OfferedCourseId,
+                IsRetainable = model.IsRetainable
             };
 
 
@@ -610,23 +611,17 @@ namespace CampusCore.API.Services
         public async Task<ResponseManager> GetGroupOfStudent(GetGroupOfStudentViewModel model)
         {
             var studentId = model.StudentId;
-            var offeredCourseId = model.OfferedCourseId;
 
+           
 
             try
             {
                 var groupId =  await _context.StudentGroups
-                                            .Where(g => g.Group.OfferedCourseId == offeredCourseId && g.StudentId == studentId)
+                                            .Where(g => g.StudentId == studentId)
                                             .Select(sg => new
                                             {
                                                 StudentGroupId = sg.GroupId
                                             }).FirstOrDefaultAsync();
-
-                
-
-                
-
-
                 return new DataResponseManager
                 {
                     IsSuccess = true,
@@ -650,8 +645,7 @@ namespace CampusCore.API.Services
             try
             {
                 var result = await _context.CourseDeliverableSubmissions
-                                            .Where(g => g.OfferedCourseDeliverable.Deliverable.ForAdviser == true 
-                                                    && g.Submission.Group.AdviserId == model.Id
+                                            .Where(g =>g.Submission.Group.AdviserId == model.Id
                                             )
                                            .Select(x => new
                                            {

@@ -19,8 +19,10 @@ import CourseLayout from "./components/dean/courses/CourseLayout";
 import Submission from "./components/dean/courses/submission/Submissions";
 import DeanDeliverables from "./components/dean/deliverables/DeanDeliverables";
 import Deliverables from "./components/dean/deliverables/Deliverables";
+import DeanPublishRequest from "./components/dean/publishrequest/DeanPublishRequest";
 import FinalDeliverables from "./components/faculty/FinalDeliverables";
 import Layout from "./components/faculty/Layout";
+import FacultyAdvisory from "./components/faculty/advisory/FacultyAdvisory";
 import CourseAssigned from "./components/faculty/assignedcourse/CourseAssigned";
 import ViewSpecificCourse from "./components/faculty/assignedcourse/ViewSpecificCourse";
 import FacultyDeliverable from "./components/faculty/assignedcourse/deliverable/FacultyDeliverable";
@@ -29,9 +31,11 @@ import FacultyUpdateAndAddGroupWrapper from "./components/faculty/assignedcourse
 import FacultyShowAllDeliverables from "./components/faculty/assignedcourse/submissions/FacultyShowAllDeliverables";
 import FacultyViewSpecificDeliverables from "./components/faculty/assignedcourse/submissions/FacultyViewSpecificDeliverables";
 import FacultyViewSubmission from "./components/faculty/assignedcourse/submissions/FacultyViewSubmission";
+import PrcApprovedSubmissions from "./components/prc/PrcApprovedSubmissions";
 import Login from "./components/reusable/Login";
 import NotFound from "./components/reusable/NotFound";
 import ManageProfile from "./components/shared-route/ManageProfile";
+import SharedRepository from "./components/shared-route/SharedRepository";
 import Home from "./components/shared-route/home/Home";
 import CourseStudent from "./components/student/courses/CourseStudent";
 import LayoutCourse from "./components/student/courses/LayoutCourse";
@@ -45,10 +49,7 @@ import * as CourseApi from "./network/course_api";
 import * as UserApi from "./network/user_api";
 import MainContents from "./pages/MainConents";
 import { useAuth } from "./utils/AuthContext";
-import PrcApprovedSubmissions from "./components/prc/PrcApprovedSubmissions";
-import SharedRepository from "./components/shared-route/SharedRepository";
-import DeanPublishRequest from "./components/dean/publishrequest/DeanPublishRequest";
-import FacultyAdvisory from "./components/faculty/advisory/FacultyAdvisory";
+import DeanResearchTeams from "./components/dean/researchteams/DeanResearchTeams";
 
 
 export default function App() {
@@ -95,10 +96,6 @@ export default function App() {
             <>
               <Route path={`manage/course`} loader={async () => { return CourseApi.viewCourse(); }} element={<ManageCourse />} />
               <Route path={`manage/user`} loader={async () => { return UserApi.viewUser(); }} element={<ManageUsers />} />
-              {/* <Route path={`faculty/course-loads/subjects/*`} element={<CourseLoadLayout />} >
-                <Route index loader={async () => { return UserApi.viewUser(); }} element={<CourseLoad />} />
-                <Route path=":courseName/:courseId/enrolled-students" element={<EnrolledStudents />} />
-              </Route> */}
               <Route path={`manage/repository/*`} element={<ManageRepo />} />
               <Route path={`reports`} element={<GenerateReport />}></Route>
             </>
@@ -120,6 +117,7 @@ export default function App() {
                 <Route path=":submissionId" element={<FacultyViewSubmission />} />
               </Route>
               <Route path="/publish-request" element={<DeanPublishRequest />} />
+              <Route path="teams" element={<DeanResearchTeams />} />
 
             </>
           )}
@@ -127,7 +125,7 @@ export default function App() {
             <>
               <Route path={`course/assigned/*`} element={<Layout />} >
                 <Route index element={<CourseAssigned />} />
-                <Route path="offered-course/:courseName/:offeredCourseId/*" element={<Layout />} >
+                <Route path="offered-course/:courseName/:offeredCourseId/:hasRetainableGroup/*" element={<Layout />} >
                   <Route index element={<ViewSpecificCourse />} />
                   <Route path="deliverable/management" element={<FacultyDeliverable />} />
                   <Route path="student/groups/*" element={<Layout />}>

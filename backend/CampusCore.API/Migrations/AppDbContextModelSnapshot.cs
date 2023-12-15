@@ -134,6 +134,9 @@ namespace CampusCore.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("HasRetainableGroup")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -296,7 +299,6 @@ namespace CampusCore.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OfferedCourseId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -1102,9 +1104,7 @@ namespace CampusCore.API.Migrations
 
                     b.HasOne("CampusCore.API.Models.OfferedCourse", "OfferedCourse")
                         .WithMany()
-                        .HasForeignKey("OfferedCourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OfferedCourseId");
 
                     b.Navigation("Adviser");
 

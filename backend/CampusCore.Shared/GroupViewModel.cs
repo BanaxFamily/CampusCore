@@ -12,8 +12,6 @@ namespace CampusCore.Shared
    public class GroupAddViewModel
    {
         public string Name { get; set; }
-        //offered course foreign key so they can have different groups for different course they take
-        [RequiredIf("Retainable==true")]
         public int? OfferedCourseId { get; set; }
         public string LeaderId {  get; set; }
         public string? AdviserId { get; set; } = null;
@@ -63,6 +61,5 @@ namespace CampusCore.Shared
     public class GetGroupOfStudentViewModel
     {
         public string StudentId { get; set; }
-        public int OfferedCourseId { get; set; }
     }
 }

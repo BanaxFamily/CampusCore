@@ -13,11 +13,14 @@ import DashBoardHeading from "../../../reusable/DashBoardHeading";
 import StudentAnnouncementCourse from "../announcement/StudentAnnouncementCourse";
 import ListOfDeliverables from "./ListOfDeliverables";
 // import { useAuth } from "../../../../utils/AuthContext";
+import * as GroupApi from "../../../../network/group_api"
+import { useAuth } from "../../../../utils/AuthContext";
 
 export default function DeliverableWrapper() {
-  // let {userId} = useAuth()
+  let {userId} = useAuth()
   let { courseName, offeredCourseId } = useParams()
   const [deliverable, setDeliverables] = useState([])
+  const [groupId, setGroupId] = useState([])
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const breadCrumbUrl = [
@@ -34,10 +37,11 @@ export default function DeliverableWrapper() {
     async function showListOfDeliverables() {
       try {
         const response = await OfferedCourseDeliverable.getFacultyOfferedCourseDeliverables({ 'id': offeredCourseId })
-        // const groupId = await GroupApi.getGroupId({ 'studentId': userId, 'offeredCourseId': offeredCourseId })
+        const groupId = await GroupApi.getGroupId({ 'studentId': userId })
         // const groupData = groupId.data
-        if (response.isSuccess) {
+        if (response.isSuccess && groupId.isSuccess) {
           setDeliverables(response.data)
+          setGroupId(groupId.data)
           // if(groupData.length <= 0 || groupData === null){
           //   setGroupId(null)
           // }else{
@@ -82,7 +86,7 @@ export default function DeliverableWrapper() {
                 {
                   deliverable.length > 0 ? (
                     // <ListOfDeliverables data={deliverable} groupId={groupId} />
-                    <ListOfDeliverables data={deliverable} />
+                    <ListOfDeliverables data={deliverable}  groupId={groupId}/>
                   ) : (<Alert severity="info">No deliverables yet</Alert>)
                 }
               </Stack>

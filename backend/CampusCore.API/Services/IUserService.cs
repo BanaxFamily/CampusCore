@@ -341,6 +341,7 @@ public class UserService : IUserService
                                 UserName = username,
                                 FirstName = firstName,
                                 LastName = lastName,
+                                Status = "Active",
                                 
                                 EncryptedPrivateKey = KeyGeneratorStorage.EncryptPrivateKey(privateKey, encryption.Key, encryption.Iv)
 

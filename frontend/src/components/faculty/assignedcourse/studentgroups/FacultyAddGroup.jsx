@@ -57,28 +57,55 @@ export default function FacultyAddGroup() {
     }, [])
 
     async function addStudentGroup(data) {
+        let convertToBool = Boolean(data.isRetainable)
         let studentGroupData = {
-            ...data,
+            "isRetainable": convertToBool,
+            "name": data.name,
+            "adviserId": data.adviserId,
             members,
             "leaderId": leader,
-            "offeredCOurseId": offeredCourseId
+            "offeredCourseId": convertToBool ? null : offeredCourseId
         }
+
 
         try {
             const response = await GroupApi.createGroup(studentGroupData)
-            if(response.isSuccess){
+            if (response.isSuccess) {
                 navigate(0)
                 return
             }
         } catch (error) {
             console.error(error)
         }
+        console.log(studentGroupData)
     }
     return (
         <Stack paddingBottom={4} className=" border-3 border-red-400">
             <Stack className="rounded-md">
                 <form action="" onSubmit={handleSubmit(addStudentGroup)}>
                     <Stack className='mt-4 px-10 gap-2'>
+                        <Stack className='!flex-row items-center'>
+                            <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>Group Type {" "} :</Typography>
+                            <Stack className='w-full'>
+                                <TextField
+                                    select
+                                    label="Select group type"
+                                    SelectProps={{
+                                        native: true,
+                                    }}
+                                    variant="outlined"
+                                    size='small'
+                                    InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                                    name="isRetainable"
+                                    {...register("isRetainable", { required: "select one option" })}
+                                >
+                                    <option value=""></option>
+                                    <option value="true">Research group</option>
+                                    <option value="false">Course specific only</option>
+                                </TextField>
+                                {/* <TextField size='small' variant='outlined' label="optional" name='adviserId' InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('adviserId')} /> */}
+                            </Stack>
+                        </Stack>
                         <Stack className='!flex-row items-center'>
                             <Typography className='w-[20%] 2xl:!text-lg' fontSize={'small'}>Group name {" "} :</Typography>
                             <Stack className='w-full'>

@@ -9,7 +9,7 @@ import DynamicTable from "../../../reusable/DynamicTable"
 import FacultyViewGroupMembers from "./FacultyViewGroupMembers"
 
 export default function FacultyStudentGroupTable() {
-    let { offeredCourseId } = useParams()
+    let { offeredCourseId, hasRetainableGroup } = useParams()
     const [groups, setGroups] = useState([])
     const [viewMembersModal, setViewMembersModal] = useState("")
     const [groupIdToView, setGroupIdToView] = useState("")
@@ -19,7 +19,9 @@ export default function FacultyStudentGroupTable() {
     useEffect(() => {
         async function showAllGroups() {
             try {
-                const response = await GroupApi.getAllGroupsByCourse({ "id": offeredCourseId })
+
+                const response = hasRetainableGroup ? await GroupApi.getResearchTeams() : await GroupApi.getAllGroupsByCourse({ "id": offeredCourseId })
+                console.log(response)
                 if (response.isSuccess) {
                     setGroups(response.data)
                     return

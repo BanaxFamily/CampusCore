@@ -29,7 +29,7 @@ export default function AddOfferedCourse({ offeredCourse, onClose }) {
   const handleToggle = (data) => {
     setSelectedItem(data);
     setValue("courseId", data.id || "");
-    setValue("Course", data.name || "");
+    // setValue("Course", data.name || "");
   };
 
   async function onSubmit(credentials) {

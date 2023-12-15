@@ -81,7 +81,7 @@ namespace CampusCore.API.Controllers
             }
             return BadRequest("Some properties are not valid"); //status code: 400
         }
-        [HttpPost("viewListIsNeedDeansApproval")]
+        /*[HttpPost("viewListIsNeedDeansApproval")]
         public async Task<IActionResult> OfferedCourseGetNeedDeansApprovalAsync()
         {
             if (ModelState.IsValid)
@@ -94,7 +94,7 @@ namespace CampusCore.API.Controllers
                 return BadRequest(result);
             }
             return BadRequest("Some properties are not valid"); //status code: 400
-        }
+        }*/
         //insert method here
         [HttpPost("getById")]
         public async Task<IActionResult> GetByIdAsync(IntIdViewModel model)
