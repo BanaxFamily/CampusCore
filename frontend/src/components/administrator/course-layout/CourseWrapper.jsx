@@ -132,7 +132,7 @@ export default function CourseWrapper({ courses }) {
                 </tbody>
               )
             ) : (
-              courseData.map((course, index) => {
+              courseData && courseData.map((course, index) => {
                 count++;
                 return (
                   <TableBodyCourse
@@ -152,7 +152,6 @@ export default function CourseWrapper({ courses }) {
         </DynamicTable>
 
       </div>
-      {/* </div> */}
 
       {modalAddCourse && (
         <AddModalCourse
