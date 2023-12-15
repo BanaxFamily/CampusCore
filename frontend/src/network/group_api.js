@@ -102,3 +102,31 @@ export async function getAdvisory(data){
 
     return response;
 }
+export async function getResearchTeams(){
+    const response = await fetchData("api/group/getResearchTeams", {
+        method: "GET"})
+
+    return response;
+}
+export async function updateStatus(data){
+    const response = await fetchData("api/group/updateStatus", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}
+export async function transferAccess(data){
+    const response = await fetchData("api/group/transferAdvisoreeAccess", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+
+    return response;
+}

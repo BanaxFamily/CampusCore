@@ -57,12 +57,16 @@ export default function FacultyAddGroup() {
     }, [])
 
     async function addStudentGroup(data) {
+        let convertToBool = Boolean(data.isRetainable)
         let studentGroupData = {
-            ...data,
+            "isRetainable": convertToBool,
+            "name": data.name,
+            "adviserId": data.adviserId,
             members,
             "leaderId": leader,
-            "offeredCOurseId": offeredCourseId
+            "offeredCourseId": convertToBool ? null : offeredCourseId
         }
+
 
         try {
             const response = await GroupApi.createGroup(studentGroupData)
@@ -73,6 +77,7 @@ export default function FacultyAddGroup() {
         } catch (error) {
             console.error(error)
         }
+        console.log(studentGroupData)
     }
     return (
         <Stack paddingBottom={4} className=" border-3 border-red-400">
@@ -91,12 +96,12 @@ export default function FacultyAddGroup() {
                                     variant="outlined"
                                     size='small'
                                     InputLabelProps={{ style: { fontSize: '0.775rem' } }}
-                                    name="groupType"
-                                    {...register("groupType", { required: "select one option" })}
+                                    name="isRetainable"
+                                    {...register("isRetainable", { required: "select one option" })}
                                 >
                                     <option value=""></option>
-                                    <option value="group">Research group</option>
-                                    <option value="specific">Course specific only</option>
+                                    <option value="true">Research group</option>
+                                    <option value="false">Course specific only</option>
                                 </TextField>
                                 {/* <TextField size='small' variant='outlined' label="optional" name='adviserId' InputLabelProps={{ style: { fontSize: '0.775rem' } }} {...register('adviserId')} /> */}
                             </Stack>

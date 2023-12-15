@@ -35,6 +35,7 @@ namespace CampusCore.API.Services
                 Name = model.Name,
                 Status = model.Status,
                 Description = model.Description,
+                HasRetainableGroup = model.HasRetainableGroup,
 
             };
 

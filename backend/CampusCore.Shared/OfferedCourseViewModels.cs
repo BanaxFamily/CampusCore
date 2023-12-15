@@ -20,7 +20,6 @@ namespace CampusCore.Shared
             Second,
             Summer
         }
-        public bool IsNeedDeansApproval { get; set; }
     }
 
     public class OfferedCourseUpdateViewModel
