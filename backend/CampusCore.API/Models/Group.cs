@@ -11,7 +11,7 @@ namespace CampusCore.API.Models
 
         //offered course foreign key so they can have different groups for different course they take
         public int? OfferedCourseId { get; set; }
-        public OfferedCourse OfferedCourse { get; set; }
+        public OfferedCourse? OfferedCourse { get; set; }
         public bool IsRetainable { get; set; }
 
         //reviewer / adviser

@@ -7,13 +7,12 @@ import * as GroupApi from "../../../../network/group_api";
 import { useAuth } from "../../../../utils/AuthContext";
 
 
-export default function ListOfDeliverables({ data }) {
+export default function ListOfDeliverables({ data, groupId }) {
     const { userId } = useAuth()
     let { offeredCourseId } = useParams()
     const navigate = useNavigate()
     const [isCollapsed, setIsCollapsed] = useState(false);
     // const [studentGroupId, setStudentGroupId] = useState(null)
-
     const handleToggleCollapse = () => {
         setIsCollapsed(!isCollapsed);
     };
@@ -22,7 +21,7 @@ export default function ListOfDeliverables({ data }) {
         try {
             const response = await GroupApi.getGroupId({ 'studentId': userId, 'offeredCourseId': offeredCourseId })
             if (response.isSuccess) {
-                navigate(`deliverable/${deliverableTitle}/${deliverableId}/${offeredCourseDeliverableId}/group/${response.data ? response.data.studentGroupId : 'null'}`)
+                navigate(`deliverable/${deliverableTitle}/${deliverableId}/${offeredCourseDeliverableId}/group/${groupId ? groupId.studentGroupId : 'null'}`)
                 return
             }
 

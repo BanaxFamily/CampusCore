@@ -13,6 +13,7 @@ export default function FacultyAdvisory() {
   useEffect(() => {
     async function showAdvisory() {
       const response = await GroupApi.getAdvisory({ "id": userId })
+      console.log(response)
       if (response.isSuccess) {
         setData(response.data)
       }

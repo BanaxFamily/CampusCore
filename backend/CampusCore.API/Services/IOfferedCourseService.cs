@@ -38,7 +38,6 @@ namespace CampusCore.API.Services
                 Schedule = model.Schedule,
                 FacultyId = model.FacultyId,
                 CourseId = model.CourseId,
-                IsNeedDeansApproval = model.IsNeedDeansApproval,
 
             };
 

@@ -51,13 +51,6 @@ export const adminLinks = [
     title: "Course management",
     icon: <Book />,
   },
-  // {
-  //   id: "offeredCourse",
-  //   link: "/faculty/course-loads/subjects",
-  //   title: "Offered courses",
-  //   icon: <CollectionsBookmark />,
-  // },
-
   {
     id: "repository",
     link: "/repository",
@@ -121,10 +114,16 @@ export const deanLink = [
     icon: <DeveloperBoard />,
   },
   {
-    id: "profile",
+    id: "request",
     link: "/publish-request",
     title: "Request for Publication",
     icon: <DeveloperBoard />,
+  },
+  {
+    id: "teams",
+    link: "/teams",
+    title: "Research Teams",
+    icon: <Group />,
   },
   {
     id: "repository",

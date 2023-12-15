@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import * as CourseApi from "../../../network/course_api";
 import DashBoardHeading from "../../reusable/DashBoardHeading";
@@ -14,7 +14,13 @@ export default function AddModalCourse({ onClose }) {
   } = useForm();
 
   async function onSubmit(credentials) {
-    const response = await CourseApi.addCourse(credentials);
+    const formData = {
+      'name': credentials.name,
+      'status': credentials.status,
+      'hasRetainableGroup': Boolean(credentials.hasRetainableGroup),
+      'description': credentials.description,
+    }
+    const response = await CourseApi.addCourse(formData);
     if (response.status) {
       alert(`Error: ${response.status}`);
     } else {
@@ -24,9 +30,6 @@ export default function AddModalCourse({ onClose }) {
   }
   return (
     <>
-      {/* <div className="mb-3">
-        <DashboardHeading title="Add course" desc="" className="py-6" />
-      </div> */}
       <Modal onDismiss={onClose} width="md:!w-[30rem]" heading={<DashBoardHeading title="Add course" desc="" />}>
 
         <form
@@ -35,6 +38,7 @@ export default function AddModalCourse({ onClose }) {
         >
           <div className="w-full flex flex-col gap-2">
             <div className="flex flex-col flex-grow gap-2">
+              <Typography fontSize={'small'}>Name</Typography>
               <TextField
                 id="outline-name"
                 name="name"
@@ -44,6 +48,7 @@ export default function AddModalCourse({ onClose }) {
                 {...register("name", { required: true })}
               />
               <div className="flex flex-col w-full mt-1">
+                <Typography fontSize={'small'}>Course status</Typography>
                 <TextField
                   id="filled-role"
                   select
@@ -61,6 +66,26 @@ export default function AddModalCourse({ onClose }) {
                   <option value="close">Close</option>
                 </TextField>
               </div>
+              <div className="flex flex-col w-full mt-1">
+                <Typography fontSize={'small'}>Retainable</Typography>
+                <TextField
+                  id="filled-role"
+                  select
+                  label="Retainable group"
+                  InputLabelProps={{ style: { fontSize: '0.775rem' } }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                  name="hasRetainableGroup"
+                  size="small"
+                  {...register("hasRetainableGroup", { required: "select one option" })}
+                >
+                  <option value=""></option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </TextField>
+              </div>
+              <Typography fontSize={'small'}>Description</Typography>
               <TextField
                 id="outline-name"
                 name="description"

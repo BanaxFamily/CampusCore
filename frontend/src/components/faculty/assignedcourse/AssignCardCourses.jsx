@@ -1,10 +1,8 @@
 import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function AssignCardCourses({ data }) {
 
-  useEffect(() => {console.log(data)},[])
 
   return (
 
@@ -23,7 +21,7 @@ export default function AssignCardCourses({ data }) {
             </CardContent>
           </CardActionArea>
           <CardActions sx={{justifyContent: 'flex-end'}}>
-            <Link to={`offered-course/${item.course.name}/${item.id}`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
+            <Link to={`offered-course/${item.course.name}/${item.id}/${item.course.hasRetainableGroup}`} size="small" color="primary" className=' text-blue-500 hover:text-mainBlueColor'>
               Open
             </Link>
           </CardActions>
