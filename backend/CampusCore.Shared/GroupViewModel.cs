@@ -18,6 +18,7 @@ namespace CampusCore.Shared
         public string LeaderId {  get; set; }
         public string? AdviserId { get; set; } = null;
         public string[] Members { get; set; } //array of UserId from members
+        public bool IsRetainable { get; set; }
 
    }
 
@@ -26,6 +27,12 @@ namespace CampusCore.Shared
         public int GroupId { get; set; }
         public string Name { get; set; }
         public string? AdviserId { get; set; } = null;
+    }
+    public class TransferAdviserAccessViewModel
+    {
+        public int GroupId { get; set; }
+        public string AdviserId { get; set; } 
+        
     }
     public class GroupUpdateMembersViewModel
     {
